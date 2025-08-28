@@ -22,6 +22,9 @@ const ForgotPassword = ({ navigation }: any) => {
     }
 
     Alert.alert('Success', `A password reset link has been sent to ${email}`);
+
+    // Navigate to EmailVerification screen
+    navigation.navigate('EmailVerification');
   };
 
   return (
@@ -45,7 +48,7 @@ const ForgotPassword = ({ navigation }: any) => {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
-            placeholder="Enter your Email id "
+            placeholder="Enter your Email id"
             placeholderTextColor="#999"
           />
         </View>
@@ -58,14 +61,13 @@ const ForgotPassword = ({ navigation }: any) => {
           <Text style={styles.backToSignIn}>
             Back to <Text style={styles.dot}>Sign In</Text>
           </Text>
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              Terms & Conditions <Text style={styles.dot}>•</Text> Privacy
-              Policy
-            </Text>
-          </View>
         </TouchableOpacity>
+
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            Terms & Conditions <Text style={styles.dot}>•</Text> Privacy Policy
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

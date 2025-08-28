@@ -28,12 +28,12 @@ export const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: 'rgba(88, 52, 250, 1)',
+    borderColor: 'rgba(42, 91, 228, 1)',
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
     color: '#000',
-    borderRadius: 10,
+    
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   footer: {
-    position: 'absolute',
+     position: 'absolute',
     bottom: 10,
     left: 0,
     right: 0,
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   footerText: {
-    color: '#8260fdff', 
+    color: '#314ce6c9', 
     fontSize: 13,
   },
   dot: {

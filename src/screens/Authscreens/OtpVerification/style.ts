@@ -11,9 +11,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logo: {
-    width: 120,
-    height: 120,
+     width: 250,
+    height: 150,
     alignSelf: 'center',
+    marginTop: -70,
     marginBottom: 30,
   },
   title: {
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   verifyButton: {
-    backgroundColor: '#4F8CF8',
+    backgroundColor: '#3d80f5ff',
     width: '80%',
     paddingVertical: 15,
     borderRadius: 8,
@@ -66,13 +67,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 30,
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 6,
   },
   footerText: {
     fontSize: 14,
-    color: '#777',
+    color: '#5634eeff',
   },
   dot: {
     fontSize: 18,
