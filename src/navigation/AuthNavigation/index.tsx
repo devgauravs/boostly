@@ -1,6 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Signup from '../../screens/Authscreens/SignUp/Signup';
 import SignIn from '../../screens/Authscreens/SignIn/Signin';
+import ForgotPassword from '../../screens/Authscreens/ForgotPassword/ForgotPassword';
+import OtpVerification from '../../screens/Authscreens/OtpVerification/OtpVerification';
+import { RouteNames } from '../routeNames';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,8 +13,16 @@ export function AuthNavigator() {
       screenOptions={{ headerShown: false }}
       initialRouteName="SignIn"
     >
-      <Stack.Screen name="SignUp" component={Signup} />
-      <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name={RouteNames.SignUp} component={Signup} />
+      <Stack.Screen name={RouteNames.SignIn} component={SignIn} />
+      <Stack.Screen
+        name={RouteNames.ForgotPassword}
+        component={ForgotPassword}
+      />
+      <Stack.Screen
+        name={RouteNames.OtpVerification}
+        component={OtpVerification}
+      />
     </Stack.Navigator>
   );
 }
