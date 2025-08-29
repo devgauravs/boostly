@@ -4,14 +4,10 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Alert,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
 import Button from '../../../components/Button';
 import { useNavigation } from '@react-navigation/native';
@@ -23,9 +19,10 @@ import YoutubeIcon from '../../../assets/icons/youtube.png';
 import styles from './style';
 import { RouteNames } from '../../../navigation/routeNames';
 import Container from '../../../components/Container';
+import Input from '../../../components/Input';
 
 const SignIn = () => {
-  const navigation = useNavigation<RouteStack>(); // Navigation hook
+  const navigation = useNavigation<RouteStack>();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
@@ -55,37 +52,27 @@ const SignIn = () => {
         <Image source={LOGO} style={styles.logo} resizeMode="contain" />
         <Text style={styles.title}>Sign In</Text>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Phone number</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="phone-pad"
-            value={phone}
-            onChangeText={setPhone}
-            maxLength={15}
-            placeholder="000-000"
-            placeholderTextColor="#999"
-          />
-        </View>
+        <Input
+          label="Phone Number"
+          keyboardType="phone-pad"
+          value={phone}
+          onChangeText={setPhone}
+          maxLength={15}
+          placeholder="000-000"
+        />
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Type here..."
-            placeholderTextColor="#999"
-          />
-        </View>
+        <Input
+          label="Password"
+          secureText={true}
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Type here..."
+        />
 
-        {/* Forgot Password Button */}
         <TouchableOpacity onPress={handleForgotPassword}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        {/* Sign In Button */}
         <Button title="Sign In" onPress={handleSignIn} />
 
         <View style={styles.iconContainer}>

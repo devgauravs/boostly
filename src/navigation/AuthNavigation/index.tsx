@@ -5,6 +5,7 @@ import ForgotPassword from '../../screens/Authscreens/ForgotPassword/ForgotPassw
 import OtpVerification from '../../screens/Authscreens/OtpVerification/OtpVerification';
 import { RouteNames } from '../routeNames';
 import EmailVerification from '../../screens/Authscreens/EmailVerification/EmailVerification';
+import ResetPassword from '../../screens/Authscreens/ResetPassword/ResetPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ export function AuthNavigator() {
         name={RouteNames.EmailVerification}
         component={EmailVerification}
       />
+      <Stack.Screen name={RouteNames.ResetPassword} component={ResetPassword} />
     </Stack.Navigator>
   );
 }

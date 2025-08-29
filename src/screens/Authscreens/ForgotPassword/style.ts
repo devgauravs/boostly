@@ -1,71 +1,42 @@
-import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+import { StyleSheet } from 'react-native';
+export default StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
   },
   scrollContainer: {
     padding: 24,
-    paddingBottom: 40,
     flexGrow: 1,
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    marginBottom: 50,
-    textAlign: 'left',
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 6,
-    color: '#333',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: 'rgba(88, 52, 250, 1)',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#000',
-    borderRadius: 10,
-  },
-  backToSignIn: {
-    textAlign: 'center',
-    fontSize: 13,
-    marginTop: 20,
-    color: '#01060aff',
-  },
-  dot: {
-    color: '#8260fdff',
-  },
   logo: {
-    width: 250,
-    height: 150,
+    width: 120,
+    height: 120,
     alignSelf: 'center',
-    marginTop: -70,
-    marginBottom: 30, // Increased space between logo and form
+    marginBottom: 24,
   },
-
- footer: {
-    position: 'absolute',
-    bottom: -190,
-    left: 0,
-    right: 0,
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: 24,
+  },
+  
+  dot: {
+    marginHorizontal: 5,
+    color: '#007AFF',
+    fontSize: 16,
+  },
+  footer: {
     alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingVertical: 6,
+    marginTop: 32,
   },
   footerText: {
-    color: '#8260fdff',
-    fontSize: 13,
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+  },
+});
 
-
-}});
-
-export default styles;

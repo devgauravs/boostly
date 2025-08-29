@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Alert,
   ScrollView,
@@ -10,7 +9,8 @@ import {
   Image,
 } from 'react-native';
 import Button from '../../../components/Button';
-import styles from './style'; // Correct path to style.ts
+import styles from './style';
+import Input from '../../../components/Input';
 
 const ForgotPassword = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -22,8 +22,6 @@ const ForgotPassword = ({ navigation }: any) => {
     }
 
     Alert.alert('Success', `A password reset link has been sent to ${email}`);
-
-    // Navigate to EmailVerification screen
     navigation.navigate('EmailVerification');
   };
 
@@ -40,28 +38,17 @@ const ForgotPassword = ({ navigation }: any) => {
         />
         <Text style={styles.title}>Forgot Password</Text>
 
-        {/* Email Input */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email ID</Text>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            placeholder="Enter your Email id"
-            placeholderTextColor="#999"
-          />
-        </View>
+        {/*  Custom Input for Email */}
+        <Input
+          label="Email ID"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          placeholder="Enter your Email id"
+        />
 
-        {/* Submit Button */}
+        {/*  Submit Button */}
         <Button title="Submit" onPress={handleForgotPassword} />
-
-        {/* Back to Sign In */}
-        <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-          <Text style={styles.backToSignIn}>
-            Back to <Text style={styles.dot}>Sign In</Text>
-          </Text>
-        </TouchableOpacity>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>

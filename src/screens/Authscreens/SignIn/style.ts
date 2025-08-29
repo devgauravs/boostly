@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: '700',
-    marginBottom: 50, // Reduced the bottom margin to move logo up
+    marginBottom: 50, 
     textAlign: 'left',
   },
   inputGroup: {
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
-    borderWidth: 1,
-    borderColor: 'rgba(88, 52, 250, 1)',
+    borderWidth: 2,
+    borderColor: 'rgba(90, 56, 240, 1)',
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
