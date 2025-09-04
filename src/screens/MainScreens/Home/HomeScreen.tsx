@@ -43,21 +43,6 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerItem}>
-          <Text style={[styles.footerText, styles.active]}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          <Text style={styles.footerText}>Reward</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          <Text style={styles.footerText}>Notifications</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          <Text style={styles.footerText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

@@ -20,23 +20,27 @@ import styles from './style';
 import { RouteNames } from '../../../navigation/routeNames';
 import Container from '../../../components/Container';
 import Input from '../../../components/Input';
+import Storage, { StorageKeys } from '../../../utils/storage';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = () => {
-    if (!phone) {
-      Alert.alert('Please enter your phone number');
-      return;
-    }
-    if (!password) {
-      Alert.alert('Please enter your password');
-      return;
-    }
+  const token = 'user_token@123';
 
-    navigation.navigate(RouteNames.OtpVerification as any);
+  const handleSignIn = () => {
+    // if (!phone) {
+    //   Alert.alert('Please enter your phone number');
+    //   return;
+    // }
+    // if (!password) {
+    //   Alert.alert('Please enter your password');
+    //   return;
+    // }
+
+    // navigation.navigate(RouteNames.OtpVerification as any);
+    Storage.setItem(StorageKeys.USER_TOKEN, token);
   };
 
   const handleForgotPassword = () => {

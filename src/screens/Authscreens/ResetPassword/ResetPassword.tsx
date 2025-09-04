@@ -30,7 +30,6 @@ const ResetPassword = () => {
       return;
     }
 
-    // Handle reset password logic here
     Alert.alert('Password Reset Successful!');
   };
 
@@ -43,8 +42,6 @@ const ResetPassword = () => {
           resizeMode="contain"
         />
         <Text style={styles.title}>Reset Password</Text>
-
-        <Text style={styles.subTitle}>Create a new password</Text>
 
         <Input
           label="New Password"
@@ -63,8 +60,6 @@ const ResetPassword = () => {
         />
 
         <Button title="Reset Password" onPress={handleResetPassword} />
-
-        {/* Removed the social media login icons section */}
       </ScrollView>
     </Container>
   );

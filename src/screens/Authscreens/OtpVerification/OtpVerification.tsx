@@ -12,13 +12,12 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RouteStack } from '../../../navigation/types'; // Adjust according to your project structure
+import { RouteStack } from '../../../navigation/types';
 import styles from './style';
 
 const OtpVerification = () => {
-  const navigation = useNavigation<RouteStack>(); // Navigation hook
-  const [otp, setOtp] = useState(['', '', '', '']); // State to store OTP inputs
-
+  const navigation = useNavigation<RouteStack>();
+  const [otp, setOtp] = useState(['', '', '', '']);
   const handleOtpChange = (text: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = text;
@@ -31,7 +30,6 @@ const OtpVerification = () => {
       return;
     }
     Alert.alert('OTP Submitted', `OTP: ${otp.join('')}`);
-    // Navigation to next screen after successful OTP verification
   };
 
   const handleResendOtp = () => {
