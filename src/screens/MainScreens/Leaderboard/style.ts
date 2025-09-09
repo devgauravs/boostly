@@ -1,10 +1,14 @@
 import { StyleSheet } from "react-native";
+import { fontScale } from "../../../utils/scale";
+import { Fonts } from "../../../utils/Fonts";
+import Colors from "../../../utils/color";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     
   },
+
   header: {
     marginTop: 40,
     alignItems: "center",
