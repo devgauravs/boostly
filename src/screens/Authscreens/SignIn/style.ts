@@ -1,4 +1,7 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../../utils/color';
+import { fontScale, horizontalScale, verticalScale } from '../../../utils/scale';
+import { Fonts } from '../../../utils/Fonts';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -12,9 +15,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
-    marginBottom: 50, 
+    fontSize: fontScale(32),
+    fontFamily:Fonts.SemiBold,
+    marginBottom: verticalScale(20), 
     textAlign: 'left',
   },
   inputGroup: {
@@ -87,6 +90,12 @@ const styles = StyleSheet.create({
     height: 60, 
     resizeMode: 'contain', 
   },
+  button:{
+    borderRadius:2,
+    backgroundColor:Colors.purple,
+    width:"100%",
+    height:verticalScale(35)
+  }
 });
 
 export default styles;

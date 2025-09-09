@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient'; //  for background gradient
+import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 import InstagramIcon from '../../../assets/icons/gifticon.png';
 interface Task {
@@ -92,24 +92,29 @@ const RewardScreen: React.FC = () => {
     ]);
   }, []);
 
-  // Render Task Card
   const renderTask = ({ item }: { item: Task }) => (
     <View style={styles.taskCard}>
-      <Text style={styles.taskHeader}>Quick Win</Text>{' '}
-      {/* Add header as in image */}
-      <Text style={styles.taskTitle}>{item.title}</Text>
-      <Image source={{ uri: item.image }} style={styles.taskImage} />
-      <View style={styles.pointBox}>
-        <Text style={styles.star}>⭐</Text>
-        <Text style={styles.taskPoints}>{item.points}</Text>
+      <Text style={styles.taskHeader}>Quick Win</Text>
+
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.taskTitle}>{item.title}</Text>
+
+          <View style={styles.pointBox}>
+            <Text style={styles.star}>⭐</Text>
+            <Text style={styles.taskPoints}>{item.points}</Text>
+          </View>
+
+          <TouchableOpacity style={styles.startButton}>
+            <Text style={styles.startText}>Start</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Image source={{ uri: item.image }} style={styles.taskImage} />
       </View>
-      <TouchableOpacity style={styles.startButton}>
-        <Text style={styles.startText}>Start</Text>
-      </TouchableOpacity>
     </View>
   );
 
-  //  Render Reward Card
   const renderReward = ({ item }: { item: Reward }) => (
     <View style={styles.rewardCard}>
       <Image source={InstagramIcon} style={styles.rewardImage} />{' '}
@@ -137,7 +142,7 @@ const RewardScreen: React.FC = () => {
       </View>
 
       <LinearGradient
-        colors={['#163A97', '#4364F7']}
+        colors={['#163A97', '#4c68e2ff']}
         style={styles.gradientContainer}
       >
         {/* Tasks Section */}
@@ -166,6 +171,7 @@ const RewardScreen: React.FC = () => {
           columnWrapperStyle={{
             justifyContent: 'space-between',
             paddingHorizontal: 10,
+            paddingBottom: 30,
           }}
           scrollEnabled={false}
         />

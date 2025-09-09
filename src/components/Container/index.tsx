@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import React, { FC, ReactElement } from 'react';
-import { colors } from '../../config/colors';
+
 
 interface ContainerProp {
   children: ReactElement;
@@ -30,6 +30,6 @@ export default Container;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: "#fff",
   },
 });

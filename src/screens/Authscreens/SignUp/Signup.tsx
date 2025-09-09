@@ -5,18 +5,16 @@ import {
   View,
   Text,
   ScrollView,
-  SafeAreaView,
   Image,
   Alert,
-  TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RouteStack } from '../../../navigation/types';
-import { LOGO } from '../../../assets/images';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import styles from './style';
-import { RouteNames } from '../../../navigation/routeNames';
+import { Logo } from '../../../assets/images';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SignUp = () => {
   const navigation = useNavigation<RouteStack>();
@@ -41,7 +39,7 @@ const SignUp = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Image source={LOGO} style={styles.logo} resizeMode="contain" />
+        <Image source={Logo} style={styles.logo} resizeMode="contain" />
         <Text style={styles.title}>Signup</Text>
 
         <Input

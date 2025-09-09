@@ -1,4 +1,4 @@
-// SignIn.tsx
+
 
 import React, { useState } from 'react';
 import {
@@ -12,37 +12,56 @@ import {
 import Button from '../../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { RouteStack } from '../../../navigation/types';
-import { LOGO } from '../../../assets/images';
 import InstagramIcon from '../../../assets/icons/instagram.png';
 import FacebookIcon from '../../../assets/icons/facebook.png';
 import YoutubeIcon from '../../../assets/icons/youtube.png';
 import styles from './style';
-import { RouteNames } from '../../../navigation/routeNames';
 import Container from '../../../components/Container';
 import Input from '../../../components/Input';
 import Storage, { StorageKeys } from '../../../utils/storage';
+import { LoginManager, AccessToken } from "react-native-fbsdk-next";
+import { setToken } from '../../../redux/AuthSlice';
+import { useDispatch } from 'react-redux';
+import { Logo } from '../../../assets/images';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-
+  const dispatch = useDispatch();
   const token = 'user_token@123';
 
   const handleSignIn = () => {
-    // if (!phone) {
-    //   Alert.alert('Please enter your phone number');
-    //   return;
-    // }
-    // if (!password) {
-    //   Alert.alert('Please enter your password');
-    //   return;
-    // }
-
-    // navigation.navigate(RouteNames.OtpVerification as any);
     Storage.setItem(StorageKeys.USER_TOKEN, token);
   };
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions([
+        "public_profile",
+        "email",
+        "pages_show_list",
+        "pages_read_engagement",
+        "pages_manage_posts",
+        "pages_read_user_content"
+      ]);
 
+      if (result.isCancelled) {
+        Alert.alert("Login cancelled by user");
+        return;
+      }
+
+      const data = await AccessToken.getCurrentAccessToken();
+      if (!data) {
+        Alert.alert("Error", "Unable to get Facebook access token");
+        return;
+      }
+
+      dispatch(setToken(data.accessToken.toString()));
+      Alert.alert("✅ Facebook Login Success", data.accessToken.toString());
+    } catch (error: any) {
+      Alert.alert("❌ Facebook Login Error", error?.message || String(error));
+    }
+  };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
   };
@@ -53,7 +72,7 @@ const SignIn = () => {
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <Image source={LOGO} style={styles.logo} resizeMode="contain" />
+        <Image source={Logo} style={styles.logo} resizeMode="contain" />
         <Text style={styles.title}>Sign In</Text>
 
         <Input
@@ -77,11 +96,13 @@ const SignIn = () => {
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        <Button title="Sign In" onPress={handleSignIn} />
+        <Button title="Sign In" onPress={handleSignIn} style={styles.button} />
 
         <View style={styles.iconContainer}>
           <Image source={InstagramIcon} style={styles.icon} />
-          <Image source={FacebookIcon} style={styles.icon} />
+       <TouchableOpacity onPress={handleFacebookLogin}>
+       <Image source={FacebookIcon} style={styles.icon} />
+       </TouchableOpacity>
           <Image source={YoutubeIcon} style={styles.icon} />
         </View>
 

@@ -4,12 +4,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
+    paddingBottom: 80, 
   },
   header: {
     textAlign: "center",
-    fontSize: 20,  // Increased font size for header
+    fontSize: 20,
     fontWeight: "bold",
     marginVertical: 15,
+    fontFamily: "Poppins-SemiBold",
   },
   pointsContainer: {
     flexDirection: "row",
@@ -22,19 +24,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   giftIcon: {
-    width: 40,  // Increased width for better visibility
-    height: 40,  // Increased height for better visibility
+    width: 40,
+    height: 40,
     resizeMode: "contain",
   },
   pointsText: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 18,  // Adjusted font size for better visibility
+    fontSize: 18,
     fontWeight: "bold",
     color: "#2E44FF",
+    fontFamily: "Poppins-SemiBold",
   },
   arrow: {
-    fontSize: 22,  // Increased font size for better visibility
+    fontSize: 22,
     color: "#2E44FF",
   },
 
@@ -46,55 +49,56 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
-  
   sectionHeader: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     marginTop: 10,
   },
   sectionTitle: {
-    fontSize: 14,  
+    fontSize: 14,
     fontWeight: "bold",
     color: "#fff",
     textAlign: "center",
+    fontFamily: "Poppins-SemiBold",
   },
   sectionSubtitle: {
-    fontSize: 18, 
+    fontSize: 18,
     color: "#fff",
     textAlign: "center",
+    fontFamily: "Poppins-SemiBold",
   },
-
-  // ✅ Task Card
- taskCard: {
-  backgroundColor: "#fff",
-  borderRadius: 12,
-  margin: 10,
-  marginVertical: 20,
-  paddingVertical: 14,
-  paddingHorizontal: 16,
-  alignItems: "center",
-  width: 160, 
-  shadowColor: "#000",
-  shadowOpacity: 0.1,
-  shadowOffset: { width: 0, height: 2 },
-  shadowRadius: 6,  // Slightly bigger shadow radius for subtle depth
-  elevation: 4, 
-  overflow: "visible",    
-},
-
-  taskImage: {
-    width: 80,  // Increased task image size
-    height: 60,  // Increased task image size
-    resizeMode: "contain",
+  taskCard: {
+    width: 260,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 14,
+    marginRight: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 4,
+    
+  },
+  taskHeader: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#000",
+    alignSelf: "flex-start",
+    marginBottom: 6,
+    fontFamily: "Poppins-Medium",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#1877F2", 
-    alignSelf: "flex-start",
+    fontWeight: "700",
+    color: "#1877F2",
     marginBottom: 6,
+    fontFamily: "Poppins-SemiBold",
   },
-  
   pointBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -103,77 +107,77 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 4,
     paddingHorizontal: 10,
-    marginVertical: 4,
+    marginBottom: 8,
     backgroundColor: "#fff",
+    alignSelf: "flex-start",
+  },
+  star: {
+    fontSize: 16,
+    marginRight: 6,
   },
   taskPoints: {
-    fontSize: 14, 
+    fontSize: 14,
     fontWeight: "bold",
     color: "#2E44FF",
+    fontFamily: "Poppins-SemiBold",
   },
   startButton: {
-    marginTop: 8,
     backgroundColor: "#2E44FF",
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 6,
+    alignSelf: "flex-start",
   },
   startText: {
     color: "#fff",
     fontWeight: "bold",
-  
+    fontSize: 14,
+    fontFamily: "Poppins-SemiBold",
+  },
+  taskImage: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+    marginLeft: 10,
   },
 
-  
   rewardCard: {
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: 10,  
-    marginVertical: 12,
+    padding: 10,
+    marginVertical: 16,
     alignItems: "center",
-    width: "32%",  
+    width: "32%",
     shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.25,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 6,
+    elevation: 6,
+    transform: [{ translateY: -6 }],
   },
-
   rewardImage: {
-    width: 50,  // Increased reward image size
-    height: 50,  // Increased reward image size
+    width: 50,
+    height: 50,
     resizeMode: "contain",
-    marginTop: -35,
   },
   rewardTitle: {
     marginVertical: 10,
-    fontSize: 16,  // Increased font size for reward title
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#1935d6ff",
+    color: "#24aae9ff",
+    fontFamily: "Poppins-SemiBold",
   },
   rewardFooter: {
     marginTop: 8,
     alignItems: "center",
   },
-  star: {
-    fontSize: 16,  // Increased font size for the star
-    marginRight: 6,
-  },
   rewardPoints: {
-    fontSize: 16,  // Increased font size for reward points
+    fontSize: 16,
     fontWeight: "bold",
     color: "#2E44FF",
+    fontFamily: "Poppins-SemiBold",
   },
-
-  taskHeader: {
-  fontSize: 12,
-  fontWeight: "600",
-  color: "#000",
-  alignSelf: "flex-start",
-  marginBottom: 4,
-},
-
 });
 
 export default styles;

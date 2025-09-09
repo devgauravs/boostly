@@ -1,23 +1,23 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { AuthNavigator } from './AuthNavigation';
-import { BottomTabNavigator } from './BottomTabNavigator/index';
-import Storage, { StorageKeys } from '../utils/storage';
+// src/navigation/RootNavigator.tsx
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
+import { BottomTabNavigator } from './BottomTabNavigator';
+import { AuthNavigator } from './AuthNavigation/index';
 
-export const RootNavigator = () => {
-  const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const storedToken = await Storage.getItem(StorageKeys.USER_TOKEN);
-        setToken(storedToken);
-      } catch (e) {
-        console.error('Failed to load token', e);
-      }
-    };
 
-    fetchToken();
-  }, []);
-  return <>{!token ? <AuthNavigator /> : <BottomTabNavigator />}</>;
+const RootNavigator: React.FC = () => {
+  // This selector will work because RootNavigator is rendered inside Provider
+  const token = useSelector((state: RootState) => state.auth.token);
+
+  // you can also check for loading/rehydrated state here if using redux-persist
+  return token ? <BottomTabNavigator /> : <AuthNavigator />;
+  // return(
+  //   <>
+  //   <BottomTabNavigator/>
+  //   </>
+  // )
 };
+
+export default RootNavigator;

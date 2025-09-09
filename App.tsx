@@ -1,12 +1,18 @@
+// App.tsx
 import React from 'react';
+import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
-import { RootNavigator } from './src/navigation';
+
+import RootNavigator from './src/navigation';
+import { store } from './src/redux/store';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 };
 

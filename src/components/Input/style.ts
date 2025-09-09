@@ -1,14 +1,17 @@
 import { StyleSheet } from 'react-native';
+import { fontScale, verticalScale } from '../../utils/scale';
+import Colors from '../../utils/color';
+import { Fonts } from '../../utils/Fonts';
 
 export default StyleSheet.create({
   container: {
     marginBottom: 20,
   },
   label: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: '#333',
-    fontFamily : "Poppins-Regular"
+    fontSize: fontScale(16),
+    marginBottom: verticalScale(8),
+    color: Colors.primaryBlack,
+    fontFamily : Fonts.Medium
   },
   inputWrapper: {           
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,31 +6,101 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 import styles from './style';
+import { LoginManager } from 'react-native-fbsdk-next';
+import Storage, { StorageKeys } from '../../../utils/storage';
+import { clearToken } from '../../../redux/AuthSlice';
+import { useDispatch } from 'react-redux';
+import { ProfileIcon } from '../../../assets/images';
 
-// Placeholder for user's data (this could come from an API or Redux state)
 const ProfileScreen: React.FC = () => {
   const [name, setName] = useState('Nexa');
   const [email, setEmail] = useState('nexa@example.com');
   const [phone, setPhone] = useState('+1 555-4352');
-
+  const [image, setImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const handleSave = () => {
-    // Handle the logic for saving the data
-    console.log('Data saved:', { name, email, phone });
+    console.log('Saved Data:', { name, email, phone, image });
   };
+
+  const performLogout = async () => {
+    setLoading(true);
+    try {
+      try {
+        LoginManager.logOut();
+      } catch (e) {
+        /* ignore */
+      }
+      await Storage.removeItem(StorageKeys.USER_TOKEN);
+      dispatch(clearToken());
+    } catch (err: any) {
+      Alert.alert('Logout failed', err?.message || String(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+  const confirmLogout = () => {
+    Alert.alert(
+      'Confirm Logout',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Log out', style: 'destructive', onPress: performLogout },
+      ],
+      { cancelable: true },
+    );
+  };
+  const pickImage = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+        quality: 1,
+      },
+      response => {
+        if (!response.didCancel && !response.errorCode) {
+          const uri = response.assets?.[0]?.uri;
+          if (uri) {
+            setImage(uri);
+          }
+        }
+      },
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#2E44FF" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Profile Image */}
-      <View style={styles.profileImageContainer}>
-        <Image
-          source={require('../../../assets/images/Profile.png')} // Your profile image
-          style={styles.profileImage}
-        />
-      </View>
+      <Text style={styles.topHeading}>Profile</Text>
 
-      {/* Profile Fields */}
+      <View style={styles.profileImageContainer}>
+        <TouchableOpacity onPress={pickImage}>
+          <Image
+            source={image ? { uri: image } : ProfileIcon}
+            style={styles.profileImage}
+          />
+          <View style={styles.editIcon}>
+            <Image
+              source={require('../../../assets/icons/edit.png')}
+              style={styles.editIconImage}
+            />
+          </View>
+        </TouchableOpacity>
+
+        <Text style={styles.profileName}>{name}</Text>
+      </View>
       <View style={styles.formContainer}>
         <Text style={styles.sectionTitle}>Name</Text>
         <TextInput style={styles.input} value={name} onChangeText={setName} />
@@ -40,6 +110,14 @@ const ProfileScreen: React.FC = () => {
 
         <Text style={styles.sectionTitle}>Phone Number</Text>
         <TextInput style={styles.input} value={phone} onChangeText={setPhone} />
+
+        <TouchableOpacity
+          onPress={confirmLogout}
+          disabled={loading}
+          style={{ padding: 8 }}
+        >
+          {loading ? <ActivityIndicator /> : <Text>Log Out</Text>}
+        </TouchableOpacity>
       </View>
 
       {/* Save Button */}

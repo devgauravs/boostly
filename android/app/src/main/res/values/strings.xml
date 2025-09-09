@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BoostlyApp</string>
+    <string name="facebook_app_id">1313530670259714</string>
+       <string name="facebook_client_token">b5afe909fee33c821d4b967699cb8e74</string>
+       <string name="fb_login_protocol_scheme">fb1313530670259714</string>
 </resources>
  

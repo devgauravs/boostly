@@ -1,85 +1,75 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
+import { fontScale, horizontalScale, verticalScale } from "../../../utils/scale";
+import { Fonts } from "../../../utils/Fonts";
+import Colors from "../../../utils/color";
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: verticalScale(50),
   },
   starContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
+    alignItems: "center",
   },
-  star: {
-    fontSize: 72,
-    color: '#f7b733',
+  starImage: {
+    width: horizontalScale(189),
+    height: verticalScale(189),
+    resizeMode: "contain",
   },
   title: {
-    fontWeight: '700',
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 4,
+    fontFamily: Fonts.SemiBold,
+    fontSize: fontScale(27),
+    textAlign: "center",
+    marginBottom: verticalScale(5),
+    color: Colors.primaryBlack
   },
   points: {
-    fontWeight: '700',
-    fontSize: 20,
-    color: '#f7b733',
-    textAlign: 'center',
-    marginBottom: 36,
+    fontFamily: Fonts.Bold,
+    fontSize: fontScale(32),
+    color: Colors.lightyellow,
+    textAlign: "center",
+    marginBottom: verticalScale(30),
   },
   rewardSection: {
     paddingHorizontal: 12,
   },
   rewardTitle: {
-    fontWeight: '600',
-    fontSize: 14,
-    marginBottom: 20,
+    fontFamily: Fonts.SemiBold,
+    fontSize: fontScale(18),
+    marginBottom: verticalScale(10),
+
   },
   rewardRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   icon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-    marginRight: 10,
+    width: horizontalScale(25),
+    height: verticalScale(25),
+    resizeMode: "contain",
+    marginRight: horizontalScale(10),
   },
   rewardText: {
+    fontFamily: Fonts.SemiBold,
     flex: 1,
-    fontSize: 14,
+    fontSize: fontScale(15),
+    color: Colors.primaryBlack
   },
   pointsBtn: {
-    backgroundColor: '#e6f2ff',
-    borderRadius: 4,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    borderColor: Colors.primaryBlue,
+    borderWidth: 1,
+    borderRadius: 2,
+    paddingVertical: verticalScale(4),
+    paddingHorizontal: horizontalScale(16),
   },
   pointsBtnText: {
-    color: '#3388ff',
-    fontWeight: '600',
-    fontSize: 12,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 18,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-    marginTop: 'auto',
-  },
-  footerItem: {
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#444',
-  },
-  active: {
-    color: '#3388ff',
-    fontWeight: '700',
+    fontFamily: Fonts.SemiBold,
+    color: Colors.primaryBlue,
+    fontSize: fontScale(12),
   },
 });
 
