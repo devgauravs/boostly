@@ -10,6 +10,7 @@ const Colors = {
     primaryGreen:"#039503",
     red:"#FF0000",
     purple:"#6C63FF",
+    darkblue:"#163A97"
   };
   
   export default Colors;

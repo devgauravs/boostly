@@ -141,7 +141,7 @@ const Notification = () => {
             <View style={styles.socialContainer}>
               <TouchableOpacity
                 style={styles.socialButton}
-                onPress={() => selectedPost && shareToFacebook(selectedPost, fbToken)}
+                onPress={() => selectedPost && shareToFacebook(selectedPost, fbToken,)}
               >
                 <Image source={facebook} style={styles.socialIcon} />
               </TouchableOpacity>

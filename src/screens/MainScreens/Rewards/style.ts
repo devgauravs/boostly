@@ -1,4 +1,7 @@
 import { StyleSheet } from "react-native";
+import { fontScale, horizontalScale, verticalScale } from "../../../utils/scale";
+import { Fonts } from "../../../utils/Fonts";
+import Colors from "../../../utils/color";
 
 const styles = StyleSheet.create({
   container: {
@@ -8,20 +11,20 @@ const styles = StyleSheet.create({
   },
   header: {
     textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: fontScale(16),
     marginVertical: 15,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: Fonts.Bold,
+    color:Colors.primaryBlack
   },
   pointsContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#2E44FF",
-    borderRadius: 10,
-    padding: 12,
-    marginHorizontal: 16,
-    backgroundColor: "#fff",
+    borderColor: Colors.darkblue,
+    borderRadius: 5,
+    padding: 10,
+    marginHorizontal: horizontalScale(15),
+    backgroundColor: Colors.background,
   },
   giftIcon: {
     width: 40,
@@ -30,11 +33,10 @@ const styles = StyleSheet.create({
   },
   pointsText: {
     flex: 1,
-    marginLeft: 10,
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2E44FF",
-    fontFamily: "Poppins-SemiBold",
+    marginLeft: horizontalScale(10),
+    fontSize: fontScale(16),
+    color: Colors.darkblue,
+    fontFamily: Fonts.Bold,
   },
   arrow: {
     fontSize: 22,
@@ -50,100 +52,85 @@ const styles = StyleSheet.create({
   },
 
   sectionHeader: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    marginTop: 10,
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: horizontalScale(15),
+    marginTop: verticalScale(10),
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-    fontFamily: "Poppins-SemiBold",
+    fontSize: fontScale(17),
+    color: Colors.background,
+    fontFamily: Fonts.Bold,
   },
   sectionSubtitle: {
-    fontSize: 18,
-    color: "#fff",
+    fontSize: fontScale(16),
+    color: Colors.background,
     textAlign: "center",
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: Fonts.Bold,
   },
   taskCard: {
-    width: 260,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-    marginRight: 12,
+    width: horizontalScale(200),
+    backgroundColor: Colors.background,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: horizontalScale(10),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 4,
     
+    
   },
   taskHeader: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#000",
+    fontSize: fontScale(10),
+    color: Colors.primaryBlack,
     alignSelf: "flex-start",
-    marginBottom: 6,
-    fontFamily: "Poppins-Medium",
+    fontFamily: Fonts.SemiBold,
   },
   row: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "center",  
   },
   taskTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#1877F2",
-    marginBottom: 6,
-    fontFamily: "Poppins-SemiBold",
+    fontSize: fontScale(15),
+    color: Colors.darkblue,
+    fontFamily: Fonts.SemiBold,
   },
   pointBox: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    marginBottom: 8,
-    backgroundColor: "#fff",
     alignSelf: "flex-start",
-  },
-  star: {
-    fontSize: 16,
-    marginRight: 6,
+    justifyContent:"center"
   },
   taskPoints: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#2E44FF",
-    fontFamily: "Poppins-SemiBold",
+    fontSize: fontScale(15),
+    color: Colors.darkblue,
+    fontFamily: Fonts.Bold,
   },
   startButton: {
-    backgroundColor: "#2E44FF",
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 6,
+    marginTop: verticalScale(10),
+    paddingHorizontal: horizontalScale(20),
+    borderRadius: 4,
     alignSelf: "flex-start",
+    borderWidth:1,
+    borderColor:Colors.darkblue,
+    paddingVertical:verticalScale(2)
   },
   startText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    color: Colors.darkblue,
+    fontSize: fontScale(12),
+    fontFamily: Fonts.SemiBold,
+    borderRadius:4
   },
   taskImage: {
-    width: 80,
-    height: 80,
-    resizeMode: "contain",
-    marginLeft: 10,
+    width: horizontalScale(90),
+    height: verticalScale(90),
+
   },
 
   rewardCard: {
     backgroundColor: "#fff",
-    borderRadius: 12,
+    borderRadius: 5,
     padding: 10,
     marginVertical: 16,
     alignItems: "center",
@@ -154,29 +141,38 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
     transform: [{ translateY: -6 }],
+    paddingTop:verticalScale(50),
+    marginTop:verticalScale(20)
   },
   rewardImage: {
-    width: 50,
-    height: 50,
+    width: horizontalScale(100),
+    height: verticalScale(100),
     resizeMode: "contain",
+    position:"absolute",
+    top:-50,
+    
   },
   rewardTitle: {
-    marginVertical: 10,
-    fontSize: 16,
-    fontWeight: "bold",
+    marginVertical: verticalScale(5),
+    fontSize: fontScale(15),
     textAlign: "center",
-    color: "#24aae9ff",
-    fontFamily: "Poppins-SemiBold",
+    color: Colors.darkblue,
+    fontFamily: Fonts.SemiBold,
   },
   rewardFooter: {
-    marginTop: 8,
+    marginTop: verticalScale(8),
     alignItems: "center",
+    borderWidth:1,
+    borderColor:Colors.darkblue,
+    paddingHorizontal:verticalScale(8),
+    paddingVertical:verticalScale(1),
+    borderRadius:4
   },
   rewardPoints: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#2E44FF",
-    fontFamily: "Poppins-SemiBold",
+    fontSize: fontScale(15),
+    color: Colors.darkblue,
+    fontFamily: Fonts.SemiBold,
+    marginLeft:horizontalScale(2)
   },
 });
 
