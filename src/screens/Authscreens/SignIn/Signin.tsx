@@ -1,27 +1,19 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  Image,
-  ScrollView,
-} from 'react-native';
-import Button from '../../../components/Button';
 import { useNavigation } from '@react-navigation/native';
-import { RouteStack } from '../../../navigation/types';
-import InstagramIcon from '../../../assets/icons/instagram.png';
-import FacebookIcon from '../../../assets/icons/facebook.png';
-import YoutubeIcon from '../../../assets/icons/youtube.png';
-import styles from './style';
-import Container from '../../../components/Container';
-import Input from '../../../components/Input';
-import Storage, { StorageKeys } from '../../../utils/storage';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
-import { setToken } from '../../../redux/AuthSlice';
+import React, { useState } from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
+import FacebookIcon from '../../../assets/icons/facebook.png';
+import InstagramIcon from '../../../assets/icons/instagram.png';
+import YoutubeIcon from '../../../assets/icons/youtube.png';
 import { Logo } from '../../../assets/images';
+import Button from '../../../components/Button';
+import Container from '../../../components/Container';
 import CountryPicker from '../../../components/CountryPicker';
+import Input from '../../../components/Input';
+import { RouteStack } from '../../../navigation/types';
+import { facebookLogin } from '../../../utils/AuthHelper';
+import Storage, { StorageKeys } from '../../../utils/storage';
+import styles from './style';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
@@ -33,33 +25,9 @@ const SignIn = () => {
   const handleSignIn = () => {
     Storage.setItem(StorageKeys.USER_TOKEN, token);
   };
-  const handleFacebookLogin = async () => {
-    try {
-      const result = await LoginManager.logInWithPermissions([
-        'public_profile',
-        'email',
-        'pages_show_list',
-        'pages_read_engagement',
-        'pages_manage_posts',
-        'pages_read_user_content',
-      ]);
 
-      if (result.isCancelled) {
-        Alert.alert('Login cancelled by user');
-        return;
-      }
-
-      const data = await AccessToken.getCurrentAccessToken();
-      if (!data) {
-        Alert.alert('Error', 'Unable to get Facebook access token');
-        return;
-      }
-
-      dispatch(setToken(data.accessToken.toString()));
-      Alert.alert('✅ Facebook Login Success', data.accessToken.toString());
-    } catch (error: any) {
-      Alert.alert('❌ Facebook Login Error', error?.message || String(error));
-    }
+  const handleFacebookLogin = () => {
+    facebookLogin(dispatch);
   };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');

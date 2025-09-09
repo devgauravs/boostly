@@ -15,9 +15,12 @@ import NotificationIcon from '../../assets/icons/notification.png';
 import Colors from '../../utils/color';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import Notification from '../../screens/MainScreens/Notification/Notification';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import leaderBoard from '../../screens/MainScreens/LeaderBoard.tsx/leaderBoard';
+import { RewardsStack } from '../RewardsStack';
 
 const Tab = createBottomTabNavigator();
-
+const Stack = createNativeStackNavigator();
 export function BottomTabNavigator() {
   return (
     <Tab.Navigator
@@ -83,11 +86,8 @@ export function BottomTabNavigator() {
         component={HomeScreen}
         options={{ title: 'Home' }}
       />
-      <Tab.Screen
-        name="Rewards"
-        component={RewardScreen}
-        options={{ title: 'Reward' }}
-      />
+       <Tab.Screen name="Rewards" component={RewardsStack} options={{ title: 'Reward' }} />
+
       <Tab.Screen
         name="Notifications"
         component={Notification}

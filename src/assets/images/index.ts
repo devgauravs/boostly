@@ -6,6 +6,10 @@ import instagram from "../icons/instagram.png"
 import facebook from "../icons/facebook.png"
 import youtube from "../icons/youtube.png"
 import closeIcon from "../icons/close.png"
+import rightArrow from "../icons/rightArrow.png"
+import star from "../icons/star.png"
+import gift from "../images/gift.png"
+import leftArrow from '../icons/leftArrow.png'
 
 export {
     postImage,
@@ -14,5 +18,9 @@ export {
     instagram,
     facebook,
     youtube,
-    closeIcon
+    closeIcon,
+    rightArrow,
+    star,
+    gift,
+    leftArrow
 };

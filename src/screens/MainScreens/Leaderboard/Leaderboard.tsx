@@ -9,6 +9,11 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { leftArrow } from '../../../assets/images';
+import { horizontalScale, verticalScale } from '../../../utils/scale';
+import BackButton from '../../../components/BackButton';
+import Colors from '../../../utils/color';
 
 interface Leader {
   id: string;
@@ -20,6 +25,13 @@ interface Leader {
 export default function Leaderboard() {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [activeTab, setActiveTab] = useState('30 Days');
+  const [selected, setSelected] = useState<'7days' | '30days' | 'alltime'>('7days');
+
+  const tabs = [
+    { key: '7days', label: '7 Days' },
+    { key: '30days', label: '30 Days' },
+    { key: 'alltime', label: 'All Time' },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,64 +63,28 @@ export default function Leaderboard() {
   );
 
   return (
-    <LinearGradient colors={['#3C79F5', '#004AAD']} style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Leader Board</Text>
-      </View>
-
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        {['7 Days', '30 Days', 'All Time'].map(tab => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            style={[styles.tab, activeTab === tab && styles.activeTab]}
+    <SafeAreaView>
+      <ScrollView>
+        <BackButton />
+        {tabs.map((tab) => (
+        <TouchableOpacity
+          key={tab.key}
+          onPress={() => setSelected(tab.key as any)}
+          style={styles.tabButton}
+          activeOpacity={0.7}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              selected === tab.key && { color: Colors.primaryBlue, fontWeight: '700' },
+            ]}
           >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === tab && styles.activeTabText,
-              ]}
-            >
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Scrollable Top Chart */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.topChart}
-      >
-        <View style={styles.chartCard}>
-          <Text style={styles.chartText}>Extra View</Text>
-        </View>
-        <View style={styles.chartCard}>
-          <Text style={styles.chartText}>Pixel Named</Text>
-        </View>
-        <View style={styles.chartCard}>
-          <Text style={styles.chartText}>Extra View</Text>
-        </View>
+            {tab.label}
+          </Text>
+          {selected === tab.key && <View style={styles.underline} />}
+        </TouchableOpacity>
+      ))}
       </ScrollView>
-
-      {/* Tiers */}
-      <View style={styles.tiers}>
-        <Text style={styles.tierText}>🥉 Bronze: 70 - 200 points</Text>
-        <Text style={styles.tierText}>🥈 Silver: 201 - 500 points</Text>
-        <Text style={styles.tierText}>🥇 Gold: 501 - 1000 points</Text>
-        <Text style={styles.tierText}>💎 Platinum: 1000+ points</Text>
-      </View>
-
-      {/* Leaderboard List */}
-      <FlatList
-        data={leaders}
-        keyExtractor={item => item.id}
-        renderItem={renderLeader}
-        contentContainerStyle={styles.list}
-      />
-    </LinearGradient>
+    </SafeAreaView>
   );
 }
