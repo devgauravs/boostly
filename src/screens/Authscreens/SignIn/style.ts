@@ -10,9 +10,9 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 24,
-    paddingBottom: 40,
+    paddingBottom: 20,
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: fontScale(32),
@@ -47,25 +47,22 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     alignSelf: 'flex-end',
-    marginTop: 20,
+    marginTop: 50,
   },
   signUpText: {
-    color: '#01060aff',
-    fontSize: 12,
-    fontWeight: '500',
+    color: Colors.primaryBlack,
+    fontSize: fontScale(16),
+    fontFamily: Fonts.SemiBold,
   },
   footer: {
-    position: 'absolute',
-    bottom: 10,
-    left: 0,
-    right: 0,
     alignItems: 'center',
-    backgroundColor: '#fff',
     paddingVertical: 6,
+    marginTop: verticalScale(18),
   },
   footerText: {
-    color: '#8260fdff',
-    fontSize: 13,
+    color: Colors.purple,
+    fontSize: 12,
+    fontFamily: Fonts.Regular,
   },
   dot: {
     marginHorizontal: 6,

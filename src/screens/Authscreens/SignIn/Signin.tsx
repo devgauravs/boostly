@@ -70,56 +70,63 @@ const SignIn = () => {
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Image source={Logo} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.title}>Sign In</Text>
+        <View>
+          <Image source={Logo} style={styles.logo} resizeMode="contain" />
+          <Text style={styles.title}>Sign In</Text>
 
-        <Input
-          suffix={
-            <CountryPicker
-            // onSelectCountry={handleChange("countryCode")}
-            />
-          }
-          label="Phone Number"
-          keyboardType="phone-pad"
-          value={phone}
-          onChangeText={setPhone}
-          maxLength={15}
-          placeholder="000-000"
-        />
-        <View style={{ marginTop: 12 }} />
-        <Input
-          label="Password"
-          secureText={true}
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Type here..."
-        />
+          <Input
+            suffix={
+              <CountryPicker
+              // onSelectCountry={handleChange("countryCode")}
+              />
+            }
+            label="Phone Number"
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
+            maxLength={15}
+            placeholder="000-000"
+          />
+          <View style={{ marginTop: 12 }} />
+          <Input
+            label="Password"
+            secureText={true}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Type here..."
+          />
 
-        <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
-        </TouchableOpacity>
-
-        <Button title="Sign In" onPress={handleSignIn} style={styles.button} />
-
-        <View style={styles.iconContainer}>
-          <Image source={InstagramIcon} style={styles.icon} />
-          <TouchableOpacity onPress={handleFacebookLogin}>
-            <Image source={FacebookIcon} style={styles.icon} />
+          <TouchableOpacity onPress={handleForgotPassword}>
+            <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
-          <Image source={YoutubeIcon} style={styles.icon} />
-        </View>
 
-        <TouchableOpacity
-          style={styles.signUpButton}
-          onPress={() => navigation.navigate('SignUp')}
-        >
-          <Text style={styles.signUpText}>Sign Up</Text>
-        </TouchableOpacity>
+          <Button
+            title="Sign In"
+            onPress={handleSignIn}
+            style={styles.button}
+          />
+
+          <View style={styles.iconContainer}>
+            <Image source={InstagramIcon} style={styles.icon} />
+            <TouchableOpacity onPress={handleFacebookLogin}>
+              <Image source={FacebookIcon} style={styles.icon} />
+            </TouchableOpacity>
+            <Image source={YoutubeIcon} style={styles.icon} />
+          </View>
+
+          <TouchableOpacity
+            style={styles.signUpButton}
+            onPress={() => navigation.navigate('SignUp')}
+          >
+            <Text style={styles.signUpText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Terms & Conditions <Text style={styles.dot}>•</Text> Privacy Policy
+            Terms & Conditions & Privacy Policy
           </Text>
         </View>
       </ScrollView>

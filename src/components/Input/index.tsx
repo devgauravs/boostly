@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TextInputProps,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, TextInput, TextInputProps, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import styles from './style';
 import Colors from '../../utils/color';
+import styles from './style';
 
 interface InputProps extends TextInputProps {
   label?: string;

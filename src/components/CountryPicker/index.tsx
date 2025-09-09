@@ -11,10 +11,10 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Colors from '../../utils/color';
 import { Fonts } from '../../utils/Fonts';
 import country from './country.json';
 import { CountryListItem, CountryProps, SelectCountryType } from './type';
-import Colors from '../../utils/color';
 
 const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
   // const { Colors } = useTheme();
