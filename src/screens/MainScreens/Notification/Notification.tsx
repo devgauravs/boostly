@@ -109,7 +109,7 @@ const Notification = () => {
         <FlatList
           data={posts}
           renderItem={renderPost}
-          keyExtractor={item => item?.id}
+          keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}
         />
       </View>

@@ -1,4 +1,6 @@
 import { StyleSheet } from "react-native";
+import { horizontalScale, verticalScale } from "../../../utils/scale";
+import Colors from "../../../utils/color";
 
 const styles = StyleSheet.create({
   container: {
@@ -6,7 +8,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: 30,
     paddingHorizontal: 20,
-    alignItems: "center",
+    // alignItems: "center",
   },
 
   topHeading: {
@@ -22,6 +24,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 25,
     position: "relative",
+    marginTop:verticalScale(20)
   },
   profileImage: {
     width: 120,
@@ -34,18 +37,18 @@ const styles = StyleSheet.create({
   position: "absolute",
   bottom: 5,
   right: 5,
-  backgroundColor: "#a0a1adff", 
-  width: 28,
-  height: 28,
-  borderRadius: 14,
+  backgroundColor: Colors.gray2, 
+  width: horizontalScale(26),
+  height: verticalScale(22),
+  borderRadius: 16,
   justifyContent: "center",
   alignItems: "center",
 },
 
 editIconImage: {
-  width: 14,
-  height: 14,
-  tintColor: "#fff",   
+  width: horizontalScale(12),
+  height: verticalScale(12),
+  tintColor: Colors.primaryBlack,   
   resizeMode: "contain",
 },
 
@@ -98,7 +101,14 @@ editIconImage: {
   fontFamily: "Poppins-SemiBold", 
   textAlign: "center",
 },
-
+logout:{
+  borderColor:Colors.primaryBlack,
+  borderWidth:1,
+  width:horizontalScale(50),
+  alignItems:"center",
+  padding:2,
+  borderRadius:2
+}
 });
 
 export default styles;

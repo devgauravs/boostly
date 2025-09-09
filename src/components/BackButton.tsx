@@ -6,14 +6,18 @@ import Colors from '../utils/color';
 import { leftArrow } from '../assets/images';
 import { useNavigation } from '@react-navigation/native';
 
-const BackButton = () => {
+type BackButtonProps = {
+  title: string;
+};
+
+const BackButton: React.FC<BackButtonProps> = ({ title }) => {
     const navigation=useNavigation()
   return (
     <View
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: horizontalScale(10),
+        marginTop:verticalScale(10)
       }}
     >
     <TouchableOpacity onPress={()=>navigation.goBack()}>
@@ -22,7 +26,7 @@ const BackButton = () => {
         style={{ height: verticalScale(20), width: horizontalScale(25) }}
       />
     </TouchableOpacity>
-      <Text style={styles.headerText}>Leader Board</Text>
+      <Text style={styles.headerText}>{title}</Text>
       <View />
     </View>
   );
@@ -35,5 +39,6 @@ const styles = StyleSheet.create({
     fontSize: fontScale(16),
     fontFamily: Fonts.Bold,
     color: Colors.primaryBlack,
+    marginRight:horizontalScale(20)
   },
 });

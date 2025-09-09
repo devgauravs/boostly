@@ -16,6 +16,9 @@ import Storage, { StorageKeys } from '../../../utils/storage';
 import { clearToken } from '../../../redux/AuthSlice';
 import { useDispatch } from 'react-redux';
 import { ProfileIcon } from '../../../assets/images';
+import BackButton from '../../../components/BackButton';
+import Input from '../../../components/Input';
+import Colors from '../../../utils/color';
 
 const ProfileScreen: React.FC = () => {
   const [name, setName] = useState('Nexa');
@@ -83,7 +86,7 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.topHeading}>Profile</Text>
+      <BackButton title="Profile" />
 
       <View style={styles.profileImageContainer}>
         <TouchableOpacity onPress={pickImage}>
@@ -102,19 +105,33 @@ const ProfileScreen: React.FC = () => {
         <Text style={styles.profileName}>{name}</Text>
       </View>
       <View style={styles.formContainer}>
-        <Text style={styles.sectionTitle}>Name</Text>
-        <TextInput style={styles.input} value={name} onChangeText={setName} />
+        <Input
+          label="Name"
+          keyboardType="phone-pad"
+          maxLength={15}
+          placeholder="Nexa"
+          wrapperStyle={{ borderColor: Colors.gray }}
+        />
 
-        <Text style={styles.sectionTitle}>Your Email</Text>
-        <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+        <Input
+          label="Email"
 
-        <Text style={styles.sectionTitle}>Phone Number</Text>
-        <TextInput style={styles.input} value={phone} onChangeText={setPhone} />
+          maxLength={15}
+          placeholder="@gmail.com"
+          wrapperStyle={{ borderColor: Colors.gray }}
+        />
+
+        <Input
+          label="Phone Number"
+        placeholder="+1"
+          maxLength={15}
+          wrapperStyle={{ borderColor: Colors.gray }}
+        />
 
         <TouchableOpacity
           onPress={confirmLogout}
           disabled={loading}
-          style={{ padding: 8 }}
+          style={styles.logout}
         >
           {loading ? <ActivityIndicator /> : <Text>Log Out</Text>}
         </TouchableOpacity>

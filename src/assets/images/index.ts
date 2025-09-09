@@ -10,6 +10,7 @@ import rightArrow from "../icons/rightArrow.png"
 import star from "../icons/star.png"
 import gift from "../images/gift.png"
 import leftArrow from '../icons/leftArrow.png'
+import rank from "../images/rank.png"
 
 export {
     postImage,
@@ -22,5 +23,6 @@ export {
     rightArrow,
     star,
     gift,
-    leftArrow
+    leftArrow,
+    rank
 };
