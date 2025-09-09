@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import {
   View,
@@ -19,7 +17,7 @@ import styles from './style';
 import Container from '../../../components/Container';
 import Input from '../../../components/Input';
 import Storage, { StorageKeys } from '../../../utils/storage';
-import { LoginManager, AccessToken } from "react-native-fbsdk-next";
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { setToken } from '../../../redux/AuthSlice';
 import { useDispatch } from 'react-redux';
 import { Logo } from '../../../assets/images';
@@ -37,29 +35,29 @@ const SignIn = () => {
   const handleFacebookLogin = async () => {
     try {
       const result = await LoginManager.logInWithPermissions([
-        "public_profile",
-        "email",
-        "pages_show_list",
-        "pages_read_engagement",
-        "pages_manage_posts",
-        "pages_read_user_content"
+        'public_profile',
+        'email',
+        'pages_show_list',
+        'pages_read_engagement',
+        'pages_manage_posts',
+        'pages_read_user_content',
       ]);
 
       if (result.isCancelled) {
-        Alert.alert("Login cancelled by user");
+        Alert.alert('Login cancelled by user');
         return;
       }
 
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
-        Alert.alert("Error", "Unable to get Facebook access token");
+        Alert.alert('Error', 'Unable to get Facebook access token');
         return;
       }
 
       dispatch(setToken(data.accessToken.toString()));
-      Alert.alert("✅ Facebook Login Success", data.accessToken.toString());
+      Alert.alert('✅ Facebook Login Success', data.accessToken.toString());
     } catch (error: any) {
-      Alert.alert("❌ Facebook Login Error", error?.message || String(error));
+      Alert.alert('❌ Facebook Login Error', error?.message || String(error));
     }
   };
   const handleForgotPassword = () => {
@@ -83,7 +81,7 @@ const SignIn = () => {
           maxLength={15}
           placeholder="000-000"
         />
-
+        <View style={{ marginTop: 2 }} />
         <Input
           label="Password"
           secureText={true}
@@ -100,9 +98,9 @@ const SignIn = () => {
 
         <View style={styles.iconContainer}>
           <Image source={InstagramIcon} style={styles.icon} />
-       <TouchableOpacity onPress={handleFacebookLogin}>
-       <Image source={FacebookIcon} style={styles.icon} />
-       </TouchableOpacity>
+          <TouchableOpacity onPress={handleFacebookLogin}>
+            <Image source={FacebookIcon} style={styles.icon} />
+          </TouchableOpacity>
           <Image source={YoutubeIcon} style={styles.icon} />
         </View>
 

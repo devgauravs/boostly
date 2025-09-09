@@ -1,6 +1,10 @@
 import { StyleSheet } from 'react-native';
 import Colors from '../../../utils/color';
-import { fontScale, horizontalScale, verticalScale } from '../../../utils/scale';
+import {
+  fontScale,
+  horizontalScale,
+  verticalScale,
+} from '../../../utils/scale';
 import { Fonts } from '../../../utils/Fonts';
 
 const styles = StyleSheet.create({
@@ -16,8 +20,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontScale(32),
-    fontFamily:Fonts.SemiBold,
-    marginBottom: verticalScale(20), 
+    fontFamily: Fonts.SemiBold,
+    marginBottom: verticalScale(43),
     textAlign: 'left',
   },
   inputGroup: {
@@ -80,22 +84,21 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly', 
+    justifyContent: 'space-evenly',
     marginTop: 20,
-    marginBottom: 20, 
-    width: '100%', 
+    marginBottom: 20,
+    width: '100%',
   },
   icon: {
-    width: 60, 
-    height: 60, 
-    resizeMode: 'contain', 
+    width: 60,
+    height: 60,
+    resizeMode: 'contain',
   },
-  button:{
-    borderRadius:2,
-    backgroundColor:Colors.purple,
-    width:"100%",
-    height:verticalScale(35)
-  }
+  button: {
+    borderRadius: 2,
+    width: '100%',
+    height: verticalScale(35),
+  },
 });
 
 export default styles;
