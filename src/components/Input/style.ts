@@ -5,31 +5,31 @@ import { Fonts } from '../../utils/Fonts';
 
 export default StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   label: {
     fontSize: fontScale(16),
-    marginBottom: verticalScale(8),
+    marginBottom: verticalScale(7),
     color: Colors.primaryBlack,
-    fontFamily : Fonts.Medium
+    fontFamily: Fonts.Medium,
   },
-  inputWrapper: {           
+  gradientBorder: {
+    borderRadius: 2,
+    padding: 1, // This creates the border width
+  },
+  inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: 'rgba(56, 130, 240, 1)',
-    borderWidth: 1,
-   
     paddingHorizontal: 12,
     backgroundColor: '#fff',
   },
   input: {
-    flex: 1,                
-    height: 48,
-    fontSize: 16,
+    flex: 1,
+    height: 49,
+    fontSize: 14,
     color: '#03070eff',
-   
   },
-  toggle: {                
+  toggle: {
     color: '#007AFF',
     fontSize: 14,
     paddingHorizontal: 8,
