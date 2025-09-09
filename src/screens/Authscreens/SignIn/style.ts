@@ -1,10 +1,6 @@
 import { StyleSheet } from 'react-native';
 import Colors from '../../../utils/color';
-import {
-  fontScale,
-  horizontalScale,
-  verticalScale,
-} from '../../../utils/scale';
+import { fontScale, verticalScale } from '../../../utils/scale';
 import { Fonts } from '../../../utils/Fonts';
 
 const styles = StyleSheet.create({
@@ -43,11 +39,11 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: 20,
-    color: '#01060aff',
-    fontSize: 10,
-    fontWeight: '500',
+    marginBottom: verticalScale(20),
+    color: Colors.primaryBlack,
+    fontSize: fontScale(13),
     textDecorationLine: 'underline',
+    fontFamily: Fonts.Regular,
   },
   signUpButton: {
     alignSelf: 'flex-end',
@@ -84,10 +80,11 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginTop: 20,
+    justifyContent: 'space-between',
+    marginTop: verticalScale(38),
     marginBottom: 20,
     width: '100%',
+    paddingHorizontal: 17,
   },
   icon: {
     width: 60,

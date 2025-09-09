@@ -21,6 +21,7 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { setToken } from '../../../redux/AuthSlice';
 import { useDispatch } from 'react-redux';
 import { Logo } from '../../../assets/images';
+import CountryPicker from '../../../components/CountryPicker';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
@@ -74,6 +75,11 @@ const SignIn = () => {
         <Text style={styles.title}>Sign In</Text>
 
         <Input
+          suffix={
+            <CountryPicker
+            // onSelectCountry={handleChange("countryCode")}
+            />
+          }
           label="Phone Number"
           keyboardType="phone-pad"
           value={phone}
@@ -81,7 +87,7 @@ const SignIn = () => {
           maxLength={15}
           placeholder="000-000"
         />
-        <View style={{ marginTop: 2 }} />
+        <View style={{ marginTop: 12 }} />
         <Input
           label="Password"
           secureText={true}

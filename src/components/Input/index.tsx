@@ -8,18 +8,20 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
-import { colors } from '../../config/colors';
+import Colors from '../../utils/color';
 
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
   secureText?: boolean;
+  suffix?: React.ReactNode;
 }
 
 const Input: React.FC<InputProps> = ({
   label,
   error,
   secureText = false,
+  suffix,
   ...rest
 }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -34,10 +36,11 @@ const Input: React.FC<InputProps> = ({
         style={styles.gradientBorder}
       >
         <View style={styles.inputWrapper}>
+          {suffix}
           <TextInput
             style={styles.input}
             // secureTextEntry={secureText && !isPasswordVisible}
-            placeholderTextColor={colors.lightGrey}
+            placeholderTextColor={Colors.lightGrey}
             {...rest}
           />
           {/* {secureText && (

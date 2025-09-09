@@ -1,17 +1,17 @@
 // src/components/Button.tsx
 import React from 'react';
 import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
   GestureResponderEvent,
-  ViewStyle,
+  StyleSheet,
+  Text,
   TextStyle,
+  TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { fontScale, horizontalScale, verticalScale } from '../../utils/scale';
 import { Fonts } from '../../utils/Fonts';
 import Colors from '../../utils/color';
+import { fontScale } from '../../utils/scale';
 
 interface ButtonProps {
   title: string;

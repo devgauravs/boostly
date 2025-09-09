@@ -5,7 +5,7 @@ import { Fonts } from '../../utils/Fonts';
 
 export default StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   label: {
     fontSize: fontScale(16),
