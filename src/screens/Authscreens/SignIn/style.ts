@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   scrollContainer: {
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingTop: 10,
     paddingBottom: 20,
     flexGrow: 1,
     justifyContent: 'space-between',
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontScale(32),
     fontFamily: Fonts.SemiBold,
-    marginBottom: verticalScale(43),
+    marginBottom: verticalScale(20),
     textAlign: 'left',
   },
   inputGroup: {
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: verticalScale(20),
+    marginBottom: verticalScale(22),
     color: Colors.primaryBlack,
     fontSize: fontScale(13),
     textDecorationLine: 'underline',
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     alignSelf: 'flex-end',
-    marginTop: 50,
+    marginTop: verticalScale(5),
   },
   signUpText: {
     color: Colors.primaryBlack,
@@ -69,16 +70,16 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   logo: {
-    width: 300,
-    height: 200,
+    width: 200,
+    height: 100,
     alignSelf: 'center',
-    marginTop: -70,
-    marginBottom: 25,
+    marginTop: verticalScale(20),
+    marginBottom: verticalScale(10),
   },
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: verticalScale(38),
+    marginTop: verticalScale(28),
     marginBottom: 20,
     width: '100%',
     paddingHorizontal: 17,
@@ -91,7 +92,39 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 2,
     width: '100%',
-    height: verticalScale(35),
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: verticalScale(20),
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    padding: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: verticalScale(12),
+    alignItems: 'center',
+    borderRadius: 6,
+  },
+  activeTab: {
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tabText: {
+    fontSize: fontScale(14),
+    fontFamily: Fonts.Medium,
+    color: '#666',
+  },
+  activeTabText: {
+    color: Colors.primaryBlack,
+    fontFamily: Fonts.SemiBold,
   },
 });
 
