@@ -1,5 +1,7 @@
 // src/utils/facebook.ts
+import axios from "axios";
 import { Alert } from "react-native";
+import { BASE_URL, ENDPOINTS } from "./api";
 
 // ✅ Fetch pages user manages
 export const fetchUserPages = async (
@@ -71,11 +73,13 @@ export const postToPage = async (
   pageId: string,
   pageAccessToken: string
 ) => {
+  
   if (!selectedImage) return Alert.alert('Pick an image first!');
   if (!pageId || !pageAccessToken)
     return Alert.alert('Fetch Pages First', "Click 'Get My Pages' first");
 
   try {
+    // Post image to Facebook page
     const formData = new FormData();
     formData.append('caption', '🚀 Posted from my app');
     formData.append('source', {
@@ -84,7 +88,7 @@ export const postToPage = async (
       name: 'photo.jpg',
     } as any);
 
-    const res = await fetch(
+    const fbResponse = await fetch(
       `https://graph.facebook.com/${pageId}/photos?access_token=${pageAccessToken}`,
       {
         method: 'POST',
@@ -92,16 +96,41 @@ export const postToPage = async (
       }
     );
 
-    const json = await res.json();
-    console.log('PAGE_POST', json);
+    const fbJson = await fbResponse.json();
+    console.log('PAGE_POST', fbJson);
 
-    if (json.id) {
-      Alert.alert('✅ Success', 'Image posted to Page!');
-    } else {
-      Alert.alert('❌ Error', JSON.stringify(json));
+    if (!fbJson.id) {
+      return Alert.alert('❌ Error', 'Failed to post image to Facebook.');
     }
-  } catch (err) {
+
+    // Call media-action API after successful Facebook post
+    const mediaData = {
+      mediaId: fbJson.id,
+      userAction: 'accept',
+    };
+
+    const userUploadMedia = await axios.post(
+      `${BASE_URL}${ENDPOINTS?.media_Action}`,
+      mediaData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${pageAccessToken}`, 
+        },
+      }
+    );
+
+    if (userUploadMedia?.data?.success === true) {
+      Alert.alert('✅ Success', 'Image posted to Page and media action saved!');
+    } else {
+      Alert.alert(
+        '❌ Error',
+        userUploadMedia?.data || 'Media action failed after Facebook post.'
+      );
+    }
+  } catch (err: any) {
     console.error(err);
-    Alert.alert('Upload failed', String(err));
+    Alert.alert('Upload failed', err?.message || String(err));
   }
 };
+

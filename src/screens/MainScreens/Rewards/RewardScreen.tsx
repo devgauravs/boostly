@@ -14,6 +14,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { gift, rightArrow, star } from '../../../assets/images';
 import { horizontalScale, verticalScale } from '../../../utils/scale';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { getReward } from '../../../utils/apiCalls';
 interface Task {
   id: string;
   title: string;
@@ -33,7 +36,12 @@ const RewardScreen: React.FC = () => {
   const [points, setPoints] = useState<number>(800);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
-
+  const token = useSelector((state: RootState) => state.auth.token);
+  const [data, setData] = useState<{ totalPoints: number; rewards: RewardItem[] }>({
+    totalPoints: 0,
+    rewards: [],
+  });
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     // Sample data, can be replaced with API response later
     setTasks([
@@ -97,6 +105,26 @@ const RewardScreen: React.FC = () => {
     ]);
   }, []);
 
+
+  useEffect(() => {
+    if (token) fetchRewardData();
+  }, [token]);
+
+  const fetchRewardData = async () => {
+    setLoading(true);
+    try {
+      const res = await getReward(token!); 
+      console.log("fetchReward==>",res)
+      setData({
+        totalPoints: res.totalPoints || 0,
+        rewards: res?.data || [],
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const renderTask = ({ item }: { item: Task }) => (
     <View style={styles.taskCard}>
       <Text style={styles.taskHeader}>Quick Win</Text>

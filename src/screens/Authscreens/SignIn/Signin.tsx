@@ -10,7 +10,6 @@ import CountryPicker from '../../../components/CountryPicker';
 import Input from '../../../components/Input';
 import { RouteStack } from '../../../navigation/types';
 import { facebookLogin } from '../../../utils/AuthHelper';
-import Storage, { StorageKeys } from '../../../utils/storage';
 import AuthScreenWrapper from '../AuthScreenWrapper';
 import styles from './style';
 
@@ -20,10 +19,9 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [selectedTab, setSelectedTab] = useState<'email' | 'phone'>('email');
   const dispatch = useDispatch();
-  const token = 'user_token@123';
 
   const handleSignIn = () => {
-    Storage.setItem(StorageKeys.USER_TOKEN, token);
+    console.log('login');
   };
 
   const handleFacebookLogin = () => {

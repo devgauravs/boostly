@@ -52,6 +52,7 @@ const Notification = () => {
   const [loading, setLoading] = useState(false);
   const [pageId, setPageId] = useState<string | null>(null);
   const [pageAccessToken, setPageAccessToken] = useState<string | null>(null);
+console.log("pageAccesstokn==>",pageAccessToken)
   const [userInfo, setUserInfo] = useState<any>(null);
   const [post, setPosts] = useState<any[]>([]);
   const dispatch = useDispatch();
