@@ -1,7 +1,7 @@
 // src/screens/Auth/SignUp.tsx
 
 import React, { useState } from 'react';
-import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RouteStack } from '../../../navigation/types';
 import Input from '../../../components/Input';
@@ -18,8 +18,17 @@ import {
 } from './validation';
 import { RegisterData } from '../../../services/AuthService/types';
 import { verticalScale } from '../../../utils/scale';
+import { AuthService } from '../../../services/AuthService/authService';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../redux/store';
+import { registerUser, setToken } from '../../../redux/AuthSlice';
+import { toastConfig } from '../../../components/Toast/Toast';
+import Toast from 'react-native-toast-message';
+import { AxiosError } from 'axios';
 
 const SignUp = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const navigation = useNavigation<RouteStack>();
   const [inputValue, setInputValue] = useState('');
   const [emailValue, setEmailValue] = useState('');
@@ -43,6 +52,7 @@ const SignUp = () => {
       const contactValidationError = validateAtLeastOneContact(
         currentEmail,
         currentPhone,
+        selectedTab,
       );
       if (contactValidationError) {
         setErrors({ inputValue: contactValidationError });
@@ -67,7 +77,7 @@ const SignUp = () => {
         password,
         selectedTab,
         ...(selectedTab === 'phone' && { countryCode }),
-        ...(currentEmail && { email: currentEmail }),
+        ...(currentEmail && { email: currentEmail.toLowerCase() }),
         ...(currentPhone && { phone: currentPhone }),
       };
 
@@ -91,7 +101,11 @@ const SignUp = () => {
         });
         setErrors(newErrors);
       } else {
-        Alert.alert('Error', 'An unexpected error occurred');
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'An unexpected error occurred',
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -100,8 +114,8 @@ const SignUp = () => {
 
   const handleRegister = (formData: any) => {
     const registrationPayload = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
       password: formData.password,
       ...(formData.email &&
         selectedTab == 'email' && { email: formData.email }),
@@ -110,11 +124,10 @@ const SignUp = () => {
           phoneNumber: formData.phone,
           ...(selectedTab == 'phone' && { countryCode: formData.countryCode }),
         }),
+      role: 'user',
     };
 
-    console.log('Final Registration Payload:', registrationPayload);
-    // Here you would call your registration API
-    // authService.register(registrationPayload);
+    dispatch(registerUser(registrationPayload));
   };
   const clearFieldError = (fieldName: string) => {
     if (errors[fieldName]) {
@@ -127,9 +140,9 @@ const SignUp = () => {
   };
 
   return (
-    <AuthScreenWrapper>
+    <AuthScreenWrapper heading={'Sign Up'}>
       <View style={styles.tabContainer}>
-        <TouchableOpacity
+        <Pressable
           style={[styles.tab, selectedTab === 'email' && styles.activeTab]}
           onPress={() => {
             if (selectedTab === 'phone') {
@@ -148,8 +161,8 @@ const SignUp = () => {
           >
             Email
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={[styles.tab, selectedTab === 'phone' && styles.activeTab]}
           onPress={() => {
             if (selectedTab === 'email') {
@@ -168,7 +181,7 @@ const SignUp = () => {
           >
             Phone
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <Input
         suffix={
@@ -234,8 +247,15 @@ const SignUp = () => {
         title={isSubmitting ? 'Signing up...' : 'Signup'}
         onPress={handleSignUp}
         disabled={isSubmitting}
-        style={{marginTop:verticalScale(20)}}
+        style={{ marginTop: verticalScale(20) }}
       />
+
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.signUpText}>Sign in</Text>
+      </TouchableOpacity>
     </AuthScreenWrapper>
   );
 };

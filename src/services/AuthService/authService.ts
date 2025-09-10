@@ -13,7 +13,7 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Login failed');
+      throw error.response;
     }
   }
 
@@ -26,7 +26,7 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Registration failed');
+      throw error;
     }
   }
 

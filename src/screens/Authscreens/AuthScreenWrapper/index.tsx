@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignSelf: 'center',
     marginTop: verticalScale(20),
-    marginBottom: verticalScale(30),
+    marginBottom: verticalScale(10),
   },
   footer: {
     alignItems: 'center',
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Regular,
   },
   title: {
-    fontSize: fontScale(32),
+    fontSize: fontScale(26),
     fontFamily: Fonts.SemiBold,
     marginBottom: verticalScale(20),
     textAlign: 'left',

@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Pressable, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 import FacebookIcon from '../../../assets/icons/facebook.png';
 import InstagramIcon from '../../../assets/icons/instagram.png';
@@ -11,17 +12,76 @@ import Input from '../../../components/Input';
 import { RouteStack } from '../../../navigation/types';
 import { facebookLogin } from '../../../utils/AuthHelper';
 import AuthScreenWrapper from '../AuthScreenWrapper';
+import {
+  validateAtLeastOneContact,
+  validateEmail,
+  validatePhone,
+} from '../SignUp/validation';
 import styles from './style';
+import { loginUser } from '../../../redux/AuthSlice';
+import { AppDispatch } from '../../../redux/store';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
   const [inputValue, setInputValue] = useState('');
   const [password, setPassword] = useState('');
   const [selectedTab, setSelectedTab] = useState<'email' | 'phone'>('email');
-  const dispatch = useDispatch();
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countryCode, setCountryCode] = useState('+1');
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleSignIn = () => {
-    console.log('login');
+  const handleSignIn = async () => {
+    try {
+      setIsSubmitting(true);
+      setErrors({});
+      const currentEmail = selectedTab === 'email' ? inputValue : '';
+      const currentPhone = selectedTab === 'phone' ? inputValue : '';
+      const contactValidationError = validateAtLeastOneContact(
+        currentEmail,
+        currentPhone,
+        selectedTab,
+      );
+      if (contactValidationError) {
+        setErrors({ inputValue: contactValidationError });
+        return;
+      }
+      const emailError = validateEmail(currentEmail);
+      const phoneError = validatePhone(currentPhone);
+      if (emailError || phoneError) {
+        setErrors({
+          inputValue:
+            selectedTab === 'email' ? emailError || '' : phoneError || '',
+        });
+        return;
+      }
+      if (!password) {
+        setErrors({ password: 'Password is required' });
+        return;
+      }
+      let payload;
+      if (selectedTab === 'email') {
+        payload = { email: currentEmail, password };
+      } else {
+        payload = { phoneNumber: currentPhone, countryCode, password };
+      }
+      dispatch(loginUser(payload));
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'An unexpected error occurred',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleLogin = () => {
+    // const loginPayload={
+    //   email:for
+    // }
+    // dispatch(loginUser({ email: currentEmail, password }));
   };
 
   const handleFacebookLogin = () => {
@@ -35,7 +95,7 @@ const SignIn = () => {
     <AuthScreenWrapper heading={'Sign In'}>
       {/* Tab Selector */}
       <View style={styles.tabContainer}>
-        <TouchableOpacity
+        <Pressable
           style={[styles.tab, selectedTab === 'email' && styles.activeTab]}
           onPress={() => {
             setSelectedTab('email');
@@ -50,8 +110,8 @@ const SignIn = () => {
           >
             Email
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={[styles.tab, selectedTab === 'phone' && styles.activeTab]}
           onPress={() => {
             setSelectedTab('phone');
@@ -66,40 +126,63 @@ const SignIn = () => {
           >
             Phone
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <Input
         suffix={
           selectedTab === 'phone' ? (
             <CountryPicker
-            // onSelectCountry={handleChange("countryCode")}
+              onSelectCountry={dialCode => {
+                setCountryCode(dialCode);
+              }}
             />
           ) : undefined
         }
         label={selectedTab === 'phone' ? 'Phone Number' : 'Email Address'}
         keyboardType={selectedTab === 'phone' ? 'phone-pad' : 'email-address'}
         value={inputValue}
-        onChangeText={setInputValue}
+        onChangeText={text => {
+          setInputValue(text);
+          setErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors.inputValue;
+            return newErrors;
+          });
+        }}
         maxLength={selectedTab === 'phone' ? 15 : undefined}
         placeholder={
           selectedTab === 'phone' ? '000-000-0000' : 'Enter your email'
         }
+        error={errors.inputValue}
       />
       <View style={{ marginTop: 12 }} />
       <Input
         label="Password"
         secureText={true}
         value={password}
-        onChangeText={setPassword}
+        onChangeText={text => {
+          setPassword(text);
+          setErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors.password;
+            return newErrors;
+          });
+        }}
         placeholder="Password"
+        error={errors.password}
       />
 
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <Button title="Sign In" onPress={handleSignIn} style={styles.button} />
+      <Button
+        title={isSubmitting ? 'Signing in...' : 'Sign In'}
+        onPress={handleSignIn}
+        style={styles.button}
+        disabled={isSubmitting}
+      />
 
       <View style={styles.iconContainer}>
         <Image source={InstagramIcon} style={styles.icon} />

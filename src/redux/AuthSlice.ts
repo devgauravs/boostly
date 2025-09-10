@@ -2,15 +2,17 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Alert } from 'react-native';
 import Storage, { StorageKeys } from '../utils/storage';
+import { AuthService } from '../services/AuthService/authService';
 import {
-  AuthService,
   LoginCredentials,
   RegisterData,
-} from '../services/AuthService/authService';
+  User,
+} from '../services/AuthService/types';
+import Toast from 'react-native-toast-message';
 
 interface AuthState {
   token: string | null;
-  user: any | null;
+  user: User | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -29,9 +31,21 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await AuthService.login(credentials);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
+      await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Login failed');
+      const message = error?.data?.message || 'Login failed';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
     }
   },
 );
@@ -42,9 +56,23 @@ export const registerUser = createAsyncThunk(
     try {
       const response = await AuthService.register(userData);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Registration failed');
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Registration failed';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
     }
   },
 );
@@ -82,6 +110,9 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
     },
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+    },
     clearToken(state) {
       state.token = null;
       state.user = null;
@@ -106,7 +137,6 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        Alert.alert('❌ Login Error', action.payload as string);
       });
 
     // Register
@@ -124,7 +154,6 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        Alert.alert('❌ Registration Error', action.payload as string);
       });
 
     // Facebook Login
@@ -138,12 +167,10 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.user = action.payload.user;
         state.error = null;
-        Alert.alert('✅ Facebook Login Success');
       })
       .addCase(facebookLogin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        Alert.alert('❌ Facebook Login Error', action.payload as string);
       });
 
     // Logout
@@ -156,5 +183,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setToken, clearToken, clearError } = authSlice.actions;
+export const { setToken, setUser, clearToken, clearError } = authSlice.actions;
 export default authSlice.reducer;
