@@ -30,8 +30,14 @@ import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../../../utils/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { fetchPagePosts, fetchUserPages, postToPage, shareToFacebook } from '../../../utils/SocialShare';
+import {
+  fetchPagePosts,
+  fetchUserPages,
+  postToPage,
+  shareToFacebook,
+} from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
+import CustomLoader from '../../../components/CustomLoader';
 
 interface Post {
   _id: string;
@@ -67,19 +73,26 @@ const Notification = () => {
   const handleFetchPages = () => {
     if (fbToken) {
       fetchUserPages(fbToken, setPageId, setPageAccessToken, (id, token) =>
-        fetchPagePosts(id, token, setPosts, setLoading)
+        fetchPagePosts(id, token, setPosts, setLoading),
       );
     }
   };
-  
-  
-  useFocusEffect(
-    useCallback(()=>{
-      getPost()
-      handleFetchPages()
-    },[])
-  )
 
+  useFocusEffect(
+    useCallback(() => {
+      getPost();
+      handleFetchPages();
+    }, []),
+  );
+  const handleApprove = async (item: Post) => {
+    if (!pageId || !pageAccessToken) {
+      Alert.alert('Error', 'Page info missing');
+      return;
+    }
+    setLoading(true);
+    await postToPage(item.url, pageId, pageAccessToken);
+    setLoading(false);
+  };
   const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.box}>
       <View style={styles.innerBox}>
@@ -91,17 +104,11 @@ const Notification = () => {
         <Text style={styles.postText}>New collection now available!</Text>
 
         <Button
-        title="Approve"
-        gradientColors={['#039503', '#039503']}
-        style={styles.button}
-        onPress={() => {
-          if (!pageId || !pageAccessToken) {
-            Alert.alert('Error', 'Page info missing');
-            return;
-          }
-          postToPage(item.url, pageId, pageAccessToken);
-        }}
-      />
+          title="Approve"
+          gradientColors={['#039503', '#039503']}
+          style={styles.button}
+          onPress={() => handleApprove(item)}
+        />
         <TouchableOpacity style={styles.rejectButton}>
           <Text style={styles.rejectText}>Reject</Text>
         </TouchableOpacity>
@@ -109,6 +116,8 @@ const Notification = () => {
     </View>
   );
 
+  <CustomLoader visible={loading}/>;
+  
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
