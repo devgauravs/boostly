@@ -31,8 +31,10 @@ const Input: React.FC<InputProps> = ({
         end={{ x: 1, y: 0 }}
         style={styles.gradientBorder}
       >
+        
         <View style={styles.inputWrapper}>
           {suffix}
+        
           <TextInput
             style={[styles.input, wrapperStyle]}
             // secureTextEntry={secureText && !isPasswordVisible}

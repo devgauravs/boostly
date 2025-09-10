@@ -5,11 +5,11 @@ import { Fonts } from '../../utils/Fonts';
 
 export default StyleSheet.create({
   container: {
-    marginBottom: 10,
+    marginBottom: verticalScale(10),
   },
   label: {
     fontSize: fontScale(16),
-    marginBottom: verticalScale(7),
+    marginBottom: verticalScale(1),
     color: Colors.primaryBlack,
     fontFamily: Fonts.Medium,
   },
@@ -22,12 +22,14 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     backgroundColor: '#fff',
+
   },
   input: {
     flex: 1,
     height: 49,
     fontSize: 14,
     color: '#03070eff',
+    
   },
   toggle: {
     color: '#007AFF',

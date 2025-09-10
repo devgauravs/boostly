@@ -17,6 +17,7 @@ import {
   validatePhone,
 } from './validation';
 import { RegisterData } from '../../../services/AuthService/types';
+import { verticalScale } from '../../../utils/scale';
 
 const SignUp = () => {
   const navigation = useNavigation<RouteStack>();
@@ -233,6 +234,7 @@ const SignUp = () => {
         title={isSubmitting ? 'Signing up...' : 'Signup'}
         onPress={handleSignUp}
         disabled={isSubmitting}
+        style={{marginTop:verticalScale(20)}}
       />
     </AuthScreenWrapper>
   );
