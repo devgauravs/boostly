@@ -4,6 +4,8 @@ import Storage, { StorageKeys } from './storage';
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { AppDispatch } from '../redux/store'; // adjust path if different
 import { setToken } from '../redux/AuthSlice';
+import { BASE_URL, ENDPOINTS } from './api';
+import axios from 'axios';
 
 // Simple local sign-in
 export const signIn = async (dispatch: AppDispatch, token: string) => {
@@ -39,9 +41,22 @@ export const facebookLogin = async (dispatch: AppDispatch) => {
       return;
     }
 
-    dispatch(setToken(data.accessToken.toString()));
-    Alert.alert("✅ Facebook Login Success", data.accessToken.toString());
+    const fbAccessToken = data.accessToken.toString();
+
+
+    // ✅ Call your backend API with Facebook access token
+    const response = await axios.post(`${BASE_URL}${ENDPOINTS.facebookLogin}`, {
+      accessToken: fbAccessToken,
+    });
+
+    console.log("📡 Facebook API Response:", response.data);
+
+    // ✅ Save token locally (redux)
+    dispatch(setToken(fbAccessToken));
+    Alert.alert("✅ Facebook Login Success", JSON.stringify(response.data));
+
   } catch (error: any) {
+    console.error("❌ Facebook Login Error:", error);
     Alert.alert("❌ Facebook Login Error", error?.message || String(error));
   }
 };

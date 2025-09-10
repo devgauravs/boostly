@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../../utils/color';
 import {
@@ -29,29 +30,31 @@ import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../../../utils/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { shareToFacebook } from '../../../utils/SocialShare';
-
+import { fetchPagePosts, fetchUserPages, postToPage, shareToFacebook } from '../../../utils/SocialShare';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Post {
   _id: string;
   title: string;
   image: any;
-  url:string
+  url: string;
 }
 const Notification = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [posts, setPost] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageId, setPageId] = useState<string | null>(null);
+  const [pageAccessToken, setPageAccessToken] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [post, setPosts] = useState<any[]>([]);
   const dispatch = useDispatch();
   const fbToken = useSelector((state: RootState) => state.auth.token);
 
   const getPost = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${BASE_URL}${ENDPOINTS?.getMedia}`
-      );
+      const res = await axios.get(`${BASE_URL}${ENDPOINTS?.getMedia}`);
       setPost(res?.data?.data);
       return res.data;
     } catch (error) {
@@ -60,10 +63,22 @@ const Notification = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    getPost();
-  }, []);
 
+  const handleFetchPages = () => {
+    if (fbToken) {
+      fetchUserPages(fbToken, setPageId, setPageAccessToken, (id, token) =>
+        fetchPagePosts(id, token, setPosts, setLoading)
+      );
+    }
+  };
+  
+  
+  useFocusEffect(
+    useCallback(()=>{
+      getPost()
+      handleFetchPages()
+    },[])
+  )
 
   const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.box}>
@@ -76,22 +91,23 @@ const Notification = () => {
         <Text style={styles.postText}>New collection now available!</Text>
 
         <Button
-          title="Approve"
-          style={styles.button}
-          onPress={() => {
-            setSelectedPost(item?._id);
-            setModalVisible(true);
-          }}
-        />
-        <Button
-          title="Reject"
-          textColor={Colors.red}
-          style={styles.rejectButton}
-        />
+        title="Approve"
+        gradientColors={['#039503', '#039503']}
+        style={styles.button}
+        onPress={() => {
+          if (!pageId || !pageAccessToken) {
+            Alert.alert('Error', 'Page info missing');
+            return;
+          }
+          postToPage(item.url, pageId, pageAccessToken);
+        }}
+      />
+        <TouchableOpacity style={styles.rejectButton}>
+          <Text style={styles.rejectText}>Reject</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
-
 
   if (loading) {
     return (
@@ -111,6 +127,11 @@ const Notification = () => {
           renderItem={renderPost}
           keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={{ alignItems: 'center', marginTop: 20 }}>
+              <Text style={{ fontSize: 16, color: 'gray' }}>No data found</Text>
+            </View>
+          )}
         />
       </View>
 
@@ -141,7 +162,9 @@ const Notification = () => {
             <View style={styles.socialContainer}>
               <TouchableOpacity
                 style={styles.socialButton}
-                onPress={() => selectedPost && shareToFacebook(selectedPost, fbToken,)}
+                onPress={() =>
+                  selectedPost && shareToFacebook(selectedPost, fbToken)
+                }
               >
                 <Image source={facebook} style={styles.socialIcon} />
               </TouchableOpacity>
@@ -155,7 +178,7 @@ const Notification = () => {
 
               <TouchableOpacity
                 style={styles.socialButton}
-                onPress={() => console.log('YouTube', )}
+                onPress={() => console.log('YouTube')}
               >
                 <Image source={youtube} style={styles.socialIcon} />
               </TouchableOpacity>
@@ -222,6 +245,13 @@ const styles = StyleSheet.create({
     width: horizontalScale(250),
     borderRadius: 2,
     marginTop: verticalScale(10),
+    justifyContent: 'center',
+  },
+  rejectText: {
+    textAlign: 'center',
+    color: Colors.red,
+    fontFamily: Fonts.Bold,
+    fontSize: fontScale(16),
   },
   modalOverlay: {
     flex: 1,

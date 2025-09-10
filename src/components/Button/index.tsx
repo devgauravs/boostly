@@ -21,11 +21,13 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   disabled?: boolean;
+  gradientColors?: string[];
 }
 
 const Button = ({
   title,
   onPress,
+  gradientColors = ['#163A97', '#4364F7'],
   backgroundColor = Colors.background,
   textColor = '#fff',
   style,
@@ -40,7 +42,7 @@ const Button = ({
       style={[style, disabled && styles.disabled]}
     >
       <LinearGradient
-        colors={['#163A97', '#4364F7']}
+         colors={gradientColors} 
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.button}
