@@ -1,33 +1,30 @@
 // src/screens/Auth/SignUp.tsx
 
-import React, { useState } from 'react';
-import { View, Text, Alert, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RouteStack } from '../../../navigation/types';
-import Input from '../../../components/Input';
-import Button from '../../../components/Button';
-import styles from './style';
-import AuthScreenWrapper from '../AuthScreenWrapper';
-import CountryPicker from '../../../components/CountryPicker';
+import React, { useState } from 'react';
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
+import Button from '../../../components/Button';
+import CountryPicker from '../../../components/CountryPicker';
+import Input from '../../../components/Input';
+import { RouteStack } from '../../../navigation/types';
+import { registerUser } from '../../../redux/AuthSlice';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { verticalScale } from '../../../utils/scale';
+import AuthScreenWrapper from '../AuthScreenWrapper';
+import styles from './style';
 import {
   signUpValidationSchema,
   validateAtLeastOneContact,
   validateEmail,
   validatePhone,
 } from './validation';
-import { RegisterData } from '../../../services/AuthService/types';
-import { verticalScale } from '../../../utils/scale';
-import { AuthService } from '../../../services/AuthService/authService';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../redux/store';
-import { registerUser, setToken } from '../../../redux/AuthSlice';
-import { toastConfig } from '../../../components/Toast/Toast';
-import Toast from 'react-native-toast-message';
-import { AxiosError } from 'axios';
 
 const SignUp = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
 
   const navigation = useNavigation<RouteStack>();
   const [inputValue, setInputValue] = useState('');
@@ -39,11 +36,20 @@ const SignUp = () => {
   const [lastName, setLastName] = useState('');
   const [selectedTab, setSelectedTab] = useState<'email' | 'phone'>('email');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const clearFields = () => {
+    setPassword('');
+    setErrors({});
+    setCountryCode('+1');
+    setInputValue('');
+    setEmailValue('');
+    setPhoneValue('');
+    setFirstName('');
+    setLastName('');
+  };
 
   const handleSignUp = async () => {
     try {
-      setIsSubmitting(true);
       setErrors({});
 
       const currentEmail = selectedTab === 'email' ? inputValue : emailValue;
@@ -107,8 +113,6 @@ const SignUp = () => {
           text2: 'An unexpected error occurred',
         });
       }
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -149,9 +153,11 @@ const SignUp = () => {
               setPhoneValue(inputValue);
             }
             setSelectedTab('email');
-            setInputValue(emailValue);
+            clearFields();
+            // setInputValue(emailValue);
             clearFieldError('inputValue');
           }}
+          disabled={isLoading}
         >
           <Text
             style={[
@@ -169,9 +175,11 @@ const SignUp = () => {
               setEmailValue(inputValue);
             }
             setSelectedTab('phone');
-            setInputValue(phoneValue);
+            clearFields();
+            // setInputValue(phoneValue);
             clearFieldError('inputValue');
           }}
+          disabled={isLoading}
         >
           <Text
             style={[
@@ -244,15 +252,17 @@ const SignUp = () => {
       />
 
       <Button
-        title={isSubmitting ? 'Signing up...' : 'Signup'}
+        title={'Signup'}
         onPress={handleSignUp}
-        disabled={isSubmitting}
+        disabled={isLoading}
+        loading={isLoading}
         style={{ marginTop: verticalScale(20) }}
       />
 
       <TouchableOpacity
         style={styles.signUpButton}
         onPress={() => navigation.goBack()}
+        disabled={isLoading}
       >
         <Text style={styles.signUpText}>Sign in</Text>
       </TouchableOpacity>

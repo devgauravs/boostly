@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Image, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FacebookIcon from '../../../assets/icons/facebook.png';
 import InstagramIcon from '../../../assets/icons/instagram.png';
 import YoutubeIcon from '../../../assets/icons/youtube.png';
@@ -10,6 +10,8 @@ import Button from '../../../components/Button';
 import CountryPicker from '../../../components/CountryPicker';
 import Input from '../../../components/Input';
 import { RouteStack } from '../../../navigation/types';
+import { loginUser } from '../../../redux/AuthSlice';
+import { AppDispatch, RootState } from '../../../redux/store';
 import { facebookLogin } from '../../../utils/AuthHelper';
 import AuthScreenWrapper from '../AuthScreenWrapper';
 import {
@@ -18,8 +20,6 @@ import {
   validatePhone,
 } from '../SignUp/validation';
 import styles from './style';
-import { loginUser } from '../../../redux/AuthSlice';
-import { AppDispatch } from '../../../redux/store';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
@@ -27,13 +27,20 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [selectedTab, setSelectedTab] = useState<'email' | 'phone'>('email');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
   const dispatch = useDispatch<AppDispatch>();
 
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+
+  const clearFields = () => {
+    setPassword('');
+    setErrors({});
+    setCountryCode('+1');
+    setInputValue('');
+  };
+
   const handleSignIn = async () => {
     try {
-      setIsSubmitting(true);
       setErrors({});
       const currentEmail = selectedTab === 'email' ? inputValue : '';
       const currentPhone = selectedTab === 'phone' ? inputValue : '';
@@ -72,16 +79,7 @@ const SignIn = () => {
         text1: 'Error',
         text2: 'An unexpected error occurred',
       });
-    } finally {
-      setIsSubmitting(false);
     }
-  };
-
-  const handleLogin = () => {
-    // const loginPayload={
-    //   email:for
-    // }
-    // dispatch(loginUser({ email: currentEmail, password }));
   };
 
   const handleFacebookLogin = () => {
@@ -99,8 +97,9 @@ const SignIn = () => {
           style={[styles.tab, selectedTab === 'email' && styles.activeTab]}
           onPress={() => {
             setSelectedTab('email');
-            setInputValue('');
+            clearFields();
           }}
+          disabled={isLoading}
         >
           <Text
             style={[
@@ -115,8 +114,9 @@ const SignIn = () => {
           style={[styles.tab, selectedTab === 'phone' && styles.activeTab]}
           onPress={() => {
             setSelectedTab('phone');
-            setInputValue('');
+            clearFields();
           }}
+          disabled={isLoading}
         >
           <Text
             style={[
@@ -173,20 +173,21 @@ const SignIn = () => {
         error={errors.password}
       />
 
-      <TouchableOpacity onPress={handleForgotPassword}>
+      <TouchableOpacity onPress={handleForgotPassword} disabled={isLoading}>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
 
       <Button
-        title={isSubmitting ? 'Signing in...' : 'Sign In'}
+        title={'Sign In'}
         onPress={handleSignIn}
         style={styles.button}
-        disabled={isSubmitting}
+        disabled={isLoading}
+        loading={isLoading}
       />
 
       <View style={styles.iconContainer}>
         <Image source={InstagramIcon} style={styles.icon} />
-        <TouchableOpacity onPress={handleFacebookLogin}>
+        <TouchableOpacity onPress={handleFacebookLogin} disabled={isLoading}>
           <Image source={FacebookIcon} style={styles.icon} />
         </TouchableOpacity>
         <Image source={YoutubeIcon} style={styles.icon} />
@@ -195,6 +196,7 @@ const SignIn = () => {
       <TouchableOpacity
         style={styles.signUpButton}
         onPress={() => navigation.navigate('SignUp')}
+        disabled={isLoading}
       >
         <Text style={styles.signUpText}>Sign Up</Text>
       </TouchableOpacity>
