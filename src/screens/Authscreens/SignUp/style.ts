@@ -1,5 +1,7 @@
-
 import { StyleSheet } from 'react-native';
+import { fontScale, verticalScale } from '../../../utils/scale';
+import { Fonts } from '../../../utils/Fonts';
+import Colors from '../../../utils/color';
 
 export default StyleSheet.create({
   safeArea: {
@@ -51,5 +53,38 @@ export default StyleSheet.create({
     marginHorizontal: 5,
     color: '#8f60fdff',
     fontSize: 16,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: verticalScale(20),
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    padding: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: verticalScale(12),
+    alignItems: 'center',
+    borderRadius: 6,
+  },
+  activeTab: {
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tabText: {
+    fontSize: fontScale(14),
+    fontFamily: Fonts.Medium,
+    color: '#666',
+  },
+  activeTabText: {
+    color: Colors.primaryBlack,
+    fontFamily: Fonts.SemiBold,
   },
 });

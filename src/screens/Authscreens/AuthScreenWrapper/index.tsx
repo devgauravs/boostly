@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingHorizontal: 24,
     paddingTop: 10,
-    paddingBottom: 20,
     flexGrow: 1,
     justifyContent: 'space-between',
   },
@@ -74,5 +73,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     justifyContent: 'center',
     flex: 1,
+    paddingBottom: 20,
   },
 });
