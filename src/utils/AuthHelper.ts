@@ -4,6 +4,9 @@ import Storage, { StorageKeys } from './storage';
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { AppDispatch } from '../redux/store'; // adjust path if different
 import { setToken } from '../redux/AuthSlice';
+import { BASE_URL, ENDPOINTS } from './api';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 // Simple local sign-in
 export const signIn = async (dispatch: AppDispatch, token: string) => {
@@ -32,16 +35,27 @@ export const facebookLogin = async (dispatch: AppDispatch) => {
       Alert.alert("Login cancelled by user");
       return;
     }
-
     const data = await AccessToken.getCurrentAccessToken();
     if (!data) {
       Alert.alert("Error", "Unable to get Facebook access token");
       return;
     }
-
-    dispatch(setToken(data.accessToken.toString()));
-    Alert.alert("✅ Facebook Login Success", data.accessToken.toString());
+    const fbAccessToken = data.accessToken.toString();
+    const response = await axios.post(`${BASE_URL}${ENDPOINTS.facebookLogin}`, {
+      accessToken: fbAccessToken,
+    });
+    Toast.show({
+      type: 'success',
+      text1: 'Login Successful',
+      text2: 'You are now logged in with Facebook!',
+    });
+    dispatch(setToken(fbAccessToken));
   } catch (error: any) {
-    Alert.alert("❌ Facebook Login Error", error?.message || String(error));
+    Toast.show({
+      type: 'error',
+      text1: 'Login Failed',
+      text2: error?.message || 'Something went wrong.',
+    });
+
   }
 };

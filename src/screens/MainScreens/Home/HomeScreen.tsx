@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import styles from './style';
 
 import StarImage from '../../../assets/images/star.png';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getReward } from '../../../utils/apiCalls';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 interface RewardItem {
   id: string;
@@ -13,6 +16,7 @@ interface RewardItem {
 }
 
 const HomeScreen = () => {
+
   const [data] = useState({
     totalPoints: 800,
     rewards: [
@@ -36,6 +40,9 @@ const HomeScreen = () => {
       },
     ],
   });
+
+
+  
 
   return (
     <SafeAreaView style={styles.container}>
