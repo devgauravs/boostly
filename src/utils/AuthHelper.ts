@@ -42,6 +42,7 @@ export const facebookLogin = async (dispatch: AppDispatch,userId?: string) => {
       return;
     }
     const fbAccessToken = data.accessToken.toString();
+
     const enpoint=userId===undefined ? ENDPOINTS.facebookLogin : ENDPOINTS?.facebookinsideLogin
     const response = await axios.post(`${BASE_URL}${enpoint}`, {
       accessToken: fbAccessToken,

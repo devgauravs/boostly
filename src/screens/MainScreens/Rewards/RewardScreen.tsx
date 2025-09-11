@@ -172,7 +172,9 @@ const RewardScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       {/*  Header */}
       <SafeAreaView>
-      <BackButton title='My Reward'/>
+     <View style={{paddingHorizontal:horizontalScale(10)}}>
+     <BackButton title='My Reward'/>
+     </View>
 
         {/*  Points Section */}
         <TouchableOpacity style={styles.pointsContainer} onPress={()=>{console.log("fd;lkfdsk;ldfs;lkdfskl;dfs");navigation.navigate("LeaderBoard")}}>

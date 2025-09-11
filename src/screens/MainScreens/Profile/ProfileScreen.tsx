@@ -40,7 +40,7 @@ const ProfileScreen: React.FC = () => {
 
   // Get user data from Redux
   const { user } = useSelector((state: RootState) => state.auth);
-console.log("user=====>",user)
+
 
   useEffect(() => {
     if (user) {

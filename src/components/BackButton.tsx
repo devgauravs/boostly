@@ -19,7 +19,7 @@ const BackButton: React.FC<BackButtonProps> = ({ title }) => {
         justifyContent: 'space-between',
         marginTop: verticalScale(5),
         paddingVertical: verticalScale(10),
-        paddingHorizontal:horizontalScale(10)
+    
       }}
     >
       <TouchableOpacity onPress={() => navigation.goBack()}>

@@ -53,7 +53,7 @@ const Notification = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const dispatch = useDispatch<AppDispatch>();
 const { user } = useSelector((state: RootState) => state.auth);
-console.log("withSocial===>",user?.withSoical)
+console.log("facebookenToken",fbToken)
   const getPost = async () => {
     setLoading(true);
     try {
