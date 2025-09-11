@@ -40,6 +40,9 @@ export class AuthService {
     userData: UpdateProfileParams,
   ): Promise<AuthResponse> {
     try {
+      console.log('userif', userId);
+      console.log('data', userData);
+
       const response = await apiClient.put<AuthResponse>(
         `${ENDPOINTS.updateProfile}${userId}`,
         userData,

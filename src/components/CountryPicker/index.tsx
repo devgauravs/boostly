@@ -27,7 +27,7 @@ const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
 
   useEffect(() => {
     if (value) {
-      const defaultValue = country.find(e => e.code === value);
+      const defaultValue = country.find(e => e.dial_code === value);
       setSelectCountry({
         flag: defaultValue?.flag ?? '🇺🇸',
         dial_code: defaultValue?.dial_code ?? '+1',
