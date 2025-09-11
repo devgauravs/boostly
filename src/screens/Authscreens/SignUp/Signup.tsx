@@ -55,27 +55,6 @@ const SignUp = () => {
       const currentEmail = selectedTab === 'email' ? inputValue : emailValue;
       const currentPhone = selectedTab === 'phone' ? inputValue : phoneValue;
 
-      const contactValidationError = validateAtLeastOneContact(
-        currentEmail,
-        currentPhone,
-        selectedTab,
-      );
-      if (contactValidationError) {
-        setErrors({ inputValue: contactValidationError });
-        return;
-      }
-
-      const emailError = validateEmail(currentEmail);
-      const phoneError = validatePhone(currentPhone);
-
-      if (emailError || phoneError) {
-        setErrors({
-          inputValue:
-            selectedTab === 'email' ? emailError || '' : phoneError || '',
-        });
-        return;
-      }
-
       const formData = {
         inputValue,
         firstName,
@@ -87,32 +66,56 @@ const SignUp = () => {
         ...(currentPhone && { phone: currentPhone }),
       };
 
-      await signUpValidationSchema.validate(formData, { abortEarly: false });
+      // Initialize validation errors object
+      const validationErrors: { [key: string]: string } = {};
 
-      const contactInfo =
-        currentEmail && currentPhone
-          ? `email: ${currentEmail} and phone: +${countryCode}${currentPhone}`
-          : currentEmail
-          ? `email: ${currentEmail}`
-          : `phone: +${countryCode}${currentPhone}`;
-
-      handleRegister(formData);
-    } catch (validationError) {
-      if (validationError instanceof yup.ValidationError) {
-        const newErrors: { [key: string]: string } = {};
-        validationError.inner.forEach(error => {
-          if (error.path) {
-            newErrors[error.path] = error.message;
-          }
-        });
-        setErrors(newErrors);
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'An unexpected error occurred',
-        });
+      // First, validate using yup schema to catch all field errors
+      try {
+        await signUpValidationSchema.validate(formData, { abortEarly: false });
+      } catch (yupError) {
+        if (yupError instanceof yup.ValidationError) {
+          yupError.inner.forEach(error => {
+            if (error.path) {
+              validationErrors[error.path] = error.message;
+            }
+          });
+        }
       }
+
+      // Then add custom validation for contact methods
+      const contactValidationError = validateAtLeastOneContact(
+        currentEmail,
+        currentPhone,
+        selectedTab,
+      );
+      if (contactValidationError) {
+        validationErrors.inputValue = contactValidationError;
+      } else {
+        // Only check format if contact validation passed
+        const emailError = validateEmail(currentEmail);
+        const phoneError = validatePhone(currentPhone);
+
+        if (selectedTab === 'email' && emailError) {
+          validationErrors.inputValue = emailError;
+        } else if (selectedTab === 'phone' && phoneError) {
+          validationErrors.inputValue = phoneError;
+        }
+      }
+
+      // If we have any validation errors, set them all and return
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+
+      // If all validations pass, proceed with registration
+      handleRegister(formData);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'An unexpected error occurred',
+      });
     }
   };
 
@@ -252,7 +255,7 @@ const SignUp = () => {
       />
 
       <Button
-        title={'Signup'}
+        title={'Sign Up'}
         onPress={handleSignUp}
         disabled={isLoading}
         loading={isLoading}

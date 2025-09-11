@@ -44,31 +44,45 @@ const SignIn = () => {
       setErrors({});
       const currentEmail = selectedTab === 'email' ? inputValue : '';
       const currentPhone = selectedTab === 'phone' ? inputValue : '';
+
+      // Collect all validation errors instead of early returns
+      const validationErrors: { [key: string]: string } = {};
+
+      // Check contact validation
       const contactValidationError = validateAtLeastOneContact(
         currentEmail,
         currentPhone,
         selectedTab,
       );
       if (contactValidationError) {
-        setErrors({ inputValue: contactValidationError });
-        return;
+        validationErrors.inputValue = contactValidationError;
+      } else {
+        // Only check format if contact validation passed
+        const emailError = validateEmail(currentEmail);
+        const phoneError = validatePhone(currentPhone);
+
+        if (selectedTab === 'email' && emailError) {
+          validationErrors.inputValue = emailError;
+        } else if (selectedTab === 'phone' && phoneError) {
+          validationErrors.inputValue = phoneError;
+        }
       }
-      const emailError = validateEmail(currentEmail);
-      const phoneError = validatePhone(currentPhone);
-      if (emailError || phoneError) {
-        setErrors({
-          inputValue:
-            selectedTab === 'email' ? emailError || '' : phoneError || '',
-        });
-        return;
-      }
+
+      // Check password validation
       if (!password) {
-        setErrors({ password: 'Password is required' });
+        validationErrors.password = 'Password is required';
+      }
+
+      // If we have any validation errors, set them all and return
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
         return;
       }
+
+      // If all validations pass, proceed with login
       let payload;
       if (selectedTab === 'email') {
-        payload = { email: currentEmail, password };
+        payload = { email: currentEmail.toLowerCase(), password };
       } else {
         payload = { phoneNumber: currentPhone, countryCode, password };
       }
@@ -159,7 +173,7 @@ const SignIn = () => {
       <View style={{ marginTop: 12 }} />
       <Input
         label="Password"
-        secureText={true}
+        secureTextEntry
         value={password}
         onChangeText={text => {
           setPassword(text);
