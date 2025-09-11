@@ -2,7 +2,12 @@
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import apiClient from '../../utils/apiInterceptor';
 import { ENDPOINTS } from '../../utils/api';
-import { AuthResponse, LoginCredentials, RegisterData } from './types';
+import {
+  AuthResponse,
+  LoginCredentials,
+  RegisterData,
+  UpdateProfileParams,
+} from './types';
 
 export class AuthService {
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
@@ -13,8 +18,6 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
-      console.log('root error', { error });
-
       throw error.response;
     }
   }
@@ -24,6 +27,21 @@ export class AuthService {
     try {
       const response = await apiClient.post<AuthResponse>(
         ENDPOINTS.register,
+        userData,
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+  // Register API call
+  static async updateProfile(
+    userId: string,
+    userData: UpdateProfileParams,
+  ): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.put<AuthResponse>(
+        `${ENDPOINTS.updateProfile}${userId}`,
         userData,
       );
       return response.data;

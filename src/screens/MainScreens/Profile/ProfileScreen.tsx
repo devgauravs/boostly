@@ -17,10 +17,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ProfileIcon } from '../../../assets/images';
 import BackButton from '../../../components/BackButton';
 import Input from '../../../components/Input';
-import { clearToken } from '../../../redux/AuthSlice';
+import { clearToken, updateProfile } from '../../../redux/AuthSlice';
 import Colors from '../../../utils/color';
 import Storage, { StorageKeys } from '../../../utils/storage';
-import { RootState } from '../../../redux/store';
+import { AppDispatch, RootState } from '../../../redux/store';
 import styles from './style';
 import CountryPicker from '../../../components/CountryPicker';
 import Button from '../../../components/Button';
@@ -35,7 +35,7 @@ const ProfileScreen: React.FC = () => {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Get user data from Redux
   const { user } = useSelector((state: RootState) => state.auth);
@@ -56,14 +56,19 @@ const ProfileScreen: React.FC = () => {
   }, [user]);
 
   const handleSave = () => {
-    console.log('Saved Data:', {
-      firstName,
-      lastName,
-      email,
-      phone,
-      image,
-      countryCode,
-    });
+    if (!user) return;
+    dispatch(
+      updateProfile({
+        userId: user._id,
+        userData: {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phoneNumber: phone,
+          countryCode,
+        },
+      }),
+    );
   };
 
   const performLogout = async () => {
@@ -152,14 +157,15 @@ const ProfileScreen: React.FC = () => {
               </View>
             </TouchableOpacity>
 
-            <Text style={styles.profileName}>{`${firstName} ${lastName}`}</Text>
+            <Text
+              style={styles.profileName}
+            >{`${user?.first_name} ${user?.last_name}`}</Text>
           </View>
 
           <View style={styles.formContainer}>
             <Input
               label="First Name"
               keyboardType="default"
-              maxLength={15}
               placeholder="Enter First Name"
               value={firstName}
               onChangeText={setFirstName}
@@ -167,7 +173,6 @@ const ProfileScreen: React.FC = () => {
             <Input
               label="Last Name"
               keyboardType="default"
-              maxLength={15}
               placeholder="Enter Last Name"
               value={lastName}
               onChangeText={setLastName}
@@ -175,8 +180,7 @@ const ProfileScreen: React.FC = () => {
 
             <Input
               label="Email"
-              maxLength={15}
-              placeholder="@gmail.com"
+              placeholder="Enter Email Address"
               value={email}
               onChangeText={setEmail}
             />
@@ -184,7 +188,7 @@ const ProfileScreen: React.FC = () => {
             <Input
               suffix={<CountryPicker onSelectCountry={setCountryCode} />}
               label="Phone Number"
-              placeholder="Enter phone numner"
+              placeholder="Enter Phone Number"
               maxLength={15}
               value={phone}
               onChangeText={setPhone}
