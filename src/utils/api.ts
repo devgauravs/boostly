@@ -8,4 +8,5 @@ export const ENDPOINTS = {
   register: '/register',
   login: '/login',
   getProfile: '/get-profile',
+  updateProfile: '/edit-profile/',
 };

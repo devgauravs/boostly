@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { getReward } from '../../../utils/apiCalls';
+import BackButton from '../../../components/BackButton';
 interface Task {
   id: string;
   title: string;
@@ -171,7 +172,7 @@ const RewardScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       {/*  Header */}
       <SafeAreaView>
-        <Text style={styles.header}>My Reward</Text>
+      <BackButton title='My Reward'/>
 
         {/*  Points Section */}
         <TouchableOpacity style={styles.pointsContainer} onPress={()=>{console.log("fd;lkfdsk;ldfs;lkdfskl;dfs");navigation.navigate("LeaderBoard")}}>

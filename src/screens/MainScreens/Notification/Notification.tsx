@@ -30,11 +30,7 @@ import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../../../utils/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import {
-  fetchPagePosts,
-  fetchUserPages,
-  postToPage,
-} from '../../../utils/SocialShare';
+import { postToPage} from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
 
@@ -56,8 +52,10 @@ const Notification = () => {
   const [post, setPosts] = useState<any[]>([]);
   const dispatch = useDispatch();
   const fbToken = useSelector((state: RootState) => state.auth.token);
+  console.log("facebookeToken===>",fbToken)
   const userId = useSelector((state: RootState) => state.auth.userId);
-  console.log("userId---->",userId)
+  
+  console.log('userId---->', userId);
 
   const getPost = async () => {
     setLoading(true);
@@ -72,13 +70,7 @@ const Notification = () => {
     }
   };
 
-  const handleFetchPages = () => {
-    if (fbToken) {
-      fetchUserPages(fbToken, setPageId, setPageAccessToken, (id, token) =>
-        fetchPagePosts(id, token, setPosts, setLoading),
-      );
-    }
-  };
+
 
   useFocusEffect(
     useCallback(() => {
@@ -90,6 +82,7 @@ const Notification = () => {
     setSelectedPost(item);
     setModalVisible(true);
   };
+  
   const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.box}>
       <View style={styles.innerBox}>
@@ -113,9 +106,9 @@ const Notification = () => {
 
             await postToPage(item, userId, 'reject');
             setLoading(false); // hide loader
-            getPost()
+            getPost();
           }}
-        >
+        > 
           <Text style={styles.rejectText}>Reject</Text>
         </TouchableOpacity>
       </View>
@@ -138,7 +131,7 @@ const Notification = () => {
 
       <View style={{ flex: 1, marginBottom: verticalScale(70) }}>
         <FlatList
-          data={posts}
+          data={[...posts].reverse()}
           renderItem={renderPost}
           keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}
@@ -182,7 +175,7 @@ const Notification = () => {
                   await postToPage(selectedPost, userId, 'accept');
                   setLoading(false);
                   setModalVisible(false);
-                  getPost()
+                  getPost();
                 }}
               >
                 <Image source={facebook} style={styles.socialIcon} />
@@ -263,7 +256,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: horizontalScale(250),
     borderRadius: 2,
-    marginTop: verticalScale(10),
+    marginTop: verticalScale(20),
     justifyContent: 'center',
   },
   rejectText: {

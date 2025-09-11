@@ -6,6 +6,7 @@ import { AuthService } from '../services/AuthService/authService';
 import {
   LoginCredentials,
   RegisterData,
+  UpdateProfileParams,
   User,
 } from '../services/AuthService/types';
 import Toast from 'react-native-toast-message';
@@ -71,6 +72,35 @@ export const registerUser = createAsyncThunk(
         error?.response?.data?.message ||
         error?.message ||
         'Registration failed';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (
+    { userId, userData }: { userId: string; userData: UpdateProfileParams },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await AuthService.updateProfile(userId, userData);
+      await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
+      await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
+
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || error?.message || 'Update failed';
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -162,6 +192,7 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.user = action.payload.user;
         state.error = null;
+        state.userId = action.payload.user?._id || null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -179,6 +210,7 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.user = action.payload.user;
         state.error = null;
+        state.userId = action.payload.user?._id || null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;

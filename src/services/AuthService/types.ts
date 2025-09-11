@@ -15,6 +15,15 @@ export interface RegisterData {
   role: string;
 }
 
+export interface UpdateProfileParams {
+  first_name?: string;
+  last_name?: string;
+  // password?: string;
+  email?: string;
+  phoneNumber?: string;
+  countryCode?: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
