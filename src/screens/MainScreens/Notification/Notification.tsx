@@ -34,7 +34,6 @@ import {
   fetchPagePosts,
   fetchUserPages,
   postToPage,
-  shareToFacebook,
 } from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
@@ -52,18 +51,20 @@ const Notification = () => {
   const [loading, setLoading] = useState(false);
   const [pageId, setPageId] = useState<string | null>(null);
   const [pageAccessToken, setPageAccessToken] = useState<string | null>(null);
-console.log("pageAccesstokn==>",pageAccessToken)
+
   const [userInfo, setUserInfo] = useState<any>(null);
   const [post, setPosts] = useState<any[]>([]);
   const dispatch = useDispatch();
   const fbToken = useSelector((state: RootState) => state.auth.token);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  console.log("userId---->",userId)
 
   const getPost = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}${ENDPOINTS?.getMedia}`);
+      const res = await axios.get(`${BASE_URL}${ENDPOINTS?.getMedia}${userId}`);
       setPost(res?.data?.data);
-      return res.data;
+      return res?.data;
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
@@ -82,17 +83,12 @@ console.log("pageAccesstokn==>",pageAccessToken)
   useFocusEffect(
     useCallback(() => {
       getPost();
-      handleFetchPages();
+      // handleFetchPages();
     }, []),
   );
   const handleApprove = async (item: Post) => {
-    if (!pageId || !pageAccessToken) {
-      Alert.alert('Error', 'Page info missing');
-      return;
-    }
-    setLoading(true);
-    await postToPage(item.url, pageId, pageAccessToken);
-    setLoading(false);
+    setSelectedPost(item);
+    setModalVisible(true);
   };
   const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.box}>
@@ -110,15 +106,24 @@ console.log("pageAccesstokn==>",pageAccessToken)
           style={styles.button}
           onPress={() => handleApprove(item)}
         />
-        <TouchableOpacity style={styles.rejectButton}>
+        <TouchableOpacity
+          style={styles.rejectButton}
+          onPress={async () => {
+            setLoading(true); // show loader
+
+            await postToPage(item, userId, 'reject');
+            setLoading(false); // hide loader
+            getPost()
+          }}
+        >
           <Text style={styles.rejectText}>Reject</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
-  <CustomLoader visible={loading}/>;
-  
+  <CustomLoader visible={loading} />;
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -172,9 +177,13 @@ console.log("pageAccesstokn==>",pageAccessToken)
             <View style={styles.socialContainer}>
               <TouchableOpacity
                 style={styles.socialButton}
-                onPress={() =>
-                  selectedPost && shareToFacebook(selectedPost, fbToken)
-                }
+                onPress={async () => {
+                  setLoading(true);
+                  await postToPage(selectedPost, userId, 'accept');
+                  setLoading(false);
+                  setModalVisible(false);
+                  getPost()
+                }}
               >
                 <Image source={facebook} style={styles.socialIcon} />
               </TouchableOpacity>

@@ -8,7 +8,7 @@ import authReducer from './AuthSlice';
 const persistConfig = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: ['token'], // only persist the token
+  whitelist: ['token','userId'], // only persist the token
 };
 
 // 2️⃣ Create persisted reducer

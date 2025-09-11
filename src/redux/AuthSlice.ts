@@ -4,8 +4,7 @@ import { Alert } from 'react-native';
 import Storage, { StorageKeys } from '../utils/storage';
 import {
   AuthService,
-  LoginCredentials,
-  RegisterData,
+
 } from '../services/AuthService/authService';
 
 interface AuthState {
@@ -13,6 +12,7 @@ interface AuthState {
   user: any | null;
   isLoading: boolean;
   error: string | null;
+  userId: string | null;
 }
 
 const initialState: AuthState = {
@@ -20,6 +20,7 @@ const initialState: AuthState = {
   user: null,
   isLoading: false,
   error: null,
+  userId: null,
 };
 
 // Async thunks for authentication
@@ -89,6 +90,9 @@ const authSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    setUserId(state, action: PayloadAction<string>) {
+      state.userId = action.payload;   // 👈 save userId
+    },
   },
   extraReducers: builder => {
     // Login
@@ -132,6 +136,7 @@ const authSlice = createSlice({
       .addCase(facebookLogin.pending, state => {
         state.isLoading = true;
         state.error = null;
+        
       })
       .addCase(facebookLogin.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -139,6 +144,7 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.error = null;
         Alert.alert('✅ Facebook Login Success');
+        state.userId = action.payload.user?._id || null; 
       })
       .addCase(facebookLogin.rejected, (state, action) => {
         state.isLoading = false;
@@ -152,9 +158,10 @@ const authSlice = createSlice({
       state.user = null;
       state.isLoading = false;
       state.error = null;
+      state.userId=null
     });
   },
 });
 
-export const { setToken, clearToken, clearError } = authSlice.actions;
+export const { setToken, clearToken, clearError ,setUserId} = authSlice.actions;
 export default authSlice.reducer;
