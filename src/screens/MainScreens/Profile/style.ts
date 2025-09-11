@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 25,
     position: 'relative',
-    marginTop: verticalScale(20),
+    marginTop: verticalScale(5),
   },
   profileImage: {
     width: 120,

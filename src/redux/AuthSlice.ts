@@ -89,7 +89,6 @@ export const updateProfile = createAsyncThunk(
   ) => {
     try {
       const response = await AuthService.updateProfile(userId, userData);
-      await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
 
       Toast.show({
@@ -213,6 +212,23 @@ const authSlice = createSlice({
         state.userId = action.payload.user?._id || null;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    // Update Profile
+    builder
+      .addCase(updateProfile.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.error = null;
+        state.userId = action.payload.user?._id || null;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

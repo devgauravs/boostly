@@ -36,22 +36,19 @@ const ProfileScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
 
   // Get user data from Redux
   const { user } = useSelector((state: RootState) => state.auth);
-  console.log('userrr====>', user);
+console.log("user=====>",user)
 
   useEffect(() => {
-    // Console the user data from Redux
-    console.log('User data from Redux:', user);
-    // Update local state with Redux user data if available
     if (user) {
       setFirstName(user.first_name);
       setLastName(user.last_name);
       setEmail(user.email);
-      setPhone(
-        user.phoneNumber ? `${user.countryCode} ${user.phoneNumber}` : '',
-      );
+      setPhone((user.phoneNumber && `${user.phoneNumber}`) || '');
+      setCountryCode((user.countryCode && `${user.countryCode}`) || '+1');
     }
   }, [user]);
 
@@ -59,7 +56,7 @@ const ProfileScreen: React.FC = () => {
     if (!user) return;
     dispatch(
       updateProfile({
-        userId: user._id,
+        userId: user._id || user.userId,
         userData: {
           first_name: firstName,
           last_name: lastName,
@@ -136,7 +133,9 @@ const ProfileScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <BackButton title="Profile" />
+        <View style={{ paddingHorizontal: 20 }}>
+          <BackButton title="Profile" />
+        </View>
 
         <ScrollView
           contentContainerStyle={styles.container}
@@ -186,7 +185,12 @@ const ProfileScreen: React.FC = () => {
             />
 
             <Input
-              suffix={<CountryPicker onSelectCountry={setCountryCode} />}
+              suffix={
+                <CountryPicker
+                  onSelectCountry={setCountryCode}
+                  value={countryCode}
+                />
+              }
               label="Phone Number"
               placeholder="Enter Phone Number"
               maxLength={15}
@@ -196,7 +200,12 @@ const ProfileScreen: React.FC = () => {
           </View>
 
           {/* Save Button */}
-          <Button title="Save" onPress={handleSave} />
+          <Button
+            title="Save"
+            onPress={handleSave}
+            loading={isLoading}
+            disabled={isLoading}
+          />
           <TouchableOpacity
             style={styles.saveButton}
             onPress={confirmLogout}
