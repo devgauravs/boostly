@@ -15,6 +15,7 @@ interface AuthState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
+  userId: string | null;
 }
 
 const initialState: AuthState = {
@@ -22,6 +23,7 @@ const initialState: AuthState = {
   user: null,
   isLoading: false,
   error: null,
+  userId: null,
 };
 
 // Async thunks for authentication
@@ -144,6 +146,9 @@ const authSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    setUserId(state, action: PayloadAction<string>) {
+      state.userId = action.payload; // 👈 save userId
+    },
   },
   extraReducers: builder => {
     // Login
@@ -191,6 +196,7 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.user = action.payload.user;
         state.error = null;
+        state.userId = action.payload.user?._id || null;
       })
       .addCase(facebookLogin.rejected, (state, action) => {
         state.isLoading = false;
@@ -203,6 +209,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isLoading = false;
       state.error = null;
+      state.userId = null;
     });
 
     // Initialize Auth
@@ -223,5 +230,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setToken, setUser, clearToken, clearError } = authSlice.actions;
+export const { setToken, setUser, clearToken, clearError, setUserId } =
+  authSlice.actions;
 export default authSlice.reducer;

@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import Storage, { StorageKeys } from './storage';
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { AppDispatch } from '../redux/store'; // adjust path if different
-import { setToken } from '../redux/AuthSlice';
+import { setToken, setUserId } from '../redux/AuthSlice';
 import { BASE_URL, ENDPOINTS } from './api';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
@@ -50,6 +50,7 @@ export const facebookLogin = async (dispatch: AppDispatch) => {
       text2: 'You are now logged in with Facebook!',
     });
     dispatch(setToken(fbAccessToken));
+    dispatch(setUserId(response?.data?.user?._id));
   } catch (error: any) {
     Toast.show({
       type: 'error',
