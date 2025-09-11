@@ -8,6 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,14 +30,12 @@ import Button from '../../../components/Button';
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../../../utils/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import {
-  fetchPagePosts,
-  fetchUserPages,
-  postToPage,
-} from '../../../utils/SocialShare';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { postToPage } from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
+import { facebookLogin } from '../../../utils/AuthHelper';
+
 
 interface Post {
   _id: string;
@@ -49,16 +48,12 @@ const Notification = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [posts, setPost] = useState('');
   const [loading, setLoading] = useState(false);
-  const [pageId, setPageId] = useState<string | null>(null);
-  const [pageAccessToken, setPageAccessToken] = useState<string | null>(null);
-
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [post, setPosts] = useState<any[]>([]);
-  const dispatch = useDispatch();
+  const [ModalSocialLogin, setModalSocialLogin] = useState(false);
   const fbToken = useSelector((state: RootState) => state.auth.token);
   const userId = useSelector((state: RootState) => state.auth.userId);
-  console.log("userId---->",userId)
-
+  const dispatch = useDispatch<AppDispatch>();
+const { user } = useSelector((state: RootState) => state.auth);
+console.log("withSocial===>",user?.withSoical)
   const getPost = async () => {
     setLoading(true);
     try {
@@ -72,24 +67,27 @@ const Notification = () => {
     }
   };
 
-  const handleFetchPages = () => {
-    if (fbToken) {
-      fetchUserPages(fbToken, setPageId, setPageAccessToken, (id, token) =>
-        fetchPagePosts(id, token, setPosts, setLoading),
-      );
-    }
-  };
-
   useFocusEffect(
     useCallback(() => {
       getPost();
       // handleFetchPages();
     }, []),
   );
+
+  const handleFacebookLogin = () => {
+         facebookLogin(dispatch, user?._id);
+      setModalSocialLogin(false)
+    };
   const handleApprove = async (item: Post) => {
     setSelectedPost(item);
-    setModalVisible(true);
+    if(user?.withSoical===true){
+      setModalVisible(true);
+    }else{
+      setModalSocialLogin(true);
+    }
+
   };
+
   const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.box}>
       <View style={styles.innerBox}>
@@ -113,7 +111,7 @@ const Notification = () => {
 
             await postToPage(item, userId, 'reject');
             setLoading(false); // hide loader
-            getPost()
+            getPost();
           }}
         >
           <Text style={styles.rejectText}>Reject</Text>
@@ -138,7 +136,7 @@ const Notification = () => {
 
       <View style={{ flex: 1, marginBottom: verticalScale(70) }}>
         <FlatList
-          data={posts}
+          data={[...posts].reverse()}
           renderItem={renderPost}
           keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}
@@ -182,7 +180,7 @@ const Notification = () => {
                   await postToPage(selectedPost, userId, 'accept');
                   setLoading(false);
                   setModalVisible(false);
-                  getPost()
+                  getPost();
                 }}
               >
                 <Image source={facebook} style={styles.socialIcon} />
@@ -205,6 +203,30 @@ const Notification = () => {
           </View>
         </View>
       </Modal>
+      <Modal
+  animationType="slide"
+  transparent
+  visible={ModalSocialLogin}
+  onRequestClose={() => setModalSocialLogin(false)}
+>
+  <TouchableWithoutFeedback onPress={() => setModalSocialLogin(false)}>
+    <View style={styles.modalOverlay}>
+      <TouchableWithoutFeedback onPress={() => {}}>
+        <View style={styles.SocialLoginmodalBox}>
+          <View style={styles.socialLoginContainer}>
+            <TouchableOpacity 
+              style={styles.socialflex} 
+              onPress={handleFacebookLogin}
+            >
+              <Image source={facebook} style={styles.socialLoginIcon} />
+              <Text style={styles.loginText}>Login With Facebook</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  </TouchableWithoutFeedback>
+</Modal>
     </SafeAreaView>
   );
 };
@@ -263,7 +285,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: horizontalScale(250),
     borderRadius: 2,
-    marginTop: verticalScale(10),
+    marginTop: verticalScale(20),
     justifyContent: 'center',
   },
   rejectText: {
@@ -311,5 +333,31 @@ const styles = StyleSheet.create({
     height: verticalScale(50),
     width: horizontalScale(50),
     resizeMode: 'contain',
+  },
+  socialLoginContainer: {
+    // marginBottom: verticalScale(15),
+    paddingHorizontal: horizontalScale(40),
+    paddingVertical: verticalScale(10),
+  },
+  SocialLoginmodalBox: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+  },
+  socialLoginIcon: {
+    height: verticalScale(25),
+    width: horizontalScale(25),
+    resizeMode: 'contain',
+    marginRight: horizontalScale(10),
+  },
+  socialflex: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: verticalScale(5),
+  },
+  loginText: {
+    color: Colors.darkblue,
+    fontSize: fontScale(18),
+    fontFamily: Fonts.SemiBold,
   },
 });

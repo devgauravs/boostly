@@ -28,6 +28,7 @@ const SignIn = () => {
   const [selectedTab, setSelectedTab] = useState<'email' | 'phone'>('email');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [countryCode, setCountryCode] = useState('+1');
+  const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
@@ -97,7 +98,7 @@ const SignIn = () => {
   };
 
   const handleFacebookLogin = () => {
-    facebookLogin(dispatch);
+    facebookLogin(dispatch, user?._id);
   };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');

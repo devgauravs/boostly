@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import Storage, { StorageKeys } from './storage';
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { AppDispatch } from '../redux/store'; // adjust path if different
-import { setToken, setUserId } from '../redux/AuthSlice';
+import { setToken, setUser, setUserId } from '../redux/AuthSlice';
 import { BASE_URL, ENDPOINTS } from './api';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
@@ -20,7 +20,8 @@ export const signIn = async (dispatch: AppDispatch, token: string) => {
 };
 
 // Facebook Login
-export const facebookLogin = async (dispatch: AppDispatch) => {
+export const facebookLogin = async (dispatch: AppDispatch,userId?: string) => {
+  console.log("callFacebookLoginuserId", userId);
   try {
     const result = await LoginManager.logInWithPermissions([
       "public_profile",
@@ -41,8 +42,10 @@ export const facebookLogin = async (dispatch: AppDispatch) => {
       return;
     }
     const fbAccessToken = data.accessToken.toString();
-    const response = await axios.post(`${BASE_URL}${ENDPOINTS.facebookLogin}`, {
+    const enpoint=userId===undefined ? ENDPOINTS.facebookLogin : ENDPOINTS?.facebookinsideLogin
+    const response = await axios.post(`${BASE_URL}${enpoint}`, {
       accessToken: fbAccessToken,
+      ...(userId ? { userId } : {}),
     });
     Toast.show({
       type: 'success',
@@ -50,6 +53,7 @@ export const facebookLogin = async (dispatch: AppDispatch) => {
       text2: 'You are now logged in with Facebook!',
     });
     dispatch(setToken(fbAccessToken));
+    dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
   } catch (error: any) {
     Toast.show({

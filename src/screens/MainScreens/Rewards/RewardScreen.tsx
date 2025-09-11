@@ -14,10 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import InstagramIcon from '../../../assets/icons/gifticon.png';
 import { gift, rightArrow, star } from '../../../assets/images';
 import { AppDispatch, RootState } from '../../../redux/store';
-import { getReward } from '../../../utils/apiCalls';
 import { horizontalScale, verticalScale } from '../../../utils/scale';
 import styles from './style';
 import { fetchRewards } from '../../../redux/RewardsSlice/RewardsSlice';
+import BackButton from '../../../components/BackButton';
 interface Task {
   id: string;
   title: string;
@@ -160,7 +160,7 @@ const RewardScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       {/*  Header */}
       <SafeAreaView>
-        <Text style={styles.header}>My Reward</Text>
+        <BackButton title="My Reward" />
 
         {/*  Points Section */}
         <TouchableOpacity

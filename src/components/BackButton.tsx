@@ -19,6 +19,7 @@ const BackButton: React.FC<BackButtonProps> = ({ title }) => {
         justifyContent: 'space-between',
         marginTop: verticalScale(5),
         paddingVertical: verticalScale(10),
+        paddingHorizontal:horizontalScale(10)
       }}
     >
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(16),
     fontFamily: Fonts.Bold,
     color: Colors.primaryBlack,
-    marginRight: horizontalScale(20),
+    marginRight: horizontalScale(30),
+  
   },
 });
