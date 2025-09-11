@@ -13,6 +13,8 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
+      console.log('root error', { error });
+
       throw error.response;
     }
   }
@@ -75,6 +77,18 @@ export class AuthService {
       return response.data;
     } catch (error: any) {
       throw new Error(error.message || 'Failed to get user media');
+    }
+  }
+
+  // Get user profile
+  static async getProfile(userId: string): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.get<AuthResponse>(
+        `${ENDPOINTS.getProfile}/${userId}`,
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to get user profile');
     }
   }
 }

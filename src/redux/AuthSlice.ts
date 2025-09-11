@@ -56,6 +56,8 @@ export const registerUser = createAsyncThunk(
     try {
       const response = await AuthService.register(userData);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
+      await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
+
       Toast.show({
         text1: 'Success',
         text2: response.message,
@@ -84,6 +86,7 @@ export const facebookLogin = createAsyncThunk(
       const facebookToken = await AuthService.getFacebookToken();
       const response = await AuthService.facebookLogin(facebookToken);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
+      await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
       return response;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Facebook login failed');
@@ -96,9 +99,30 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await Storage.removeItem(StorageKeys.USER_TOKEN);
+      await Storage.removeItem(StorageKeys.USER);
       return null;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Logout failed');
+    }
+  },
+);
+
+// Initialize auth state from storage
+export const initializeAuth = createAsyncThunk(
+  'auth/initializeAuth',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = await Storage.getItem(StorageKeys.USER_TOKEN);
+      const userString = await Storage.getItem(StorageKeys.USER);
+
+      if (token && userString) {
+        const user = JSON.parse(userString);
+        return { token, user };
+      }
+
+      return { token: null, user: null };
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to initialize auth');
     }
   },
 );
@@ -180,6 +204,22 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
     });
+
+    // Initialize Auth
+    builder
+      .addCase(initializeAuth.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(initializeAuth.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.error = null;
+      })
+      .addCase(initializeAuth.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

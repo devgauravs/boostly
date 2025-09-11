@@ -7,4 +7,5 @@ export const ENDPOINTS = {
   media_Action: '/media-action',
   register: '/register',
   login: '/login',
+  getProfile: '/get-profile',
 };
