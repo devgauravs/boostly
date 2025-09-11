@@ -6,11 +6,12 @@ import { BottomTabNavigator } from './BottomTabNavigator';
 import { AuthNavigator } from './AuthNavigation/index';
 
 const RootNavigator: React.FC = () => {
-  // This selector will work because RootNavigator is rendered inside Provider
-  const token = useSelector((state: RootState) => state.auth.token);
+  const { token, _persist } = useSelector((state: RootState) => state.auth);
 
+  if (!_persist?.rehydrated) {
+    return null;
+  }
 
-  // you can also check for loading/rehydrated state here if using redux-persist
   return token ? <BottomTabNavigator /> : <AuthNavigator />;
 };
 

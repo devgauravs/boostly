@@ -7,11 +7,10 @@ import {
   facebookLogin,
   logout,
   clearError,
+  initializeAuth,
 } from '../redux/AuthSlice';
-import {
-  LoginCredentials,
-  RegisterData,
-} from '../services/AuthService/authService';
+import {} from '../services/AuthService/authService';
+import { LoginCredentials, RegisterData } from '../services/AuthService/types';
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,6 +38,10 @@ export const useAuth = () => {
     dispatch(clearError());
   };
 
+  const initialize = async () => {
+    return dispatch(initializeAuth()).unwrap();
+  };
+
   return {
     // State
     token,
@@ -53,5 +56,6 @@ export const useAuth = () => {
     loginWithFacebook,
     signOut,
     clearAuthError,
+    initialize,
   };
 };

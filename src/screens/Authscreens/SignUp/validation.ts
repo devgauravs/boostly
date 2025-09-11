@@ -39,9 +39,15 @@ export const signUpValidationSchema = yup.object().shape({
 });
 
 // Custom validation to ensure at least one contact method is provided
-export const validateAtLeastOneContact = (email: string, phone: string) => {
+export const validateAtLeastOneContact = (
+  email: string,
+  phone: string,
+  selectedTab: string,
+) => {
   if (!email && !phone) {
-    return 'Please provide either an email address or phone number';
+    return selectedTab == 'email'
+      ? 'Please enter you email address'
+      : 'Please enter your phone number';
   }
   return null;
 };

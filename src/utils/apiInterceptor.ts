@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 import Storage, { StorageKeys } from './storage';
 
 // Static base URL for now
-const BASE_URL = 'https://b5a625294f41.ngrok-free.app/api/v1';
+const BASE_URL = 'https://ad39491c792e.ngrok-free.app/api/v1';
 
 // Create axios instance
 export const apiClient = axios.create({

@@ -63,7 +63,7 @@ export default StyleSheet.create({
   },
   tab: {
     flex: 1,
-    paddingVertical: verticalScale(12),
+    paddingVertical: verticalScale(6),
     alignItems: 'center',
     borderRadius: 6,
   },
@@ -85,6 +85,15 @@ export default StyleSheet.create({
   },
   activeTabText: {
     color: Colors.primaryBlack,
+    fontFamily: Fonts.SemiBold,
+  },
+  signUpButton: {
+    alignSelf: 'flex-end',
+    marginTop: verticalScale(25),
+  },
+  signUpText: {
+    color: Colors.primaryBlack,
+    fontSize: fontScale(16),
     fontFamily: Fonts.SemiBold,
   },
 });

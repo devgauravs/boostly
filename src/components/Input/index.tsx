@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { Text, TextInput, TextInputProps, View } from 'react-native';
+import {
+  Image,
+  Text,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../utils/color';
 import styles from './style';
+import { eye_hidden, eye_visible } from '../../assets/images';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -18,9 +26,13 @@ const Input: React.FC<InputProps> = ({
   secureText = false,
   wrapperStyle, // use this
   suffix,
+  secureTextEntry, // Extract this from rest props
   ...rest
 }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+
+  // Determine if secure text functionality should be enabled
+  const isSecureTextEnabled = secureText === true || secureTextEntry === true;
 
   return (
     <View style={styles.container}>
@@ -31,25 +43,26 @@ const Input: React.FC<InputProps> = ({
         end={{ x: 1, y: 0 }}
         style={styles.gradientBorder}
       >
-        
         <View style={styles.inputWrapper}>
           {suffix}
-        
+
           <TextInput
             style={[styles.input, wrapperStyle]}
-            // secureTextEntry={secureText && !isPasswordVisible}
             placeholderTextColor={Colors.lightGrey}
+            secureTextEntry={isSecureTextEnabled ? !isPasswordVisible : false}
             {...rest}
           />
-          {/* {secureText && (
+          {isSecureTextEnabled && (
             <TouchableOpacity
               onPress={() => setPasswordVisible(!isPasswordVisible)}
             >
-              <Text style={styles.toggle}>
-                {isPasswordVisible ? 'Hide' : 'Show'}
-              </Text>
+              <Image
+                source={isPasswordVisible ? eye_visible : eye_hidden}
+                resizeMode="contain"
+                style={{ height: 17, width: 17 }}
+              />
             </TouchableOpacity>
-          )} */}
+          )}
         </View>
       </LinearGradient>
       {error && <Text style={styles.error}>{error}</Text>}

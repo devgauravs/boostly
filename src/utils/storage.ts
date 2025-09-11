@@ -6,7 +6,7 @@ const MMKV = new MMKVLoader().initialize();
 
 export enum StorageKeys {
   USER_TOKEN = 'user_token',
-
+  USER = 'user',
 }
 
 const Storage = {
@@ -14,12 +14,12 @@ const Storage = {
     await MMKV.setStringAsync(key, value);
   },
 
-getItem: async (key: StorageKeys): Promise<string | null> => {
-  const value = await MMKV.getStringAsync(key);
-  return value ?? null;
-},
+  getItem: async (key: StorageKeys): Promise<string | null> => {
+    const value = await MMKV.getStringAsync(key);
+    return value ?? null;
+  },
 
-removeItem: async (key: StorageKeys): Promise<void> => {
+  removeItem: async (key: StorageKeys): Promise<void> => {
     await MMKV.removeItem(key);
   },
 

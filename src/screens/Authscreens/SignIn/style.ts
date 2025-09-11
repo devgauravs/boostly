@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     flex: 1,
-    paddingVertical: verticalScale(12),
+    paddingVertical: verticalScale(6),
     alignItems: 'center',
     borderRadius: 6,
   },

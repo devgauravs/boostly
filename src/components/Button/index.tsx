@@ -1,6 +1,7 @@
 // src/components/Button.tsx
 import React from 'react';
 import {
+  ActivityIndicator,
   GestureResponderEvent,
   StyleSheet,
   Text,
@@ -22,6 +23,7 @@ interface ButtonProps {
   textStyle?: TextStyle;
   disabled?: boolean;
   gradientColors?: string[];
+  loading?: boolean;
 }
 
 const Button = ({
@@ -33,6 +35,7 @@ const Button = ({
   style,
   textStyle,
   disabled = false,
+  loading = false,
 }: ButtonProps) => {
   return (
     <TouchableOpacity
@@ -42,14 +45,18 @@ const Button = ({
       style={[style, disabled && styles.disabled]}
     >
       <LinearGradient
-         colors={gradientColors} 
+        colors={gradientColors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.button}
       >
-        <Text style={[styles.buttonText, { color: textColor }, textStyle]}>
-          {title}
-        </Text>
+        {loading ? (
+          <ActivityIndicator size={'small'} color={Colors.background} />
+        ) : (
+          <Text style={[styles.buttonText, { color: textColor }, textStyle]}>
+            {title}
+          </Text>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -63,6 +70,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 49,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     fontSize: fontScale(16),
