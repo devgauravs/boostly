@@ -1,22 +1,23 @@
-import React, { useEffect, useState, version } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  Image,
   FlatList,
-  TouchableOpacity,
+  Image,
   ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import styles from './style';
-import InstagramIcon from '../../../assets/icons/gifticon.png';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import InstagramIcon from '../../../assets/icons/gifticon.png';
 import { gift, rightArrow, star } from '../../../assets/images';
-import { horizontalScale, verticalScale } from '../../../utils/scale';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import { AppDispatch, RootState } from '../../../redux/store';
 import { getReward } from '../../../utils/apiCalls';
+import { horizontalScale, verticalScale } from '../../../utils/scale';
+import styles from './style';
+import { fetchRewards } from '../../../redux/RewardsSlice/RewardsSlice';
 interface Task {
   id: string;
   title: string;
@@ -32,99 +33,87 @@ interface Reward {
 }
 
 const RewardScreen: React.FC = () => {
-  const navigation=useNavigation();
+  const navigation = useNavigation();
+  const dispatch = useDispatch<AppDispatch>();
+
   const [points, setPoints] = useState<number>(800);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [rewards, setRewards] = useState<Reward[]>([]);
   const token = useSelector((state: RootState) => state.auth.token);
-  const [data, setData] = useState<{ totalPoints: number; rewards: RewardItem[] }>({
+  const [data, setData] = useState<{
+    totalPoints: number;
+    rewards: any[];
+  }>({
     totalPoints: 0,
     rewards: [],
   });
-  const [loading, setLoading] = useState(false);
+
+  const { rewards: rewardsData } = useSelector(
+    (state: RootState) => state.rewards,
+  );
+
+  const tasks = [
+    {
+      id: '1',
+      title: 'Facebook post',
+      points: 50,
+      image: gift,
+    },
+    {
+      id: '2',
+      title: 'Facebook post',
+      points: 50,
+      image: gift,
+    },
+    {
+      id: '3',
+      title: 'Facebook post',
+      points: 50,
+      image: gift,
+    },
+  ];
+
+  const rewards = [
+    {
+      id: '1',
+      title: '$ 10 Amazon Gift Card',
+      points: 250,
+      image: gift,
+    },
+    {
+      id: '2',
+      title: '$ 10 Amazon Gift Card',
+      points: 250,
+      image: gift,
+    },
+    {
+      id: '3',
+      title: '$ 10 Amazon Gift Card',
+      points: 250,
+      image: gift,
+    },
+    {
+      id: '4',
+      title: '$ 10 Amazon Gift Card',
+      points: 250,
+      image: gift,
+    },
+    {
+      id: '5',
+      title: '$ 10 Amazon Gift Card',
+      points: 250,
+      image: gift,
+    },
+    {
+      id: '6',
+      title: '$ 10 Amazon Gift Card',
+      points: 250,
+      image: gift,
+    },
+  ];
+
   useEffect(() => {
-    // Sample data, can be replaced with API response later
-    setTasks([
-      {
-        id: '1',
-        title: 'Facebook post',
-        points: 50,
-        image: gift,
-      },
-      {
-        id: '2',
-        title: 'Facebook post',
-        points: 50,
-        image: gift,
-      },
-      {
-        id: '3',
-        title: 'Facebook post',
-        points: 50,
-        image: gift,
-      },
-    ]);
+    dispatch(fetchRewards({}));
+  }, [dispatch]);
 
-    setRewards([
-      {
-        id: '1',
-        title: '$ 10 Amazon Gift Card',
-        points: 250,
-        image: gift,
-      },
-      {
-        id: '2',
-        title: '$ 10 Amazon Gift Card',
-        points: 250,
-        image: gift,
-      },
-      {
-        id: '3',
-        title: '$ 10 Amazon Gift Card',
-        points: 250,
-        image: gift,
-      },
-      {
-        id: '4',
-        title: '$ 10 Amazon Gift Card',
-        points: 250,
-        image: gift,
-      },
-      {
-        id: '5',
-        title: '$ 10 Amazon Gift Card',
-        points: 250,
-        image: gift,
-      },
-      {
-        id: '6',
-        title: '$ 10 Amazon Gift Card',
-        points: 250,
-        image: gift,
-      },
-    ]);
-  }, []);
-
-
-  useEffect(() => {
-    if (token) fetchRewardData();
-  }, [token]);
-
-  const fetchRewardData = async () => {
-    setLoading(true);
-    try {
-      const res = await getReward(token!); 
-      console.log("fetchReward==>",res)
-      setData({
-        totalPoints: res.totalPoints || 0,
-        rewards: res?.data || [],
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
   const renderTask = ({ item }: { item: Task }) => (
     <View style={styles.taskCard}>
       <Text style={styles.taskHeader}>Quick Win</Text>
@@ -143,7 +132,7 @@ const RewardScreen: React.FC = () => {
             />
             <Text style={styles.taskPoints}>{item.points}</Text>
           </View>
-          <TouchableOpacity style={styles.startButton} >
+          <TouchableOpacity style={styles.startButton}>
             <Text style={styles.startText}>Start</Text>
           </TouchableOpacity>
         </View>
@@ -155,7 +144,7 @@ const RewardScreen: React.FC = () => {
 
   const renderReward = ({ item }: { item: Reward }) => (
     <View style={styles.rewardCard}>
-      <Image source={InstagramIcon} style={styles.rewardImage} />{' '}
+      <Image source={InstagramIcon} style={styles.rewardImage} />
       {/* Use InstagramIcon here */}
       <Text style={styles.rewardTitle}>{item.title}</Text>
       <View style={styles.rewardFooter}>
@@ -174,7 +163,12 @@ const RewardScreen: React.FC = () => {
         <Text style={styles.header}>My Reward</Text>
 
         {/*  Points Section */}
-        <TouchableOpacity style={styles.pointsContainer} onPress={()=>{console.log("fd;lkfdsk;ldfs;lkdfskl;dfs");navigation.navigate("LeaderBoard")}}>
+        <TouchableOpacity
+          style={styles.pointsContainer}
+          onPress={() => {
+            navigation.navigate('LeaderBoard' as never);
+          }}
+        >
           <Image source={InstagramIcon} style={styles.giftIcon} />
           <Text style={styles.pointsText}>{points} Points</Text>
           <Image
@@ -184,7 +178,7 @@ const RewardScreen: React.FC = () => {
         </TouchableOpacity>
 
         <LinearGradient
-          colors={['#163A97', '#4c68e2ff']}
+          colors={['#163A97', '#163A97']}
           style={styles.gradientContainer}
         >
           {/* Tasks Section */}
@@ -217,6 +211,7 @@ const RewardScreen: React.FC = () => {
                 justifyContent: 'space-between',
                 paddingHorizontal: 10,
                 paddingBottom: verticalScale(10),
+                paddingTop: 30,
               }}
               scrollEnabled={false}
             />

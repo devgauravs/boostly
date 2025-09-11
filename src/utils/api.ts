@@ -9,4 +9,5 @@ export const ENDPOINTS = {
   login: '/login',
   getProfile: '/get-profile',
   updateProfile: '/edit-profile/',
+  getRewards: '/get-reward',
 };
