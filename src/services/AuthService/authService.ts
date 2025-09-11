@@ -40,9 +40,6 @@ export class AuthService {
     userData: UpdateProfileParams,
   ): Promise<AuthResponse> {
     try {
-      console.log('userif', userId);
-      console.log('data', userData);
-
       const response = await apiClient.put<AuthResponse>(
         `${ENDPOINTS.updateProfile}${userId}`,
         userData,
@@ -109,7 +106,7 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to get user profile');
+      throw error;
     }
   }
 }

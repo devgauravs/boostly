@@ -172,7 +172,7 @@ const RewardScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       {/*  Header */}
       <SafeAreaView>
-     <View style={{paddingHorizontal:horizontalScale(10)}}>
+     <View style={{paddingHorizontal:horizontalScale}}>
      <BackButton title='My Reward'/>
      </View>
 

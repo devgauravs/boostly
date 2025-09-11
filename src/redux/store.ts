@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authReducer from './AuthSlice';
+import rewardsReducer from './RewardsSlice/RewardsSlice';
 
 // 1️⃣ Configure persistence
 const persistConfig = {
@@ -18,6 +19,7 @@ const persistedReducer = persistReducer(persistConfig, authReducer);
 export const store = configureStore({
   reducer: {
     auth: persistedReducer,
+    rewards: rewardsReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -56,7 +56,7 @@ const ProfileScreen: React.FC = () => {
     if (!user) return;
     dispatch(
       updateProfile({
-        userId: user._id || user.userId,
+        userId: user._id,
         userData: {
           first_name: firstName,
           last_name: lastName,
