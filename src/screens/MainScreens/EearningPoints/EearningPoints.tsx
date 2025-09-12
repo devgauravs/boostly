@@ -6,6 +6,7 @@ import {
   Dimensions,
   Text,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import TrackingPoints from '../../../components/trackingPoints/trackingPoints';
 import {
@@ -22,6 +23,7 @@ import BackButton from '../../../components/BackButton';
 import { Dropdown } from 'react-native-element-dropdown';
 import { arrowdown, arrowup } from '../../../assets/images';
 import { Fonts } from '../../../utils/Fonts';
+import { useNavigation } from '@react-navigation/native';
 
 const LEVELS = [
   { title: 'Bronze', min: 70, max: 200 },
@@ -30,13 +32,13 @@ const LEVELS = [
   { title: 'Platinum', min: 1001, max: Infinity },
 ];
 
-const TAB_BAR_HEIGHT = verticalScale(50);
+const TAB_BAR_HEIGHT = verticalScale(20);
 
 const EearningPoints = () => {
   const [userPoints, setUserPoints] = useState(0);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const insets = useSafeAreaInsets();
-
+const navigation=useNavigation();
   useEffect(() => {
     setUserPoints(300);
   }, []);
@@ -59,6 +61,7 @@ const EearningPoints = () => {
       <BackButton title="Earning & Points Tracking" />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+  
         <View
           style={{ paddingVertical: 20, backgroundColor: Colors.background }}
         >
@@ -121,6 +124,12 @@ const EearningPoints = () => {
             progress={getProgress(level) * 100}
           />
         ))}
+              <TouchableOpacity
+  style={styles.leaderboardButton}
+  onPress={() => navigation.navigate('LeaderBoard')}
+>
+  <Text style={styles.leaderboardButtonText}>Go to Leaderboard</Text>
+</TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -185,4 +194,24 @@ const styles = StyleSheet.create({
     color: Colors.primaryBlack,
     fontFamily: Fonts.SemiBold,
   },
+  leaderboardButton: {
+  backgroundColor: '#4364F7', // blue color
+  paddingVertical: verticalScale(12),
+  paddingHorizontal: horizontalScale(20),
+  borderRadius: 10,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginVertical: verticalScale(20),
+  elevation: 3, // shadow Android
+  shadowColor: '#000', // shadow iOS
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+},
+leaderboardButtonText: {
+  color: '#fff',
+  fontSize: fontScale(16),
+  fontFamily: Fonts.SemiBold,
+},
+
 });

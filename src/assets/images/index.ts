@@ -18,6 +18,9 @@ import user from '../icons/user.png'
 import medal from '../icons/medal.png'
 import medal2 from '../icons/medal2.png'
 import medal3 from '../icons/medal3.png'
+import giftCard from '../images/giftCard.png';
+import giftMultiColor from '../images/giftMultiColor.png';
+
 export {
   postImage,
   Logo,
@@ -38,5 +41,7 @@ export {
   user,
   medal,
   medal2,
-  medal3
+  medal3,
+  giftCard,
+  giftMultiColor,
 };

@@ -17,7 +17,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ProfileIcon } from '../../../assets/images';
 import BackButton from '../../../components/BackButton';
 import Input from '../../../components/Input';
-import { clearToken, updateProfile } from '../../../redux/AuthSlice';
+import {
+  clearToken,
+  getProfile,
+  updateProfile,
+} from '../../../redux/AuthSlice';
 import Colors from '../../../utils/color';
 import Storage, { StorageKeys } from '../../../utils/storage';
 import { AppDispatch, RootState } from '../../../redux/store';
@@ -41,6 +45,11 @@ const ProfileScreen: React.FC = () => {
   // Get user data from Redux
   const { user } = useSelector((state: RootState) => state.auth);
 
+  useEffect(() => {
+    if (user) {
+      dispatch(getProfile(user._id));
+    }
+  }, [dispatch, user?._id]);
 
   useEffect(() => {
     if (user) {
