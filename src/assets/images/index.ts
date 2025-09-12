@@ -12,6 +12,8 @@ import leftArrow from '../icons/leftArrow.png';
 import rank from '../images/rank.png';
 import eye_visible from '../images/eye_visible.png';
 import eye_hidden from '../images/eye_hidden.png';
+import giftCard from '../images/giftCard.png';
+import giftMultiColor from '../images/giftMultiColor.png';
 
 export {
   postImage,
@@ -28,4 +30,6 @@ export {
   rank,
   eye_visible,
   eye_hidden,
+  giftCard,
+  giftMultiColor,
 };

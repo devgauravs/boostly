@@ -16,13 +16,22 @@ const BackButton: React.FC<BackButtonProps> = ({ title }) => {
     <View
       style={{
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: verticalScale(5),
+        justifyContent: 'center',
         paddingVertical: verticalScale(10),
-    
+        backgroundColor: 'white',
       }}
     >
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          left: 15,
+          bottom: 0,
+          top: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Image
           source={leftArrow}
           style={{ height: verticalScale(20), width: horizontalScale(25) }}
@@ -39,9 +48,7 @@ export default BackButton;
 const styles = StyleSheet.create({
   headerText: {
     fontSize: fontScale(16),
-    fontFamily: Fonts.Bold,
+    fontFamily: Fonts.SemiBold,
     color: Colors.primaryBlack,
-    marginRight: horizontalScale(30),
-  
   },
 });

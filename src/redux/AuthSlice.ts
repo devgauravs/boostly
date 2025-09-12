@@ -138,6 +138,34 @@ export const logout = createAsyncThunk(
   },
 );
 
+// Get user profile
+export const getProfile = createAsyncThunk(
+  'auth/getProfile',
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await AuthService.getProfile(userId);
+      await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to get profile';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+
 // Initialize auth state from storage
 export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
@@ -259,6 +287,23 @@ const authSlice = createSlice({
       state.error = null;
       state.userId = null;
     });
+
+    // Get Profile
+    builder
+      .addCase(getProfile.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.error = null;
+        state.userId = action.payload.user?._id || null;
+      })
+      .addCase(getProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
 
     // Initialize Auth
     builder

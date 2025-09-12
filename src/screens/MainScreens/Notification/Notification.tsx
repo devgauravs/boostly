@@ -36,7 +36,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
 import { facebookLogin } from '../../../utils/AuthHelper';
 
-
 interface Post {
   _id: string;
   title: string;
@@ -52,8 +51,8 @@ const Notification = () => {
   const fbToken = useSelector((state: RootState) => state.auth.token);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const dispatch = useDispatch<AppDispatch>();
-const { user } = useSelector((state: RootState) => state.auth);
-console.log("facebookenToken",fbToken)
+  const { user } = useSelector((state: RootState) => state.auth);
+  console.log('facebookenToken', fbToken);
   const getPost = async () => {
     setLoading(true);
     try {
@@ -75,17 +74,16 @@ console.log("facebookenToken",fbToken)
   );
 
   const handleFacebookLogin = () => {
-         facebookLogin(dispatch, user?._id);
-      setModalSocialLogin(false)
-    };
+    facebookLogin(dispatch, user?._id);
+    setModalSocialLogin(false);
+  };
   const handleApprove = async (item: Post) => {
     setSelectedPost(item);
-    if(user?.withSoical===true){
+    if (user?.withSoical === true) {
       setModalVisible(true);
-    }else{
+    } else {
       setModalSocialLogin(true);
     }
-
   };
 
   const renderPost = ({ item }: { item: Post }) => (
@@ -204,29 +202,29 @@ console.log("facebookenToken",fbToken)
         </View>
       </Modal>
       <Modal
-  animationType="slide"
-  transparent
-  visible={ModalSocialLogin}
-  onRequestClose={() => setModalSocialLogin(false)}
->
-  <TouchableWithoutFeedback onPress={() => setModalSocialLogin(false)}>
-    <View style={styles.modalOverlay}>
-      <TouchableWithoutFeedback onPress={() => {}}>
-        <View style={styles.SocialLoginmodalBox}>
-          <View style={styles.socialLoginContainer}>
-            <TouchableOpacity 
-              style={styles.socialflex} 
-              onPress={handleFacebookLogin}
-            >
-              <Image source={facebook} style={styles.socialLoginIcon} />
-              <Text style={styles.loginText}>Login With Facebook</Text>
-            </TouchableOpacity>
+        animationType="slide"
+        transparent
+        visible={ModalSocialLogin}
+        onRequestClose={() => setModalSocialLogin(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalSocialLogin(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.SocialLoginmodalBox}>
+                <View style={styles.socialLoginContainer}>
+                  <TouchableOpacity
+                    style={styles.socialflex}
+                    onPress={handleFacebookLogin}
+                  >
+                    <Image source={facebook} style={styles.socialLoginIcon} />
+                    <Text style={styles.loginText}>Login With Facebook</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
-  </TouchableWithoutFeedback>
-</Modal>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };

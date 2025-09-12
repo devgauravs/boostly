@@ -1,6 +1,7 @@
 // config/color.ts
 
 const Colors = {
+  primaryWhite: '#FFFFFF',
   secondary: '#6366F1',
   lightgray: '#EFEFEF',
   lightyellow: '#FFD73A',
@@ -13,10 +14,10 @@ const Colors = {
   darkblue: '#163A97',
   lightGrey: '#B7B0B0',
   primary: '#388be4ff',
-  skylight:"#E6EEF9",
-  gray:"#ABABAB",
-  gray2:"#D9D9D9"
-
+  skylight: '#E6EEF9',
+  gray: '#ABABAB',
+  gray2: '#D9D9D9',
+  blueBorder: '#0088ff',
 };
 
 export default Colors;
