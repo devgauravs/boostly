@@ -62,10 +62,13 @@ const RewardCard = ({ item }: { item: Reward }) => {
         }
         style={styles.giftImage}
       />
-      <Text style={styles.rewardTitle}>{item.title}</Text>
+      <GradientText text={item.title} style={styles.rewardTitle} />
       <View style={styles.pointsBox}>
         <Image source={star} style={styles.pointsIcon} />
-        <Text style={styles.pointsValue}>{item.points}</Text>
+        <GradientText
+          text={item.points.toString()}
+          style={styles.pointsValue}
+        />
       </View>
     </View>
   );
@@ -86,14 +89,20 @@ const RewardScreen: React.FC = () => {
       <View style={styles.headerContainer}>
         <BackButton title="My Rewards" />
 
-        <TouchableOpacity style={styles.pointsContainer} onPress={()=>navigation.navigate("EarningPoints" as never)}>
+        <TouchableOpacity
+          style={styles.pointsContainer}
+          onPress={() => navigation.navigate('EarningPoints' as never)}
+        >
           <View style={styles.pointsRow}>
             <Image source={giftMultiColor} style={styles.giftMultiColorStyle} />
             <Text style={styles.pointsText}>{points} Points</Text>
           </View>
           <Image source={rightArrow} style={styles.rightArrowImage} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.pointsContainer} onPress={()=>navigation.navigate("RewardHistory" as never)}>
+        <TouchableOpacity
+          style={styles.pointsContainer}
+          onPress={() => navigation.navigate('RewardHistory' as never)}
+        >
           <View style={styles.pointsRow}>
             <Text style={styles.pointsText}>Reward History</Text>
           </View>
@@ -116,13 +125,18 @@ const RewardScreen: React.FC = () => {
               <View key={item.id} style={styles.taskCard}>
                 <View style={styles.cardLeftPortion}>
                   <Text style={styles.cardHeading}>Quick Win</Text>
-                  <Text style={styles.semiHeading}>{item.title}</Text>
+
+                  <GradientText text={item.title} style={styles.semiHeading} />
+
                   <View style={styles.row}>
                     <Image source={star} style={styles.starCardImage} />
-                    <Text style={styles.digits}>{item.points}</Text>
+                    <GradientText
+                      text={item.points.toString()}
+                      style={styles.semiHeading}
+                    />
                   </View>
                   <TouchableOpacity style={styles.cardBtn}>
-                    <Text style={styles.startText}>Start</Text>
+                    <GradientText text={'Start'} style={styles.startText} />
                   </TouchableOpacity>
                 </View>
                 <Image
@@ -239,7 +253,7 @@ const styles = StyleSheet.create({
   taskCard: {
     width: 220,
     backgroundColor: Colors.primaryWhite,
-    borderRadius: 12,
+    borderRadius: 5,
     marginRight: 15,
     padding: 15,
     flexDirection: 'row',
@@ -287,9 +301,11 @@ const styles = StyleSheet.create({
   },
   cardBtn: {
     borderWidth: 1,
-    borderRadius: 6,
-    paddingVertical: 5,
+    borderRadius: 2,
+    height: 30,
+    width: '70%',
     alignItems: 'center',
+    justifyContent: 'center',
     borderColor: Colors.blueBorder,
   },
   startText: {
@@ -313,13 +329,12 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.SemiBold,
     color: Colors.background,
   },
-
-  // --- Reward Card ---
   rewardCard: {
     flex: 1,
     backgroundColor: Colors.primaryWhite,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 30,
     margin: 6,
     alignItems: 'center',
     elevation: 4,
@@ -329,12 +344,15 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     minWidth: 100, // ✅ ensures 3 fit nicely
     maxWidth: 120,
+    marginBottom: 30,
   },
   giftImage: {
-    width: 60,
-    height: 60,
+    width: 90,
+    height: 90,
     resizeMode: 'contain',
     marginBottom: 10,
+    position: 'absolute',
+    top: -30,
   },
   rewardTitle: {
     fontSize: 13,
@@ -342,13 +360,14 @@ const styles = StyleSheet.create({
     color: Colors.darkblue,
     textAlign: 'center',
     marginBottom: 8,
+    marginTop: 20,
   },
   pointsBox: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.blueBorder,
-    borderRadius: 8,
+    borderRadius: 2,
     paddingHorizontal: 8,
     paddingVertical: 4,
     backgroundColor: '#F8FAFF',
