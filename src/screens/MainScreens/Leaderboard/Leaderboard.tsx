@@ -1,202 +1,346 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ScrollView,
+  StyleSheet,
   View,
+  Dimensions,
   Text,
+  Image,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
-  Image,
 } from 'react-native';
+import TrackingPoints from '../../../components/trackingPoints/trackingPoints';
 import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import Colors from '../../../utils/color';
+import {
+  fontScale,
   horizontalScale,
   verticalScale,
-  fontScale,
 } from '../../../utils/scale';
-import Colors from '../../../utils/color';
 import BackButton from '../../../components/BackButton';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Dropdown } from 'react-native-element-dropdown';
+import {
+  arrowdown,
+  arrowup,
+  medal,
+  medal2,
+  medal3,
+  user,
+} from '../../../assets/images';
 import { Fonts } from '../../../utils/Fonts';
-import { rank } from '../../../assets/images';
+import LinearGradient from 'react-native-linear-gradient';
 
-interface Leader {
-  id: string;
-  name: string;
-  points: number;
-  rank: number;
-}
+const LEVELS = [
+  { title: 'Bronze', min: 70, max: 200 },
+  { title: 'Silver', min: 201, max: 500 },
+  { title: 'Gold', min: 501, max: 1000 },
+  { title: 'Platinum', min: 1001, max: Infinity },
+];
 
-const sampleData: Record<string, Leader[]> = {
-  '7days': [
-    { id: '1', name: 'Echo Vibes', points: 120, rank: 1 },
-    { id: '2', name: 'Pixel Nomad', points: 100, rank: 2 },
-    { id: '3', name: 'Echo Vibes', points: 100, rank: 3 },
-  ],
-  '30days': [
-    { id: '1', name: 'Echo Vibes', points: 300, rank: 1 },
-    { id: '2', name: 'Pixel Nomad', points: 100, rank: 2 },
-    { id: '3', name: 'Echo Vibes', points: 100, rank: 3 },
-  ],
-  alltime: [
-    { id: '1', name: 'Echo Vibes', points: 100, rank: 1 },
-    { id: '2', name: 'Pixel Nomad', points: 100, rank: 2 },
-    { id: '3', name: 'Echo Vibes', points: 100, rank: 3 },
-  ],
-};
+const leaderboardData = [
+  { rank: 1, name: 'Alice', points: 1200 },
+  { rank: 2, name: 'Bob', points: 950 },
+  { rank: 3, name: 'Charlie', points: 800 },
+  { rank: 4, name: 'David', points: 600 },
+  { rank: 5, name: 'Eve', points: 500 },
+  { rank: 6, name: 'Eve', points: 500 },
+  { rank: 7, name: 'Eve', points: 500 },
+  { rank: 8, name: 'Eve', points: 500 },
+];
 
-export default function Leaderboard() {
-  const [selected, setSelected] = useState<'7days' | '30days' | 'alltime'>(
+const TAB_BAR_HEIGHT = verticalScale(35);
+
+const Leaderboard = () => {
+  const [userPoints, setUserPoints] = useState(0);
+  const [selectedWallet, setSelectedWallet] = useState(null);
+  const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState<'7days' | '30days' | 'alltime'>(
     '7days',
   );
-  const [leaders, setLeaders] = useState<Leader[]>(sampleData['7days']);
 
-  const tabs = [
-    { key: '7days', label: '7 Days' },
-    { key: '30days', label: '30 Days' },
-    { key: 'alltime', label: 'All Time' },
-  ];
+  useEffect(() => {
+    setUserPoints(300);
+  }, []);
 
-  const handleTabSelect = (key: '7days' | '30days' | 'alltime') => {
-    setSelected(key);
-    setLeaders(sampleData[key]);
+  const getProgress = (level: { min: number; max: number }) => {
+    if (userPoints < level.min) return 0;
+    if (userPoints >= level.max) return 1;
+    return (userPoints - level.min) / (level.max - level.min);
   };
-
-  const renderLeader = ({ item }: { item: Leader }) => (
-   
-      <View style={styles.rankRow}>
-        {/* Rank */}
-        <View style={styles.rank}>
-          <Image source={rank} style={styles.rankicon} />
-          <Text style={styles.rankText}>{item.rank}</Text>
-        </View>
-  
-        {/* Name */}
-        <View style={styles.nameBox}>
-          <Text style={styles.nameText}>{item.name}</Text>
-        </View>
-  
-        {/* Points */}
-        <View style={styles.pointsBox}>
-          <Text style={styles.pointsText}>{item.points} pts</Text>
-        </View>
-      </View>
-
-  );
-  
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton title='Leader Board' />
-
-      {/* Tabs */}
-      <View style={styles.tabsContainer}>
-        {tabs.map(tab => (
+      <BackButton title="Leader Board" />
+      <View style={styles.tabRow}>
+        {['7days', '30days', 'alltime'].map(tab => (
           <TouchableOpacity
-            key={tab.key}
-            onPress={() => handleTabSelect(tab.key as any)}
-            style={styles.tabButton}
+            key={tab}
+            style={styles.tabWrapper}
+            onPress={() => setActiveTab(tab)}
+            activeOpacity={0.7}
           >
             <Text
               style={[
                 styles.tabText,
-                selected === tab.key && {
-                  color: Colors.primaryBlue,
-                  fontFamily: Fonts.SemiBold,
-                },
+                activeTab === tab && styles.activeTabText,
               ]}
             >
-              {tab.label}
+              {tab === '7days'
+                ? '7 Days'
+                : tab === '30days'
+                ? '30 Days'
+                : 'All Time'}
             </Text>
-            {selected === tab.key && <View style={styles.underline} />}
+            <View
+              style={[styles.line, activeTab === tab && styles.activeLine]}
+            />
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Leaderboard list */}
-      <FlatList
-        data={leaders}
-        keyExtractor={item => item.id}
-        renderItem={renderLeader}
-        contentContainerStyle={{ paddingVertical: verticalScale(10) }}
-      />
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: verticalScale(220) }}
+      >
+        <View style={styles.rank}>
+          <View style={styles.rankbox}>
+            <View style={{ alignItems: 'center' }}>
+              <Image source={user} style={styles.rankicon} />
+              <Image source={medal2} style={styles.medalIcon} />
+            </View>
+            <Text style={styles.rankName}>Echo Vibes</Text>
+          </View>
+          <View
+            style={[
+              styles.rankbox,
+              { height: verticalScale(125), width: '35%' },
+            ]}
+          >
+            <View style={{ alignItems: 'center' }}>
+              <Image
+                source={user}
+                style={[
+                  styles.rankicon,
+                  { height: verticalScale(40), width: horizontalScale(40) },
+                ]}
+              />
+              <Image
+                source={medal}
+                style={[
+                  styles.medalIcon,
+                  {
+                    top: verticalScale(20),
+                    height: verticalScale(28),
+                    width: horizontalScale(28),
+                  },
+                ]}
+              />
+            </View>
+            <Text style={[styles.rankName, { fontSize: fontScale(13) }]}>
+              Pixal Nomad
+            </Text>
+          </View>
+          <View style={styles.rankbox}>
+            <View style={{ alignItems: 'center' }}>
+              <Image source={user} style={styles.rankicon} />
+              <Image source={medal3} style={styles.medalIcon} />
+            </View>
+            <Text style={styles.rankName}>Echo Vibes</Text>
+          </View>
+        </View>
+        <View
+          style={{
+            marginTop: verticalScale(10),
+            marginBottom: verticalScale(80),
+          }}
+        >
+          {LEVELS.map((level, idx) => (
+            <TrackingPoints
+              key={idx}
+              title={level.title}
+              pointsRange={`${level.min}${
+                level.max === Infinity ? '+' : ` - ${level.max}`
+              } points`}
+              progress={getProgress(level) * 100}
+            />
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Fixed bottom tracking points */}
+      <LinearGradient
+        colors={['#163A97', '#4364F7']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[
+          styles.bottomSection,
+          {
+            bottom: insets.bottom + TAB_BAR_HEIGHT,
+          },
+        ]}
+      >
+        <View style={styles.leaderboardHeader}>
+          <Text style={styles.headerText}>Rank</Text>
+          <Text style={styles.headerText}>Profile</Text>
+          <Text style={styles.headerText}>Profile Name</Text>
+          <Text style={styles.headerText}>Points</Text>
+        </View>
+
+        <FlatList
+          data={leaderboardData}
+          keyExtractor={item => item.rank.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.leaderboardRow}>
+              <View style={styles.parentsrow}>
+                <Text style={styles.rowText}>{item.rank}</Text>
+              </View>
+              <View style={styles.parentsrow}>
+                <Image source={user} style={{ height: 20, width: 20 }} />
+              </View>
+              <View style={[styles.parentsrow, { width: horizontalScale(70) }]}>
+                <Text style={styles.rowText}>{item.name}</Text>
+              </View>
+              <View style={styles.parentsrow}>
+                <Text style={styles.rowText}>{item.points}</Text>
+              </View>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+          style={{ marginTop: verticalScale(5) }}
+        />
+      </LinearGradient>
     </SafeAreaView>
   );
-}
+};
+
+export default Leaderboard;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+    paddingHorizontal: horizontalScale(10),
   },
-  tabsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: verticalScale(10),
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primaryBlack,
-  },
-  tabButton: {
-    alignItems: 'center',
-    paddingVertical: verticalScale(6),
+  content: {
     flex: 1,
   },
-  tabText: {
-    fontSize: fontScale(14),
-    color: Colors.primaryBlack,
-    fontFamily: Fonts.Medium,
-  },
-  underline: {
-    height: 2,
-    width: horizontalScale(40),
-    backgroundColor: Colors.primaryBlue,
-    borderRadius: 1,
-    marginTop: verticalScale(1),
-  },
-  rankRow: {
-    flexDirection: 'row',          // horizontal row
-    alignItems: 'center',
+  bottomSection: {
+    position: 'absolute',
+    width: Dimensions.get('window').width,
+    paddingHorizontal: horizontalScale(10),
     paddingVertical: verticalScale(10),
-    paddingHorizontal: horizontalScale(16),
+    backgroundColor: Colors.background,
+    borderTopRightRadius: 32,
+    borderTopLeftRadius: 32,
+    paddingBottom: verticalScale(15),
+    height: verticalScale(220),
+  },
+
+  leaderboardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: horizontalScale(12),
+    paddingVertical: verticalScale(8),
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#fff',
+  },
+  headerText: {
+    color: Colors.background,
+    fontSize: fontScale(15),
+    fontFamily: Fonts.SemiBold,
+  },
+  leaderboardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: horizontalScale(12),
+    paddingVertical: verticalScale(10),
+  },
+  rowText: {
+    color: Colors.background,
+    fontSize: fontScale(13),
+    fontFamily: Fonts.SemiBold,
+  },
+  parentsrow: {
+    height: horizontalScale(30),
+    width: verticalScale(30),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rank: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: verticalScale(10),
+  },
+  rankbox: {
+    height: verticalScale(110),
+    width: '30%',
+    backgroundColor: Colors.skylight,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    // Android shadow
+    elevation: 6,
+  },
+
+  rankicon: {
+    tintColor: Colors.darkblue,
+    height: verticalScale(30),
+    width: horizontalScale(30),
+    resizeMode: 'contain',
+  },
+  rankName: {
+    fontSize: fontScale(10),
+    color: Colors.primaryBlack,
+    fontFamily: Fonts.SemiBold,
+    marginTop: verticalScale(10),
+  },
+  medalIcon: {
+    height: verticalScale(20),
+    width: horizontalScale(20),
+    position: 'absolute',
+    top: verticalScale(15),
+  },
+  tabRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  
-  rank: {
-    flexDirection: 'row',          // icon + rank number
+
+  tabWrapper: {
+    flex: 1,
     alignItems: 'center',
-    width: '30%',                  // rank box 30% of row
   },
-  
-  
-  rankicon: {
-    width: horizontalScale(24),
-    height: verticalScale(24),
-    resizeMode: 'contain',
-    marginRight: horizontalScale(4),
-  },
-  
-  rankText: {
+
+  tabText: {
     fontSize: fontScale(14),
     fontFamily: Fonts.SemiBold,
+    color: Colors.primaryBlack,
+    paddingVertical: verticalScale(8),
   },
-  
-  nameBox: {
-    flex: 1,
-    paddingLeft: horizontalScale(8),
+
+  activeTabText: {
+    color: Colors.darkblue,
   },
-  
-  nameText: {
-    fontSize: fontScale(14),
-    fontFamily: Fonts.Medium,
+
+  line: {
+    height: verticalScale(2),
+    width: '100%',
+    backgroundColor: 'transparent',
   },
-  
-  pointsBox: {
-    width: '20%',
-    alignItems: 'flex-end',
+
+  activeLine: {
+    backgroundColor: Colors.darkblue,
   },
-  
-  pointsText: {
-    fontSize: fontScale(14),
-    fontFamily: Fonts.Medium,
-  },
-  
 });

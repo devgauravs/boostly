@@ -37,10 +37,12 @@ export const facebookLogin = async (dispatch: AppDispatch,userId?: string) => {
       return;
     }
     const data = await AccessToken.getCurrentAccessToken();
+
     if (!data) {
       Alert.alert("Error", "Unable to get Facebook access token");
       return;
     }
+    console.log("facebookLoginRespone==>",data)
     const fbAccessToken = data.accessToken.toString();
 
     const enpoint=userId===undefined ? ENDPOINTS.facebookLogin : ENDPOINTS?.facebookinsideLogin

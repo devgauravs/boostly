@@ -16,7 +16,6 @@ import Colors from '../../utils/color';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import Notification from '../../screens/MainScreens/Notification/Notification';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import leaderBoard from '../../screens/MainScreens/LeaderBoard.tsx/leaderBoard';
 import { RewardsStack } from '../RewardsStack';
 
 const Tab = createBottomTabNavigator();

@@ -172,12 +172,12 @@ const RewardScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       {/*  Header */}
       <SafeAreaView>
-     <View style={{paddingHorizontal:horizontalScale}}>
+     <View style={{paddingHorizontal:horizontalScale(0)}}>
      <BackButton title='My Reward'/>
      </View>
 
         {/*  Points Section */}
-        <TouchableOpacity style={styles.pointsContainer} onPress={()=>{console.log("fd;lkfdsk;ldfs;lkdfskl;dfs");navigation.navigate("LeaderBoard")}}>
+        <TouchableOpacity style={styles.pointsContainer} onPress={()=>{navigation.navigate("RewardHistory")}}>
           <Image source={InstagramIcon} style={styles.giftIcon} />
           <Text style={styles.pointsText}>{points} Points</Text>
           <Image

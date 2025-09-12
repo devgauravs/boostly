@@ -15,7 +15,8 @@ const Colors = {
   primary: '#388be4ff',
   skylight:"#E6EEF9",
   gray:"#ABABAB",
-  gray2:"#D9D9D9"
+  gray2:"#D9D9D9",
+  blue1:"#E6F1FD"
 
 };
 

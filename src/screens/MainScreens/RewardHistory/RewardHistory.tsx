@@ -1,0 +1,169 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  fontScale,
+  horizontalScale,
+  verticalScale,
+} from '../../../utils/scale';
+import Colors from '../../../utils/color';
+import { Fonts } from '../../../utils/Fonts';
+import GradientText from '../../../components/GradientText/GradientText';
+import {
+  facebook,
+  gift,
+  instagram,
+  star,
+  youtube,
+} from '../../../assets/images';
+import BackButton from '../../../components/BackButton';
+
+const RewardHistory = () => {
+  const [rewards] = useState([
+    { id: '1', title: '$10 Amazon Gift Card', date: '2025-09-01', points: 500 },
+    { id: '2', title: '$20 Flipkart Coupon', date: '2025-08-20', points: 300 },
+    { id: '3', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
+    { id: '4', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
+    { id: '5', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
+    { id: '6', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
+  ]);
+
+  const challenges = [
+    { id: '1', title: 'Post on Facebook', multiplier: '2x', icon: facebook },
+    { id: '2', title: 'Post on Instagram', multiplier: '2x', icon: instagram },
+    { id: '3', title: 'Post on YouTube', multiplier: '2x', icon: youtube },
+  ];
+
+  const renderReward = ({ item }) => (
+    <View style={styles.rewardCard}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        {/* Left side (gift + info) */}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Image
+            source={gift}
+            style={{ height: verticalScale(40), width: horizontalScale(40) }}
+          />
+          <View style={{ marginLeft: horizontalScale(10) }}>
+            <GradientText text={item.title} style={styles.rewardTitle} />
+            <GradientText text={item.date} style={styles.rewardDates} />
+          </View>
+        </View>
+
+        {/* Right side (Redeemed text) */}
+        <GradientText text={'Reedemed'} style={styles.redeemedText} />
+      </View>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Reward History */}
+      <BackButton title='Reward History'/>
+      <Text style={styles.sectionTitle}>Reward History</Text>
+      <View style={{ height: verticalScale(200) }}>
+        <FlatList
+          data={rewards}
+          renderItem={renderReward}
+          keyExtractor={item => item.id}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+
+      <Text style={styles.sectionTitle}>Challenges</Text>
+      <View style={styles.challengeContainer}>
+        {challenges.map(c => (
+          <TouchableOpacity key={c.id} style={styles.challengeCard}>
+            <Image source={c.icon} style={styles.socialIcon} />
+            <Image source={star} style={styles.starIcon} />
+            <View style={{ height: verticalScale(20) }}>
+              <Text style={styles.challengeText}>
+                {c.multiplier} points for quick posts
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default RewardHistory;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#F8F8F8',
+  },
+  sectionTitle: {
+    fontSize: fontScale(18),
+    fontFamily: Fonts.SemiBold,
+    marginVertical: 10,
+    color: Colors.primaryBlack,
+  },
+  rewardCard: {
+    padding: 10,
+    marginVertical: verticalScale(5),
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: Colors.darkblue,
+  },
+  rewardTitle: {
+    fontSize: fontScale(14),
+    fontFamily: Fonts.SemiBold,
+    color: '#333',
+  },
+  rewardPoints: {
+    fontSize: 14,
+    color: '#007AFF',
+    marginTop: 4,
+  },
+
+  challengeContainer: {},
+
+  challengeCard: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center', // vertically center
+    padding: 30,
+    marginHorizontal: horizontalScale(5),
+    borderRadius: 10,
+    backgroundColor: '#EAF4FF',
+    elevation: 2,
+    marginTop: verticalScale(10),
+  },
+
+  socialIcon: {
+    height: verticalScale(25),
+    width: horizontalScale(25),
+    resizeMode: 'contain',
+    marginRight: horizontalScale(8), // space between icons and text
+  },
+
+  starIcon: {
+    height: verticalScale(16),
+    width: horizontalScale(16),
+    resizeMode: 'contain',
+    marginRight: horizontalScale(8),
+  },
+
+  challengeText: {
+    fontSize: fontScale(14),
+    color: Colors.primaryBlack,
+    fontFamily: Fonts.SemiBold,
+  },
+});
