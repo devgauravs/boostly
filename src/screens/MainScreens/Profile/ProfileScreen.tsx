@@ -86,6 +86,7 @@ const ProfileScreen: React.FC = () => {
         /* ignore */
       }
       await Storage.removeItem(StorageKeys.USER_TOKEN);
+        await Storage.removeItem(StorageKeys.USER);
       dispatch(clearToken());
     } catch (err: any) {
       Alert.alert('Logout failed', err?.message || String(err));

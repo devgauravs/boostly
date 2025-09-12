@@ -52,7 +52,9 @@ const Notification = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
+
   console.log('facebookenToken', fbToken);
+    console.log("userSocialLogin",user?.withSoical)
   const getPost = async () => {
     setLoading(true);
     try {
@@ -184,7 +186,7 @@ const Notification = () => {
                 <Image source={facebook} style={styles.socialIcon} />
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.socialButton}
                 onPress={() => console.log('Instagram')}
               >
@@ -196,7 +198,7 @@ const Notification = () => {
                 onPress={() => console.log('YouTube')}
               >
                 <Image source={youtube} style={styles.socialIcon} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
