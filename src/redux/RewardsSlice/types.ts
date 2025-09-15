@@ -1,4 +1,4 @@
-import { Reward } from '../../services/RewardsService/types';
+import { PointsResponseData, Reward, TotalPointsResponse } from '../../services/RewardsService/types';
 
 export interface RewardsState {
   rewards: Reward[];
@@ -7,4 +7,5 @@ export interface RewardsState {
   totalCount: number;
   currentPage: number;
   hasMore: boolean;
-}
+  points:PointsResponseData[];
+  totalPoints:any}

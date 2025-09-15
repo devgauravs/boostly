@@ -1,12 +1,14 @@
 
 import { StyleSheet } from 'react-native';
+import Colors from '../../../utils/color';
+import { fontScale, verticalScale } from '../../../utils/scale';
+import { Fonts } from '../../../utils/Fonts';
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   scrollContainer: {
-    padding: 24,
     flexGrow: 1,
     justifyContent: 'center',
   },
@@ -23,20 +25,12 @@ export default StyleSheet.create({
     color: '#333',
     marginBottom: 24,
   },
-  
-  dot: {
-    marginHorizontal: 5,
-    color: '#007AFF',
-    fontSize: 16,
-  },
-  footer: {
-    alignItems: 'center',
-    marginTop: 32,
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
-  },
+
+  ForgotLable: {
+    fontSize: fontScale(26),
+    fontFamily: Fonts.SemiBold,
+    marginBottom: verticalScale(10),
+    textAlign: 'left',
+  }
 });
 

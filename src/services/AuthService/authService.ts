@@ -18,6 +18,7 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
+      console.log("erorr==>",error)
       throw error.response;
     }
   }
@@ -103,6 +104,19 @@ export class AuthService {
     try {
       const response = await apiClient.get<AuthResponse>(
         `${ENDPOINTS.getProfile}/${userId}`,
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  static async verifyOtp(email: string): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>(
+        `${ENDPOINTS.verifyOtp}`,{
+          email
+        }
       );
       return response.data;
     } catch (error: any) {

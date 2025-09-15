@@ -35,6 +35,8 @@ import { postToPage } from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
 import { facebookLogin } from '../../../utils/AuthHelper';
+import ConfirmationModal from '../../../components/confirmationModal/ConfirmationModal';
+import CongratulationModal from '../../../components/CongratulationModal/CongratulationModal';
 
 interface Post {
   _id: string;
@@ -52,9 +54,11 @@ const Notification = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+const [congratsVisible, setCongratsVisible] = useState(false);
 
   console.log('facebookenToken', fbToken);
-    console.log("userSocialLogin",user?.withSoical)
+  console.log('userSocialLogin', user?.withSoical);
   const getPost = async () => {
     setLoading(true);
     try {
@@ -176,11 +180,9 @@ const Notification = () => {
               <TouchableOpacity
                 style={styles.socialButton}
                 onPress={async () => {
-                  setLoading(true);
-                  await postToPage(selectedPost, userId, 'accept');
                   setLoading(false);
                   setModalVisible(false);
-                  getPost();
+                  setConfirmModalVisible(true);
                 }}
               >
                 <Image source={facebook} style={styles.socialIcon} />
@@ -227,6 +229,31 @@ const Notification = () => {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+      <ConfirmationModal
+        visible={confirmModalVisible}
+        title="Confirm Approval"
+        message="Are you sure you want to approve this post on Facebook?"
+        confirmText="Yes, Approve"
+        cancelText="Cancel"
+        onConfirm={async () => {
+          setConfirmModalVisible(false);
+          if (selectedPost) {
+            setLoading(true);
+            await postToPage(selectedPost, userId, 'accept');
+            setLoading(false);
+             setCongratsVisible(true);
+            getPost();
+          }
+        }}
+        onCancel={() => setConfirmModalVisible(false)}
+      />
+      <CongratulationModal
+  visible={congratsVisible}
+  message="Your post is now live on Facebook!"
+  onClose={() => setCongratsVisible(false)}
+/>
+
     </SafeAreaView>
   );
 };

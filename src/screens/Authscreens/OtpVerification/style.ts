@@ -1,34 +1,31 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../../utils/color';
+import { fontScale, horizontalScale, verticalScale } from '../../../utils/scale';
+import { Fonts } from '../../../utils/Fonts';
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
-  logo: {
-     width: 250,
-    height: 150,
-    alignSelf: 'center',
-    marginTop: -70,
-    marginBottom: 30,
-  },
+
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 10,
+    fontSize: fontScale(26),
+    fontFamily: Fonts.SemiBold,
+    color: Colors.primaryBlack,
+   
   },
   description: {
-    fontSize: 16,
-    color: '#777',
-    textAlign: 'center',
-    marginBottom: 40,
+    fontSize: fontScale(14),
+    color: Colors.primaryBlack,
+    marginBottom: verticalScale(30),
+    fontFamily: Fonts.SemiBold,
+
   },
   otpContainer: {
     flexDirection: 'row',
@@ -36,13 +33,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   otpInput: {
-    width: 60,
-    height: 60,
-    borderWidth: 2,
-    borderColor: '#ccc',
+    width: horizontalScale(30),
+    height: verticalScale(42),
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: '500',
     borderRadius: 8,
   },
   resendText: {

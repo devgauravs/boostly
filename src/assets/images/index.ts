@@ -20,6 +20,7 @@ import medal2 from '../icons/medal2.png'
 import medal3 from '../icons/medal3.png'
 import giftCard from '../images/giftCard.png';
 import giftMultiColor from '../images/giftMultiColor.png';
+import congrats from '../icons/congrats.png'
 
 export {
   postImage,
@@ -44,4 +45,5 @@ export {
   medal3,
   giftCard,
   giftMultiColor,
+  congrats
 };

@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
   ScrollView,
   Image,
   KeyboardAvoidingView,
@@ -14,6 +13,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { RouteStack } from '../../../navigation/types';
 import styles from './style';
+import AuthScreenWrapper from '../AuthScreenWrapper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Input from '../../../components/Input';
 
 const OtpVerification = () => {
   const navigation = useNavigation<RouteStack>();
@@ -37,56 +39,54 @@ const OtpVerification = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
+    <AuthScreenWrapper>
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <Image
-            source={require('../../../assets/images/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.title}>OTP Verification</Text>
-          <Text style={styles.description}>
-            Please enter the OTP sent to your registered phone number to
-            complete your verification.
-          </Text>
-
-          <View style={styles.otpContainer}>
-            {otp.map((digit, index) => (
-              <TextInput
-                key={index}
-                style={styles.otpInput}
-                value={digit}
-                onChangeText={text => handleOtpChange(text, index)}
-                keyboardType="numeric"
-                maxLength={1}
-              />
-            ))}
-          </View>
-
-          <TouchableOpacity onPress={handleResendOtp}>
-            <Text style={styles.resendText}>Didn't Get The Code? Resend</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.verifyButton} onPress={handleVerify}>
-            <Text style={styles.verifyText}>Verify</Text>
-          </TouchableOpacity>
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              Terms & Conditions <Text style={styles.dot}>•</Text> Privacy
-              Policy
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={styles.title}>OTP Verification</Text>
+            <Text style={styles.description}>
+              Please enter the OTP (One-Time Password) sent to your registered
+              phone number to complete your verification.
             </Text>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+            <View style={styles.otpContainer}>
+              {otp.map((digit, index) => (
+                // <TextInput
+                //   key={index}
+                //   style={styles.otpInput}
+                //   value={digit}
+                //   onChangeText={text => handleOtpChange(text, index)}
+                //   keyboardType="numeric"
+                //   maxLength={1}
+                // />
+                 <Input
+            keyboardType="email-address"
+            style={styles.otpInput}
+            borderRadius={3}
+          />
+              ))}
+            </View>
+
+            <TouchableOpacity onPress={handleResendOtp}>
+              <Text style={styles.resendText}>Didn't Get The Code? Resend</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.verifyButton}
+              onPress={handleVerify}
+            >
+              <Text style={styles.verifyText}>Verify</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </AuthScreenWrapper>
   );
 };
 

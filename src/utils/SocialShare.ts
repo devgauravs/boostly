@@ -24,7 +24,7 @@ export const postToPage = async (
   };
 
   console.log("paramdata==>", data);
-  try {
+    try {
     const response = await axios.post(
       `${BASE_URL}${ENDPOINTS.media_Action}`,
       data, 

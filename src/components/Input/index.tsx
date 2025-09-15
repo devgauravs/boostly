@@ -18,16 +18,19 @@ interface InputProps extends TextInputProps {
   secureText?: boolean;
   wrapperStyle?: object;
   suffix?: React.ReactNode;
+  borderRadius?:number
 }
 
 const Input: React.FC<InputProps> = ({
   label,
   error,
+  borderRadius,
   secureText = false,
   wrapperStyle, // use this
   suffix,
   secureTextEntry, // Extract this from rest props
   ...rest
+  
 }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
@@ -43,7 +46,7 @@ const Input: React.FC<InputProps> = ({
         end={{ x: 1, y: 0 }}
         style={styles.gradientBorder}
       >
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper,{borderRadius}]}>
           {suffix}
 
           <TextInput

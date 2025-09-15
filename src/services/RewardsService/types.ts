@@ -23,3 +23,32 @@ export interface GetRewardsParams {
   category?: string;
   isActive?: boolean;
 }
+
+
+
+export interface PointsResponse {
+  success: boolean
+  count: number
+  data: PointsResponseData[]
+}
+
+export interface PointsResponseData {
+  _id: string
+  title: string
+  price: number
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export interface TotalPointsResponse {
+  success: boolean
+  userId: string
+  type: string
+  verifiedPoints: number
+  pendingPoints: number
+  totalWithPending: number
+}
+
+
+

@@ -166,6 +166,34 @@ export const getProfile = createAsyncThunk(
   },
 );
 
+export const verifyOtp = createAsyncThunk(
+  'auth/verifyOtp',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await AuthService.verifyOtp(email);
+      // await Storage.setItem(StorageKeys.USER, JSON.stringify(response));
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to get profile';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+
+
 // Initialize auth state from storage
 export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
@@ -319,7 +347,21 @@ const authSlice = createSlice({
       .addCase(initializeAuth.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(verifyOtp.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // you can update user or other state here if needed
+        state.error = null;
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
+
   },
 });
 
