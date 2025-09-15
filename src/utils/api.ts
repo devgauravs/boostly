@@ -15,6 +15,7 @@ export const ENDPOINTS = {
   getRewards: '/get-reward',
   getPoints: '/get-points-to-win',
   totalPoints: '/user-total-points',
-  verifyOtp: '/forgot-password',
-  resetPassord: '/reset-password',
+  sendOtp: '/forgot-password',
+  verifyOtp: '/verify-otp',
+  resetPassword: 'reset-password',
 };

@@ -35,7 +35,7 @@ const HomeScreen = () => {
     (state: RootState) => state.rewards,
   );
 
-  console.log('totalPoints', totalPoints?.totalPoints);
+  console.log('totalPoints', totalPoints);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (user?._id) {
@@ -80,7 +80,7 @@ const HomeScreen = () => {
       <Text style={styles.title}>You have Earned Points</Text>
       <Text style={styles.points}>
         {totalPoints
-          ? `${totalPoints?.totalPoints} Points`
+          ? `${totalPoints?.totalPoints ?? "You have no"} Points`
           : 'You have no points'}
       </Text>
 

@@ -112,10 +112,10 @@ export class AuthService {
     }
   }
 
-  static async verifyOtp(email: string): Promise<AuthResponse> {
+  static async sendOtp(email: string): Promise<AuthResponse> {
     try {
       const response = await apiClient.post<AuthResponse>(
-        `${ENDPOINTS.verifyOtp}`,
+        `${ENDPOINTS.sendOtp}`,
         {
           email,
         },
@@ -125,12 +125,27 @@ export class AuthService {
       throw error;
     }
   }
+  static async verifyOtp(email: string, otp: string): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>(
+        `${ENDPOINTS.verifyOtp}`,
+        {
+          email,
+          otp,
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
 
-  // Reset password API call
-  static async resetPassword(passwordData: ResetPasswordData): Promise<any> {
+  static async resetPassword(
+    passwordData: ResetPasswordData,
+  ): Promise<AuthResponse> {
     try {
       const response = await apiClient.post<any>(
-        ENDPOINTS.resetPassord,
+        ENDPOINTS.resetPassword,
         passwordData,
       );
       return response.data;

@@ -28,7 +28,7 @@ export class pointService {
   // Get rewards API call
   static async getPoints(): Promise<any> {
     try {
-      const response = await apiClient.post<PointsResponse>(
+      const response = await apiClient.get<PointsResponse>(
         ENDPOINTS.getPoints,
       );
       return response.data;

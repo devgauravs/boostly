@@ -5,6 +5,6 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native"
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/screens/MainScreens/EearningPoints"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

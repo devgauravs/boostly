@@ -30,30 +30,25 @@ const styles = StyleSheet.create({
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    paddingHorizontal:horizontalScale(20),
+    alignItems:"center"
+
   },
   otpInput: {
     width: horizontalScale(30),
     height: verticalScale(42),
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: fontScale(22),
     borderRadius: 8,
   },
   resendText: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#007bff',
-    textAlign: 'center',
-    marginBottom: 20,
+    fontSize: fontScale(14),
+    color: Colors.primaryBlack,
+    fontFamily:Fonts.Regular,
+    textAlign:"right",
+    marginVertical:verticalScale(20)
   },
-  verifyButton: {
-    backgroundColor: '#3d80f5ff',
-    width: '80%',
-    paddingVertical: 15,
-    borderRadius: 8,
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
+
   verifyText: {
     fontSize: 18,
     fontWeight: '500',
