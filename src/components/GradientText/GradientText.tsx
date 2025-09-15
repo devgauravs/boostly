@@ -3,9 +3,8 @@ import React from 'react';
 import { Text, TextStyle } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-
 interface GradientTextProps {
-  text: string;
+  text: string | number;
   style?: TextStyle | TextStyle[];
   colors?: string[];
 }

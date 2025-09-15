@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { FC, useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,66 +11,28 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { gift, giftMultiColor, rightArrow, star } from '../../../assets/images';
 import BackButton from '../../../components/BackButton';
 import Container from '../../../components/Container';
+import GradientText from '../../../components/GradientText/GradientText';
 import { fetchRewards } from '../../../redux/RewardsSlice/RewardsSlice';
 import { AppDispatch, RootState } from '../../../redux/store';
-import {
-  giftCard,
-  giftMultiColor,
-  rightArrow,
-  star,
-} from '../../../assets/images';
+import { Reward } from '../../../services/RewardsService/types';
 import { Fonts } from '../../../utils/Fonts';
 import Colors from '../../../utils/color';
-import GradientText from '../../../components/GradientText/GradientText';
-import {
-  fontScale,
-  horizontalScale,
-  verticalScale,
-} from '../../../utils/scale';
+import { fontScale, horizontalScale } from '../../../utils/scale';
 
-const rewardsData = [
-  { id: '1', title: '$10 Amazon Gift Card', points: 250, image: giftCard },
-  { id: '2', title: '$20 Amazon Gift Card', points: 500, image: giftCard },
-  { id: '3', title: '$25 Amazon Gift Card', points: 600, image: giftCard },
-  { id: '4', title: '$50 Amazon Gift Card', points: 1200, image: giftCard },
-  { id: '5', title: '$25 Amazon Gift Card', points: 600, image: giftCard },
-  { id: '6', title: '$50 Amazon Gift Card', points: 1200, image: giftCard },
-];
-
-const taskData = [
-  { id: '1', title: 'Facebook Post', points: 50, image: giftCard },
-  { id: '2', title: 'Instagram Story', points: 75, image: giftCard },
-  { id: '3', title: 'Share App with Friends', points: 100, image: giftCard },
-  { id: '4', title: 'Daily Login Bonus', points: 25, image: giftCard },
-];
-
-interface Reward {
-  id: string;
-  title: string;
-  points: number;
-  image: string;
-}
-
-const RewardCard = ({ item }: { item: Reward }) => {
+const RewardCard: FC<{ item: Reward }> = ({ item }) => {
   return (
     <View style={styles.rewardCard}>
-      <Image
-        source={
-          typeof item.image === 'string' ? { uri: item.image } : item.image
-        }
-        style={styles.giftImage}
-      />
-      <GradientText text={item.title} style={styles.rewardTitle} />
-      <View style={styles.pointsBox}>
-        <Image source={star} style={styles.pointsIcon} />
-        <GradientText
-          text={item.points.toString()}
-          style={styles.pointsValue}
-        />
+      <Image source={gift} style={[styles.giftImage]} />
+      <View style={{ marginTop: 35, alignItems: 'center' }}>
+        <GradientText text={item.title} style={styles.rewardTitle} />
+        <View style={styles.pointsBox}>
+          <Image source={star} style={styles.pointsIcon} />
+          <GradientText text={item.price} style={styles.pointsValue} />
+        </View>
       </View>
     </View>
   );
@@ -121,34 +85,68 @@ const RewardScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             style={styles.scrollViewContainer}
           >
-            {taskData.map(item => (
-              <View key={item.id} style={styles.taskCard}>
-                <View style={styles.cardLeftPortion}>
-                  <Text style={styles.cardHeading}>Quick Win</Text>
-
-                  <GradientText text={item.title} style={styles.semiHeading} />
-
-                  <View style={styles.row}>
-                    <Image source={star} style={styles.starCardImage} />
+            {[1, 2, 3, 4].map(() => {
+              return (
+                <View style={styles.taskCard}>
+                  <View
+                    style={{
+                      flex: 1,
+                      padding: 8,
+                    }}
+                  >
+                    <Text style={{ fontSize: 10, fontFamily: Fonts.SemiBold }}>
+                      Quick Win
+                    </Text>
                     <GradientText
-                      text={item.points.toString()}
-                      style={styles.semiHeading}
+                      text={'Facebook post'}
+                      style={styles.facebookText}
+                    />
+
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: -4,
+                      }}
+                    >
+                      <Image
+                        source={star}
+                        style={{ height: 21, width: 21 }}
+                        resizeMode="contain"
+                      />
+                      <GradientText text={'50'} style={styles.facebookText} />
+                    </View>
+
+                    <Pressable
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        width: horizontalScale(60),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderColor: Colors.darkblue,
+                        marginTop: 6,
+                      }}
+                    >
+                      <GradientText text={'Start'} style={styles.startText} />
+                    </Pressable>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <Image
+                      source={gift}
+                      style={{
+                        height: 88,
+                        width: 88,
+                      }}
                     />
                   </View>
-                  <TouchableOpacity style={styles.cardBtn}>
-                    <GradientText text={'Start'} style={styles.startText} />
-                  </TouchableOpacity>
                 </View>
-                <Image
-                  source={
-                    typeof item.image === 'string'
-                      ? { uri: item.image }
-                      : item.image
-                  }
-                  style={styles.cardGiftImage}
-                />
-              </View>
-            ))}
+              );
+            })}
           </ScrollView>
 
           {/* Rewards Section */}
@@ -171,9 +169,9 @@ const RewardScreen: React.FC = () => {
       >
         <FlatList
           ListHeaderComponent={RenderHeader}
-          data={rewardsData}
+          data={rewards || []}
           renderItem={({ item }) => <RewardCard item={item} />}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           numColumns={3}
           columnWrapperStyle={styles.columnWrapper}
           contentContainerStyle={styles.flatListContent}
@@ -247,20 +245,17 @@ const styles = StyleSheet.create({
   // --- Task Cards ---
   scrollViewContainer: {
     marginTop: 20,
-    marginLeft: 20,
+    marginLeft: 15,
     paddingRight: 20,
   },
   taskCard: {
-    width: 220,
-    backgroundColor: Colors.primaryWhite,
+    backgroundColor: Colors.background,
     borderRadius: 5,
-    marginRight: 15,
-    padding: 15,
     flexDirection: 'row',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 7,
+    marginRight: 8,
   },
   cardLeftPortion: {
     flex: 1,
@@ -309,9 +304,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.blueBorder,
   },
   startText: {
-    color: Colors.blueBorder,
+    color: Colors.darkblue,
     fontSize: 13,
-    fontFamily: Fonts.Bold,
+    fontFamily: Fonts.SemiBold,
+    marginTop: 2,
+  },
+  facebookText: {
+    color: Colors.blueBorder,
+    fontSize: 15,
+    fontFamily: Fonts.SemiBold,
+    marginTop: 2,
   },
   exclusiveCardsContainer: {
     marginTop: 25,
@@ -333,8 +335,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primaryWhite,
     borderRadius: 5,
-    paddingHorizontal: 16,
-    paddingVertical: 30,
+    paddingHorizontal: 5,
+    paddingVertical: 8,
     margin: 6,
     alignItems: 'center',
     elevation: 4,
@@ -343,7 +345,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     minWidth: 100, // ✅ ensures 3 fit nicely
-    maxWidth: 120,
+    maxWidth: 115,
     marginBottom: 30,
   },
   giftImage: {
@@ -353,6 +355,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: 'absolute',
     top: -30,
+    transform: [{ rotate: '350deg' }],
   },
   rewardTitle: {
     fontSize: 13,
@@ -369,8 +372,9 @@ const styles = StyleSheet.create({
     borderColor: Colors.blueBorder,
     borderRadius: 2,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 1,
     backgroundColor: '#F8FAFF',
+    width: horizontalScale(60),
   },
   pointsIcon: {
     width: 14,

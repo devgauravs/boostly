@@ -2,12 +2,12 @@ export interface Reward {
   _id: string;
   title: string;
   description: string;
-  points: number;
   category: string;
   imageUrl?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  price: number;
 }
 
 export interface RewardsResponse {
@@ -24,31 +24,26 @@ export interface GetRewardsParams {
   isActive?: boolean;
 }
 
-
-
 export interface PointsResponse {
-  success: boolean
-  count: number
-  data: PointsResponseData[]
+  success: boolean;
+  count: number;
+  data: PointsResponseData[];
 }
 
 export interface PointsResponseData {
-  _id: string
-  title: string
-  price: number
-  createdAt: string
-  updatedAt: string
-  __v: number
+  _id: string;
+  title: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface TotalPointsResponse {
-  success: boolean
-  userId: string
-  type: string
-  verifiedPoints: number
-  pendingPoints: number
-  totalWithPending: number
+  success: boolean;
+  userId: string;
+  type: string;
+  verifiedPoints: number;
+  pendingPoints: number;
+  totalWithPending: number;
 }
-
-
-
