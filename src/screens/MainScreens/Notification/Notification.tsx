@@ -55,10 +55,9 @@ const Notification = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
-const [congratsVisible, setCongratsVisible] = useState(false);
+  const [congratsVisible, setCongratsVisible] = useState(false);
+  const [approveAllPost, setApproveAllPost] = useState(false);
 
-  console.log('facebookenToken', fbToken);
-  console.log('userSocialLogin', user?.withSoical);
   const getPost = async () => {
     setLoading(true);
     try {
@@ -78,6 +77,11 @@ const [congratsVisible, setCongratsVisible] = useState(false);
       // handleFetchPages();
     }, []),
   );
+  const ApproveAll = () => {
+    if (posts.length === 0) return;
+    setApproveAllPost(true);
+    setConfirmModalVisible(true); // show confirmation modal
+  };
 
   const handleFacebookLogin = () => {
     facebookLogin(dispatch, user?._id);
@@ -149,6 +153,11 @@ const [congratsVisible, setCongratsVisible] = useState(false);
               <Text style={{ fontSize: 16, color: 'gray' }}>No data found</Text>
             </View>
           )}
+        />
+        <Button
+          title="Approve all"
+          style={styles.footButton}
+          onPress={ApproveAll}
         />
       </View>
 
@@ -242,18 +251,50 @@ const [congratsVisible, setCongratsVisible] = useState(false);
             setLoading(true);
             await postToPage(selectedPost, userId, 'accept');
             setLoading(false);
-             setCongratsVisible(true);
+            setCongratsVisible(true);
             getPost();
           }
         }}
         onCancel={() => setConfirmModalVisible(false)}
       />
-      <CongratulationModal
-  visible={congratsVisible}
-  message="Your post is now live on Facebook!"
-  onClose={() => setCongratsVisible(false)}
-/>
+      {/* <ConfirmationModal
+        visible={confirmModalVisible}
+        title="Confirm Approval"
+        message={
+          approveAllPost
+            ? 'Are you sure you want to approve all posts on Facebook?'
+            : 'Are you sure you want to approve this post on Facebook?'
+        }
+        confirmText={approveAllPost ? 'Yes, Approve All' : 'Yes, Approve'}
+        cancelText="Cancel"
+        onConfirm={async () => {
+          setConfirmModalVisible(false);
+          setLoading(true);
 
+          try {
+            if (approveAllPost) {
+              // Call your ApproveAll API
+              await postToPage(userId);
+            } else if (selectedPost) {
+              // Single post approval
+              await postToPage(selectedPost, userId, 'accept');
+            }
+
+            setCongratsVisible(true);
+            getPost(); // refresh posts
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setLoading(false);
+          }
+        }}
+        onCancel={() => setConfirmModalVisible(false)}
+      /> */}
+
+      <CongratulationModal
+        visible={congratsVisible}
+        onClose={() => setCongratsVisible(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -386,5 +427,11 @@ const styles = StyleSheet.create({
     color: Colors.darkblue,
     fontSize: fontScale(18),
     fontFamily: Fonts.SemiBold,
+  },
+  footButton: {
+    position: 'absolute',
+    width: '82%',
+    alignSelf: 'center',
+    bottom: 0,
   },
 });
