@@ -7,6 +7,7 @@ import {
   LoginCredentials,
   RegisterData,
   UpdateProfileParams,
+  ResetPasswordData,
 } from './types';
 
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
-      console.log("erorr==>",error)
+      console.log('erorr==>', error);
       throw error.response;
     }
   }
@@ -114,9 +115,23 @@ export class AuthService {
   static async verifyOtp(email: string): Promise<AuthResponse> {
     try {
       const response = await apiClient.post<AuthResponse>(
-        `${ENDPOINTS.verifyOtp}`,{
-          email
-        }
+        `${ENDPOINTS.verifyOtp}`,
+        {
+          email,
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  // Reset password API call
+  static async resetPassword(passwordData: ResetPasswordData): Promise<any> {
+    try {
+      const response = await apiClient.post<any>(
+        ENDPOINTS.resetPassord,
+        passwordData,
       );
       return response.data;
     } catch (error: any) {

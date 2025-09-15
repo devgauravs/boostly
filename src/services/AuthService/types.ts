@@ -24,6 +24,11 @@ export interface UpdateProfileParams {
   countryCode?: string;
 }
 
+export interface ResetPasswordData {
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -43,5 +48,5 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   __v: number;
-  withSoical?:boolean
+  withSoical?: boolean;
 }

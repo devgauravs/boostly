@@ -7,6 +7,7 @@ import {
   LoginCredentials,
   RegisterData,
   UpdateProfileParams,
+  ResetPasswordData,
   User,
 } from '../services/AuthService/types';
 import Toast from 'react-native-toast-message';
@@ -193,6 +194,31 @@ export const verifyOtp = createAsyncThunk(
   },
 );
 
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (passwordData: ResetPasswordData, { rejectWithValue }) => {
+    try {
+      const response = await AuthService.resetPassword(passwordData);
+      Toast.show({
+        text1: 'Success',
+        text2: response.message || 'Password reset successful',
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to reset password';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
 
 // Initialize auth state from storage
 export const initializeAuth = createAsyncThunk(
@@ -360,8 +386,19 @@ const authSlice = createSlice({
       .addCase(verifyOtp.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(resetPassword.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
-
   },
 });
 

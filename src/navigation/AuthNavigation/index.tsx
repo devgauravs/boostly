@@ -13,7 +13,7 @@ export function AuthNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="SignIn"
+      initialRouteName={RouteNames.SignIn}
     >
       <Stack.Screen name={RouteNames.SignUp} component={Signup} />
       <Stack.Screen name={RouteNames.SignIn} component={SignIn} />

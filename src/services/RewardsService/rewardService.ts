@@ -1,7 +1,12 @@
 // src/services/RewardsService/rewardService.ts
 import apiClient from '../../utils/apiInterceptor';
 import { ENDPOINTS } from '../../utils/api';
-import { RewardsResponse, GetRewardsParams, PointsResponse, TotalPointsResponse } from './types';
+import {
+  RewardsResponse,
+  GetRewardsParams,
+  PointsResponse,
+  TotalPointsResponse,
+} from './types';
 import Toast from 'react-native-toast-message';
 
 export class RewardsService {
@@ -37,8 +42,8 @@ export class totalPointsService {
   static async getTotalPoints(userId: string): Promise<TotalPointsResponse> {
     const endpoint = `${ENDPOINTS.totalPoints}/${userId}`;
     try {
-      const response = await apiClient.get(endpoint);
-      return response.data; 
+      const response = await apiClient.get<TotalPointsResponse>(endpoint);
+      return response.data;
     } catch (error: any) {
       throw error;
     }

@@ -1,4 +1,4 @@
-import { verifyOtp } from "../redux/AuthSlice";
+import { verifyOtp } from '../redux/AuthSlice';
 
 // src/utils/api.ts
 export const BASE_URL = 'https://a6364843ce24.ngrok-free.app/api/v1';
@@ -13,7 +13,8 @@ export const ENDPOINTS = {
   getProfile: '/get-profile',
   updateProfile: '/edit-profile/',
   getRewards: '/get-reward',
-  getPoints:'/get-points-to-win',
-  totalPoints:'/user-total-points',
-  verifyOtp:'/forgot-password'
+  getPoints: '/get-points-to-win',
+  totalPoints: '/user-total-points',
+  verifyOtp: '/forgot-password',
+  resetPassord: '/reset-password',
 };

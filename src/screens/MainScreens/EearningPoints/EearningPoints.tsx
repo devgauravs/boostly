@@ -38,7 +38,7 @@ const EearningPoints = () => {
   const [userPoints, setUserPoints] = useState(0);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const insets = useSafeAreaInsets();
-const navigation=useNavigation();
+  const navigation = useNavigation();
   useEffect(() => {
     setUserPoints(300);
   }, []);
@@ -61,7 +61,6 @@ const navigation=useNavigation();
       <BackButton title="Earning & Points Tracking" />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-  
         <View
           style={{ paddingVertical: 20, backgroundColor: Colors.background }}
         >
@@ -73,7 +72,9 @@ const navigation=useNavigation();
             valueField="value"
             placeholder="Wallet"
             value={selectedWallet}
-            onChange={item => {null}} // do nothing when item clicked
+            onChange={item => {
+              null;
+            }} // do nothing when item clicked
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             containerStyle={styles.dropdownContainer}
@@ -99,8 +100,6 @@ const navigation=useNavigation();
         <View style={{}} />
       </ScrollView>
 
-
-
       {/* Fixed bottom tracking points */}
       <View
         style={[
@@ -110,7 +109,14 @@ const navigation=useNavigation();
           },
         ]}
       >
-        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:verticalScale(15)}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: verticalScale(15),
+          }}
+        >
           <Text style={styles.itemLabel}>Points System</Text>
           <Text style={styles.itemLabel}>Levels</Text>
         </View>
@@ -124,12 +130,12 @@ const navigation=useNavigation();
             progress={getProgress(level) * 100}
           />
         ))}
-              <TouchableOpacity
-  style={styles.leaderboardButton}
-  onPress={() => navigation.navigate('LeaderBoard')}
->
-  <Text style={styles.leaderboardButtonText}>Go to Leaderboard</Text>
-</TouchableOpacity>
+        <TouchableOpacity
+          style={styles.leaderboardButton}
+          onPress={() => navigation.navigate('LeaderBoard')}
+        >
+          <Text style={styles.leaderboardButtonText}>Go to Leaderboard</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -195,23 +201,22 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.SemiBold,
   },
   leaderboardButton: {
-  backgroundColor: '#4364F7', // blue color
-  paddingVertical: verticalScale(12),
-  paddingHorizontal: horizontalScale(20),
-  borderRadius: 10,
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginVertical: verticalScale(20),
-  elevation: 3, // shadow Android
-  shadowColor: '#000', // shadow iOS
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-},
-leaderboardButtonText: {
-  color: '#fff',
-  fontSize: fontScale(16),
-  fontFamily: Fonts.SemiBold,
-},
-
+    backgroundColor: '#4364F7', // blue color
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: horizontalScale(20),
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: verticalScale(20),
+    elevation: 3, // shadow Android
+    shadowColor: '#000', // shadow iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  leaderboardButtonText: {
+    color: '#fff',
+    fontSize: fontScale(16),
+    fontFamily: Fonts.SemiBold,
+  },
 });
