@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AuthScreenWrapper from '../AuthScreenWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
-import { verifyOtp } from '../../../redux/AuthSlice';
+import { sendOtp, verifyOtp } from '../../../redux/AuthSlice';
 import Toast from 'react-native-toast-message';
 
 const ForgotPassword = ({ navigation }: any) => {
@@ -32,13 +32,13 @@ const ForgotPassword = ({ navigation }: any) => {
       return;
     }
     try {
-      await dispatch(verifyOtp(email)).unwrap(); 
+      await dispatch(sendOtp(email)).unwrap(); 
       Toast.show({
         type: 'success',
         text1: 'Success',
         text2: 'OTP sent to your email',
       });
-      navigation.navigate("OtpVerification")
+      navigation.navigate("OtpVerification",{email:email})
     } catch (error) {
       console.log('OTP verification error:', error);
     }

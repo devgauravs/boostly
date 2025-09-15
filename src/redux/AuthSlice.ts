@@ -167,11 +167,37 @@ export const getProfile = createAsyncThunk(
   },
 );
 
-export const verifyOtp = createAsyncThunk(
+export const sendOtp = createAsyncThunk(
   'auth/verifyOtp',
   async (email: string, { rejectWithValue }) => {
     try {
-      const response = await AuthService.verifyOtp(email);
+      const response = await AuthService.sendOtp(email);
+      // await Storage.setItem(StorageKeys.USER, JSON.stringify(response));
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to get profile';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+export const verifyOtp = createAsyncThunk(
+  'auth/verifyOtp',
+  async ({email,otp}:{ email: string; otp: string} ,{ rejectWithValue }) => {
+    try {
+      const response = await AuthService.verifyOtp(email,otp);
       // await Storage.setItem(StorageKeys.USER, JSON.stringify(response));
       Toast.show({
         text1: 'Success',

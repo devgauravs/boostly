@@ -13,8 +13,8 @@ export const ENDPOINTS = {
   getProfile: '/get-profile',
   updateProfile: '/edit-profile/',
   getRewards: '/get-reward',
-  getPoints: '/get-points-to-win',
-  totalPoints: '/user-total-points',
-  verifyOtp: '/forgot-password',
-  resetPassord: '/reset-password',
+  getPoints:'/get-points-to-win',
+  totalPoints:'/user-total-points',
+  sendOtp:'/forgot-password',
+  verifyOtp:"/verify-otp"
 };

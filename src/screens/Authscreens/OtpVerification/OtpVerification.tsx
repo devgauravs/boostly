@@ -10,28 +10,47 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { RouteStack } from '../../../navigation/types';
 import styles from './style';
 import AuthScreenWrapper from '../AuthScreenWrapper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../../components/Input';
+import Button from '../../../components/Button';
+import { OtpInput } from 'react-native-otp-entry';
+import { horizontalScale, verticalScale } from '../../../utils/scale';
+import Toast from 'react-native-toast-message';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../redux/store';
+import { verifyOtp } from '../../../redux/AuthSlice';
 
 const OtpVerification = () => {
   const navigation = useNavigation<RouteStack>();
-  const [otp, setOtp] = useState(['', '', '', '']);
-  const handleOtpChange = (text: string, index: number) => {
-    const newOtp = [...otp];
-    newOtp[index] = text;
-    setOtp(newOtp);
-  };
+    const dispatch = useDispatch<AppDispatch>();
+  const [otp, setOtp] = useState('');
+  const route = useRoute();
+    const { email } = route.params;
 
-  const handleVerify = () => {
-    if (otp.includes('')) {
-      Alert.alert('Please fill all OTP fields');
-      return;
-    }
-    Alert.alert('OTP Submitted', `OTP: ${otp.join('')}`);
+  const handleVerify = async () => {
+   if (!otp) {
+       Toast.show({
+         type: 'error',
+         text1: 'Error',
+         text2: 'Please enter your otp',
+       });
+       return;
+     }
+     try {
+       await dispatch(verifyOtp(otp,email)).unwrap(); 
+       Toast.show({
+         type: 'success',
+         text1: 'Success',
+         text2: 'OTP sent to your otp',
+       });
+       navigation.navigate("ResetPassword")
+     } catch (error) {
+       console.log('OTP verification error:', error);
+     }
   };
 
   const handleResendOtp = () => {
@@ -56,33 +75,32 @@ const OtpVerification = () => {
             </Text>
 
             <View style={styles.otpContainer}>
-              {otp.map((digit, index) => (
-                // <TextInput
-                //   key={index}
-                //   style={styles.otpInput}
-                //   value={digit}
-                //   onChangeText={text => handleOtpChange(text, index)}
-                //   keyboardType="numeric"
-                //   maxLength={1}
-                // />
-                 <Input
-            keyboardType="email-address"
-            style={styles.otpInput}
-            borderRadius={3}
-          />
-              ))}
+              <OtpInput
+                numberOfDigits={4}
+                onTextChange={setOtp}
+                onFilled={code => {
+                  console.log('OTP filled:', code);
+                }}
+                theme={{
+                  containerStyle: { marginBottom: 20 },
+                  pinCodeContainerStyle: {
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    borderColor: '#163A97',
+                    width: horizontalScale(45),
+                    height: verticalScale(45),
+                    margin: 5,
+                  },
+                  pinCodeTextStyle: { fontSize: 18, color: '#000' },
+                }}
+              />
             </View>
 
             <TouchableOpacity onPress={handleResendOtp}>
               <Text style={styles.resendText}>Didn't Get The Code? Resend</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.verifyButton}
-              onPress={handleVerify}
-            >
-              <Text style={styles.verifyText}>Verify</Text>
-            </TouchableOpacity>
+            <Button title="Verify" onPress={handleVerify} />
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
