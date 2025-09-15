@@ -8,6 +8,7 @@ import {
   RegisterData,
   UpdateProfileParams,
   ResetPasswordData,
+  ResetPasswordResponse,
 } from './types';
 
 export class AuthService {
@@ -142,9 +143,9 @@ export class AuthService {
 
   static async resetPassword(
     passwordData: ResetPasswordData,
-  ): Promise<AuthResponse> {
+  ): Promise<ResetPasswordResponse> {
     try {
-      const response = await apiClient.post<any>(
+      const response = await apiClient.post<ResetPasswordResponse>(
         ENDPOINTS.resetPassword,
         passwordData,
       );

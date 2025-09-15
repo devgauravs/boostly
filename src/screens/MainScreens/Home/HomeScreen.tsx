@@ -80,7 +80,7 @@ const HomeScreen = () => {
       <Text style={styles.title}>You have Earned Points</Text>
       <Text style={styles.points}>
         {totalPoints
-          ? `${totalPoints?.totalPoints ?? "You have no"} Points`
+          ? `${totalPoints?.totalPoints ?? 'You have no'} Points`
           : 'You have no points'}
       </Text>
 
@@ -91,7 +91,9 @@ const HomeScreen = () => {
         {points.map(item => (
           <View key={item._id} style={styles.rewardRow}>
             <Image source={getIcon(item.title)} style={styles.icon} />
-            <Text style={styles.rewardText}>{item?.title}</Text>
+            <Text style={styles.rewardText}>
+              {item?.title?.replace(' Post', '')}
+            </Text>
             <TouchableOpacity style={styles.pointsBtn}>
               <Text style={styles.pointsBtnText}>+{item?.price} Pts</Text>
             </TouchableOpacity>

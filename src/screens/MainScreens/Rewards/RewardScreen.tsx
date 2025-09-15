@@ -27,7 +27,7 @@ const RewardCard: FC<{ item: Reward }> = ({ item }) => {
   return (
     <View style={styles.rewardCard}>
       <Image source={gift} style={[styles.giftImage]} />
-      <View style={{ marginTop: 35, alignItems: 'center' }}>
+      <View style={styles.rewardCardContent}>
         <GradientText text={item.title} style={styles.rewardTitle} />
         <View style={styles.pointsBox}>
           <Image source={star} style={styles.pointsIcon} />
@@ -41,8 +41,7 @@ const RewardCard: FC<{ item: Reward }> = ({ item }) => {
 const RewardScreen: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
-  const [points, setPoints] = useState<number>(800);
-  const { rewards } = useSelector((state: RootState) => state.rewards);
+  const { rewards, points } = useSelector((state: RootState) => state.rewards);
 
   useEffect(() => {
     dispatch(fetchRewards({}));
@@ -59,7 +58,7 @@ const RewardScreen: React.FC = () => {
         >
           <View style={styles.pointsRow}>
             <Image source={giftMultiColor} style={styles.giftMultiColorStyle} />
-            <Text style={styles.pointsText}>{points} Points</Text>
+            <Text style={styles.pointsText}>{'800'} Points</Text>
           </View>
           <Image source={rightArrow} style={styles.rightArrowImage} />
         </TouchableOpacity>
@@ -85,64 +84,34 @@ const RewardScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             style={styles.scrollViewContainer}
           >
-            {[1, 2, 3, 4].map(() => {
+            {points.map(item => {
               return (
                 <View style={styles.taskCard}>
-                  <View
-                    style={{
-                      flex: 1,
-                      padding: 8,
-                    }}
-                  >
-                    <Text style={{ fontSize: 10, fontFamily: Fonts.SemiBold }}>
-                      Quick Win
-                    </Text>
+                  <View style={styles.taskCardLeft}>
+                    <Text style={styles.quickWinText}>Quick Win</Text>
                     <GradientText
-                      text={'Facebook post'}
+                      text={item.title}
                       style={styles.facebookText}
                     />
 
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: -4,
-                      }}
-                    >
+                    <View style={styles.starPointsRow}>
                       <Image
                         source={star}
-                        style={{ height: 21, width: 21 }}
+                        style={styles.taskStarIcon}
                         resizeMode="contain"
                       />
-                      <GradientText text={'50'} style={styles.facebookText} />
+                      <GradientText
+                        text={item.price}
+                        style={styles.facebookText}
+                      />
                     </View>
 
-                    <Pressable
-                      style={{
-                        borderWidth: 1,
-                        borderRadius: 5,
-                        width: horizontalScale(60),
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderColor: Colors.darkblue,
-                        marginTop: 6,
-                      }}
-                    >
+                    <Pressable style={styles.taskStartButton}>
                       <GradientText text={'Start'} style={styles.startText} />
                     </Pressable>
                   </View>
-                  <View
-                    style={{
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <Image
-                      source={gift}
-                      style={{
-                        height: 88,
-                        width: 88,
-                      }}
-                    />
+                  <View style={styles.taskCardRight}>
+                    <Image source={gift} style={styles.taskGiftImage} />
                   </View>
                 </View>
               );
@@ -257,52 +226,6 @@ const styles = StyleSheet.create({
     gap: 7,
     marginRight: 8,
   },
-  cardLeftPortion: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  cardHeading: {
-    fontSize: 11,
-    fontFamily: Fonts.SemiBold,
-    color: Colors.primaryBlack,
-    marginBottom: 4,
-  },
-  semiHeading: {
-    fontSize: 15,
-    fontFamily: Fonts.Bold,
-    color: Colors.primaryBlack,
-    marginBottom: 6,
-  },
-  digits: {
-    fontSize: 15,
-    fontFamily: Fonts.Bold,
-    color: Colors.primaryBlack,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  cardGiftImage: {
-    width: 70,
-    height: 70,
-    resizeMode: 'contain',
-    marginLeft: 10,
-  },
-  starCardImage: {
-    height: 20,
-    width: 20,
-    resizeMode: 'contain',
-    marginRight: 6,
-  },
-  cardBtn: {
-    borderWidth: 1,
-    borderRadius: 2,
-    height: 30,
-    width: '70%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: Colors.blueBorder,
-  },
   startText: {
     color: Colors.darkblue,
     fontSize: 13,
@@ -399,9 +322,42 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 
-  rewardButtonText: {
-    color: '#fff',
-    fontSize: fontScale(16),
+  // --- New styles for moved inline styles ---
+  rewardCardContent: {
+    marginTop: 35,
+    alignItems: 'center',
+  },
+  taskCardLeft: {
+    flex: 1,
+    padding: 8,
+  },
+  quickWinText: {
+    fontSize: 10,
     fontFamily: Fonts.SemiBold,
+  },
+  starPointsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: -4,
+  },
+  taskStarIcon: {
+    height: 21,
+    width: 21,
+  },
+  taskStartButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    width: horizontalScale(60),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: Colors.darkblue,
+    marginTop: 6,
+  },
+  taskCardRight: {
+    justifyContent: 'flex-end',
+  },
+  taskGiftImage: {
+    height: 88,
+    width: 88,
   },
 });

@@ -50,3 +50,8 @@ export interface User {
   __v: number;
   withSoical?: boolean;
 }
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+}
