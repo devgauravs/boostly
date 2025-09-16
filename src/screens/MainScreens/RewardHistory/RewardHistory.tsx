@@ -49,7 +49,7 @@ const RewardHistory = () => {
   const challenges = [
     { id: '1', title: 'Post on Facebook', multiplier: '2x', icon: facebook },
     { id: '2', title: 'Post on Instagram', multiplier: '2x', icon: instagram },
-    { id: '3', title: 'Post on YouTube', multiplier: '2x', icon: youtube },
+    // { id: '3', title: 'Post on YouTube', multiplier: '2x', icon: youtube },
   ];
 
   useFocusEffect(

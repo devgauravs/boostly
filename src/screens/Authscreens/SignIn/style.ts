@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: verticalScale(28),
     marginBottom: 20,
     width: '100%',

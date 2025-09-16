@@ -111,6 +111,7 @@ const Settings = () => {
       await dispatch(deleteAccount());
       LoginManager.logOut();
       Storage.clearAll();
+      dispatch(clearToken());
     } catch (err: any) {
       Alert.alert('Logout failed', err?.message || String(err));
     }

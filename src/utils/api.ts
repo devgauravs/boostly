@@ -1,5 +1,5 @@
 // src/utils/api.ts
-export const BASE_URL = 'https://595fc431e703.ngrok-free.app/api/v1';
+export const BASE_URL = 'https://758d10a33697.ngrok-free.app/api/v1';
 
 export const ENDPOINTS = {
   getMedia: '/get-posts/',

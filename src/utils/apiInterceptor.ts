@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 import Storage, { StorageKeys } from './storage';
 
 // Static base URL for now
-const BASE_URL = 'https://595fc431e703.ngrok-free.app/api/v1';
+const BASE_URL = 'https://758d10a33697.ngrok-free.app/api/v1';
 
 // Create axios instance
 export const apiClient = axios.create({
@@ -57,6 +57,7 @@ apiClient.interceptors.response.use(
     if (__DEV__) {
       console.log(
         '❌ API Error:',
+        { error },
         error.response?.status,
         error.response?.data,
       );

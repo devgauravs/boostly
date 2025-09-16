@@ -36,6 +36,11 @@ const HomeScreen = () => {
     (state: RootState) => state.rewards,
   );
 
+  // Using these to hide youtube, use points instead when you have youtube
+  const tempPoint = points.filter(
+    item => !item.title.toLowerCase().includes('youtube'),
+  );
+
   console.log('points', points);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -46,15 +51,15 @@ const HomeScreen = () => {
     setRefreshing(false);
   }, [dispatch, user?._id]);
 
-useFocusEffect(
-  useCallback(() => {
-    dispatch(fetchPoints());
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchPoints());
 
-    if (user?._id) {
-      dispatch(fetchTotalPoints(user._id));
-    }
-  }, [dispatch, user?._id])
-);
+      if (user?._id) {
+        dispatch(fetchTotalPoints(user._id));
+      }
+    }, [dispatch, user?._id]),
+  );
 
   const getIcon = (title: string) => {
     if (title.toLowerCase().includes('facebook')) return facebook;
@@ -89,7 +94,7 @@ useFocusEffect(
       <View style={styles.rewardSection}>
         <Text style={styles.rewardTitle}>Reward Value</Text>
 
-        {points.map(item => (
+        {tempPoint.map(item => (
           <View key={item._id} style={styles.rewardRow}>
             <Image source={getIcon(item.title)} style={styles.icon} />
             <Text style={styles.rewardText}>

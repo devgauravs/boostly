@@ -1,6 +1,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -49,6 +50,7 @@ const RewardScreen: React.FC = () => {
 
       if (user?._id) {
         dispatch(fetchTotalPoints(user._id));
+      } else {
       }
     }, [dispatch, user?._id]),
   );

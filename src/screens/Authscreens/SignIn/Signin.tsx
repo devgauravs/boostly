@@ -205,7 +205,7 @@ const SignIn = () => {
         <TouchableOpacity onPress={handleFacebookLogin} disabled={isLoading}>
           <Image source={FacebookIcon} style={styles.icon} />
         </TouchableOpacity>
-        <Image source={YoutubeIcon} style={styles.icon} />
+        {/* <Image source={YoutubeIcon} style={styles.icon} /> */}
       </View>
 
       <TouchableOpacity
