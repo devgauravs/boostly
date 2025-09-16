@@ -3,7 +3,7 @@ import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
 import { store } from '../redux/store';
 import { setFCMToken } from '../redux/AuthSlice';
-import { NotificationService } from './NotificationService';
+import NotificationService from './NotificationService';
 
 export class FCMService {
   /**
@@ -54,19 +54,15 @@ export class FCMService {
     const status = this.getFirebaseStatus();
 
     if (!status.hasApps) {
-      console.log('❌ No Firebase apps found. Config files may be missing.');
-      console.log(
-        '📝 Add google-services.json (Android) and GoogleService-Info.plist (iOS)',
-      );
+      console.log('No Firebase apps found. Config files may be missing.');
       return false;
     }
 
     if (!status.messagingAvailable) {
-      console.log('❌ Firebase messaging unavailable:', status.error);
+      console.log('Firebase messaging unavailable:', status.error);
       return false;
     }
 
-    console.log('✅ Firebase initialized with', status.appsCount, 'app(s)');
     return true;
   }
 
@@ -76,14 +72,10 @@ export class FCMService {
   static async getToken(): Promise<string | null> {
     try {
       if (!this.isFirebaseInitialized()) {
-        console.warn(
-          'Firebase is not initialized. Please add Firebase configuration files.',
-        );
         return null;
       }
 
       const token = await messaging().getToken();
-      console.log('FCM Token retrieved:', token);
       return token;
     } catch (error) {
       console.error('Error getting FCM token:', error);
@@ -97,12 +89,8 @@ export class FCMService {
   static async initialize(): Promise<void> {
     try {
       if (!this.isFirebaseInitialized()) {
-        console.warn('Firebase not initialized. Skipping FCM initialization.');
         return;
       }
-
-      // Initialize NotificationService first (handles permissions, channels, etc.)
-      await NotificationService.initialize();
 
       // Get initial token
       const token = await this.getToken();
@@ -112,13 +100,8 @@ export class FCMService {
 
       // Listen for token refresh
       messaging().onTokenRefresh(newToken => {
-        console.log('FCM Token refreshed:', newToken);
         store.dispatch(setFCMToken(newToken));
       });
-
-      console.log(
-        '✅ FCM Service initialized with NotificationService integration',
-      );
     } catch (error) {
       console.error('Error initializing FCM service:', error);
     }
@@ -138,7 +121,6 @@ export class FCMService {
   static async refreshToken(): Promise<string | null> {
     try {
       if (!this.isFirebaseInitialized()) {
-        console.warn('Firebase not initialized. Cannot refresh FCM token.');
         return null;
       }
 
@@ -160,8 +142,7 @@ export class FCMService {
   static async sendLocalNotification(
     title: string,
     body: string,
-    data?: any,
   ): Promise<void> {
-    return NotificationService.sendLocalNotification(title, body, data);
+    return NotificationService.localNotification(title, body);
   }
 }

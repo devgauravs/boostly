@@ -6,6 +6,7 @@ import { BottomTabNavigator } from './BottomTabNavigator';
 import { AuthNavigator } from './AuthNavigation/index';
 import { requestNotificationPermission } from '../utils/permissions';
 import { FCMService } from '../services/FCMService';
+import NotificationService from '../services/NotificationService';
 const RootNavigator: React.FC = () => {
   const { token, _persist, fcmToken } = useSelector(
     (state: RootState) => state.auth,
@@ -13,13 +14,16 @@ const RootNavigator: React.FC = () => {
 
   useEffect(() => {
     const setupNotifications = async () => {
-      // Log Firebase status for debugging
-      const firebaseStatus = FCMService.getFirebaseStatus();
-      console.log('🔍 Firebase Status:', firebaseStatus);
-
       const granted = await requestNotificationPermission();
-      if (granted && !fcmToken) {
-        await FCMService.initialize();
+      if (granted) {
+        // Initialize NotificationService first (handles channels and message listening)
+        NotificationService.createChannel();
+        NotificationService.sendNotification();
+
+        // Then initialize FCM for token management
+        if (!fcmToken) {
+          await FCMService.initialize();
+        }
       }
     };
 
