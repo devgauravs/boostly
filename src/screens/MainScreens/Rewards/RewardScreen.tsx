@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -16,36 +16,71 @@ import { gift, giftMultiColor, rightArrow, star } from '../../../assets/images';
 import BackButton from '../../../components/BackButton';
 import Container from '../../../components/Container';
 import GradientText from '../../../components/GradientText/GradientText';
-import { fetchRewards } from '../../../redux/RewardsSlice/RewardsSlice';
+import {
+  fetchPoints,
+  fetchRewards,
+  fetchTotalPoints,
+  purchaseRewards,
+} from '../../../redux/RewardsSlice/RewardsSlice';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { Reward } from '../../../services/RewardsService/types';
 import { Fonts } from '../../../utils/Fonts';
 import Colors from '../../../utils/color';
 import { fontScale, horizontalScale } from '../../../utils/scale';
-
-const RewardCard: FC<{ item: Reward }> = ({ item }) => {
-  return (
-    <View style={styles.rewardCard}>
-      <Image source={gift} style={[styles.giftImage]} />
-      <View style={styles.rewardCardContent}>
-        <GradientText text={item.title} style={styles.rewardTitle} />
-        <View style={styles.pointsBox}>
-          <Image source={star} style={styles.pointsIcon} />
-          <GradientText text={item.price} style={styles.pointsValue} />
-        </View>
-      </View>
-    </View>
-  );
-};
+import CustomLoader from '../../../components/CustomLoader';
 
 const RewardScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { rewards } = useSelector((state: RootState) => state.rewards);
   const dispatch = useDispatch<AppDispatch>();
-  const { rewards, points } = useSelector((state: RootState) => state.rewards);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const userId = user?._id || '';
+  const { points, isLoading, totalPoints } = useSelector(
+    (state: RootState) => state.rewards,
+  );
 
+  const handlePurchaseRewards = (rewardId: string, userId: string) => {
+    dispatch(purchaseRewards({ userId, rewardId }));
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchPoints());
+
+      if (user?._id) {
+        dispatch(fetchTotalPoints(user._id));
+      }
+    }, [dispatch, user?._id]),
+  );
   useEffect(() => {
     dispatch(fetchRewards({}));
   }, []);
+
+  const RewardCard: FC<{ item: Reward }> = ({ item }) => {
+    return (
+      <View style={styles.rewardCard}>
+        <Image source={gift} style={[styles.giftImage]} />
+        <View style={styles.rewardCardContent}>
+          <GradientText text={item.title} style={styles.rewardTitle} />
+          <TouchableOpacity
+            style={styles.pointsBox}
+            onPress={() => handlePurchaseRewards(item?._id, userId)}
+          >
+            <Image source={star} style={styles.pointsIcon} />
+            <GradientText text={item.price} style={styles.pointsValue} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <CustomLoader visible={isLoading} />
+      </View>
+    );
+  }
 
   const RenderHeader = () => {
     return (
@@ -58,7 +93,12 @@ const RewardScreen: React.FC = () => {
         >
           <View style={styles.pointsRow}>
             <Image source={giftMultiColor} style={styles.giftMultiColorStyle} />
-            <Text style={styles.pointsText}>{'800'} Points</Text>
+
+            <Text style={styles.pointsText}>
+              {totalPoints
+                ? `${totalPoints?.totalPoints ?? 'You have no'} Points`
+                : 'You have no points'}
+            </Text>
           </View>
           <Image source={rightArrow} style={styles.rightArrowImage} />
         </TouchableOpacity>
@@ -84,38 +124,56 @@ const RewardScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             style={styles.scrollViewContainer}
           >
-            {points.map(item => {
-              return (
-                <View style={styles.taskCard}>
-                  <View style={styles.taskCardLeft}>
-                    <Text style={styles.quickWinText}>Quick Win</Text>
+            {points?.map(item => (
+              <View key={item._id} style={styles.taskCard}>
+                <View style={{ flex: 1, padding: 8 }}>
+                  <Text style={{ fontSize: 10, fontFamily: Fonts.SemiBold }}>
+                    Quick Win
+                  </Text>
+
+                  <GradientText text={item.title} style={styles.facebookText} />
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: -4,
+                    }}
+                  >
+                    <Image
+                      source={star}
+                      style={{ height: 21, width: 21 }}
+                      resizeMode="contain"
+                    />
                     <GradientText
-                      text={item.title}
+                      text={`${item.price}`} // dynamic price
                       style={styles.facebookText}
                     />
-
-                    <View style={styles.starPointsRow}>
-                      <Image
-                        source={star}
-                        style={styles.taskStarIcon}
-                        resizeMode="contain"
-                      />
-                      <GradientText
-                        text={item.price}
-                        style={styles.facebookText}
-                      />
-                    </View>
-
-                    <Pressable style={styles.taskStartButton}>
-                      <GradientText text={'Start'} style={styles.startText} />
-                    </Pressable>
                   </View>
-                  <View style={styles.taskCardRight}>
-                    <Image source={gift} style={styles.taskGiftImage} />
-                  </View>
+
+                  <Pressable
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      width: horizontalScale(60),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderColor: Colors.darkblue,
+                      marginTop: 6,
+                    }}
+                    onPress={() =>
+                      navigation.navigate('Notifications' as never)
+                    }
+                  >
+                    <GradientText text="Start" style={styles.startText} />
+                  </Pressable>
                 </View>
-              );
-            })}
+
+                <View style={{ justifyContent: 'flex-end' }}>
+                  <Image source={gift} style={{ height: 88, width: 88 }} />
+                </View>
+              </View>
+            ))}
           </ScrollView>
 
           {/* Rewards Section */}

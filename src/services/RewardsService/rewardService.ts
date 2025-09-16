@@ -38,6 +38,22 @@ export class pointService {
   }
 }
 
+export class purchaseRewardsService {
+  // Get rewards API call
+  static async purchaseRewards(userId: string, rewardId: string): Promise<any> {
+    try {
+      const response = await apiClient.post<any>(
+        ENDPOINTS.purchaseRewards,
+        {
+          userId,rewardId
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+}
 export class totalPointsService {
   static async getTotalPoints(userId: string): Promise<TotalPointsResponse> {
     const endpoint = `${ENDPOINTS.totalPoints}/${userId}`;
@@ -48,4 +64,21 @@ export class totalPointsService {
       throw error;
     }
   }
+  
+
+  
+}
+export class historyService {
+  static async getHistory(userId: string): Promise<any> {
+    const endpoint = `${ENDPOINTS.getHistory}${userId}`;
+    try {
+      const response = await apiClient.get<any>(endpoint);
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+  
+
+  
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -24,8 +24,18 @@ import {
   youtube,
 } from '../../../assets/images';
 import BackButton from '../../../components/BackButton';
+import { useFocusEffect } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { fetchHistory } from '../../../redux/RewardsSlice/RewardsSlice';
 
 const RewardHistory = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { history, isLoading, error } = useSelector(
+    (state: RootState) => state.rewards,
+  );
+
   const [rewards] = useState([
     { id: '1', title: '$10 Amazon Gift Card', date: '2025-09-01', points: 500 },
     { id: '2', title: '$20 Flipkart Coupon', date: '2025-08-20', points: 300 },
@@ -41,6 +51,13 @@ const RewardHistory = () => {
     { id: '3', title: 'Post on YouTube', multiplier: '2x', icon: youtube },
   ];
 
+  useFocusEffect(
+    useCallback(() => {
+      if (user?._id) {
+        dispatch(fetchHistory(user._id));
+      }
+    }, [dispatch, user?._id]),
+  );
   const renderReward = ({ item }) => (
     <View style={styles.rewardCard}>
       <View
@@ -58,12 +75,31 @@ const RewardHistory = () => {
           />
           <View style={{ marginLeft: horizontalScale(10) }}>
             <GradientText text={item.title} style={styles.rewardTitle} />
-            <GradientText text={item.date} style={styles.rewardDates} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                source={star}
+                style={{
+                  height: verticalScale(20),
+                  width: horizontalScale(20),
+                  marginRight: horizontalScale(5),
+                }}
+              />
+              <GradientText text={item?.price} />
+            </View>
+            <GradientText
+              text={new Date(item.createdAt).toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            />
           </View>
         </View>
 
         {/* Right side (Redeemed text) */}
-        <GradientText text={'Reedemed'} style={styles.redeemedText} />
+        <GradientText text={'Reedemed'} />
       </View>
     </View>
   );
@@ -71,11 +107,11 @@ const RewardHistory = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Reward History */}
-      <BackButton title='Reward History'/>
+      <BackButton title="Reward History" />
       <Text style={styles.sectionTitle}>Reward History</Text>
-      <View style={{ height: verticalScale(200) }}>
+      <View style={{ height: verticalScale(230) }}>
         <FlatList
-          data={rewards}
+          data={history}
           renderItem={renderReward}
           keyExtractor={item => item.id}
           contentContainerStyle={{ paddingBottom: 20 }}
@@ -107,7 +143,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: Colors.background,
   },
   sectionTitle: {
     fontSize: fontScale(18),

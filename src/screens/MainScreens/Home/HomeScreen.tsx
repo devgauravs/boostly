@@ -19,6 +19,7 @@ import {
 } from '../../../redux/RewardsSlice/RewardsSlice';
 import { facebook, instagram, youtube } from '../../../assets/images';
 import CustomLoader from '../../../components/CustomLoader';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface RewardItem {
   id: string;
@@ -35,7 +36,7 @@ const HomeScreen = () => {
     (state: RootState) => state.rewards,
   );
 
-  console.log('totalPoints', totalPoints);
+  console.log('points', points);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (user?._id) {
@@ -45,15 +46,15 @@ const HomeScreen = () => {
     setRefreshing(false);
   }, [dispatch, user?._id]);
 
-  useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
     dispatch(fetchPoints());
-  }, [dispatch]);
 
-  useEffect(() => {
     if (user?._id) {
       dispatch(fetchTotalPoints(user._id));
     }
-  }, [dispatch, user?._id]);
+  }, [dispatch, user?._id])
+);
 
   const getIcon = (title: string) => {
     if (title.toLowerCase().includes('facebook')) return facebook;

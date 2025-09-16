@@ -24,7 +24,9 @@ export const postToPage = async (
   };
 
   console.log("paramdata==>", data);
+
     try {
+
     const response = await axios.post(
       `${BASE_URL}${ENDPOINTS.media_Action}`,
       data, 
@@ -53,5 +55,32 @@ export const postToPage = async (
 };
 
 
+export const approveAllPosts = async (
+  userId: string,
+) => {
+  const data = {
+    userId: userId
+  };
+
+  console.log("paramdata==>", data);
+  
+    try {
+
+    const response = await axios.post(
+      `${BASE_URL}${ENDPOINTS.allApprove}`,
+      data, 
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  
+    return response.data;
+  } catch (err: any) {
+    console.error("API ERROR:", err);
+    return null;
+  }
+};
 
 
