@@ -1,50 +1,35 @@
-import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback } from 'react';
 import {
-  View,
-  Text,
   FlatList,
-  TouchableOpacity,
-  StyleSheet,
   Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { facebook, gift, instagram, star } from '../../../assets/images';
+import BackButton from '../../../components/BackButton';
+import CustomLoader from '../../../components/CustomLoader';
+import GradientText from '../../../components/GradientText/GradientText';
+import { fetchHistory } from '../../../redux/RewardsSlice/RewardsSlice';
+import { AppDispatch, RootState } from '../../../redux/store';
+import Colors from '../../../utils/color';
+import { Fonts } from '../../../utils/Fonts';
 import {
   fontScale,
   horizontalScale,
   verticalScale,
 } from '../../../utils/scale';
-import Colors from '../../../utils/color';
-import { Fonts } from '../../../utils/Fonts';
-import GradientText from '../../../components/GradientText/GradientText';
-import {
-  facebook,
-  gift,
-  instagram,
-  star,
-  youtube,
-} from '../../../assets/images';
-import BackButton from '../../../components/BackButton';
-import { useFocusEffect } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { fetchHistory } from '../../../redux/RewardsSlice/RewardsSlice';
-import Toast from 'react-native-toast-message';
 
 const RewardHistory = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { history, isLoading, error } = useSelector(
+  const { history, isLoading, error, totalPoints } = useSelector(
     (state: RootState) => state.rewards,
   );
-
-  const [rewards] = useState([
-    { id: '1', title: '$10 Amazon Gift Card', date: '2025-09-01', points: 500 },
-    { id: '2', title: '$20 Flipkart Coupon', date: '2025-08-20', points: 300 },
-    { id: '3', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-    { id: '4', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-    { id: '5', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-    { id: '6', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-  ]);
 
   const challenges = [
     { id: '1', title: 'Post on Facebook', multiplier: '2x', icon: facebook },
@@ -105,6 +90,13 @@ const RewardHistory = () => {
     </View>
   );
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <CustomLoader visible={isLoading} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       {/* Reward History */}

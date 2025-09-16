@@ -18,6 +18,8 @@ export const ENDPOINTS = {
   allApprove: '/upload-all-post',
   purchaseRewards: '/purchase-reward',
   getHistory: '/reward-history/',
+  pointTracking: '/point-tracking/',
+  Leaderboard: '/top-user?type=',
   deleteAccount: '/delete-account',
   resetPassword: '/reset-password',
 };

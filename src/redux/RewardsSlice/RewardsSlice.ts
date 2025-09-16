@@ -2,7 +2,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   historyService,
+  pointLeaderBoardService,
   pointService,
+  pointTrackingService,
   purchaseRewardsService,
   RewardsService,
   totalPointsService,
@@ -21,6 +23,8 @@ const initialState: RewardsState = {
   points: [],
   totalPoints: {},
   history: [],
+  pointTracking: {},
+  leaderboard: [],
 };
 
 // Async thunk for fetching rewards
@@ -147,6 +151,49 @@ export const fetchHistory = createAsyncThunk(
     }
   },
 );
+
+export const fetchPointTracking = createAsyncThunk(
+  'rewards/pointTracking',
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await pointTrackingService.pointTracking(userId);
+      return response;
+    } catch (error: any) {
+      console.log('error', error);
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to fetch History';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+export const fetchLeaderBoard = createAsyncThunk(
+  'rewards/fetchLeaderBoard',
+  async (period: '7days' | '30days' | 'alltime', { rejectWithValue }) => {
+    try {
+      const response = await pointLeaderBoardService.pointLeaderBoard(period);
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to fetch Leaderboard';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+
 const rewardsSlice = createSlice({
   name: 'rewards',
   initialState,
@@ -220,6 +267,35 @@ const rewardsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchHistory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // 👉 Fetch Point Tracking
+      .addCase(fetchPointTracking.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchPointTracking.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.pointTracking = action.payload; // 👈 save response here
+        state.error = null;
+      })
+      .addCase(fetchPointTracking.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+    // 👉 Fetch Leaderboard
+    builder
+      .addCase(fetchLeaderBoard.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchLeaderBoard.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.leaderboard = action.payload.topTen;
+        state.error = null;
+      })
+      .addCase(fetchLeaderBoard.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

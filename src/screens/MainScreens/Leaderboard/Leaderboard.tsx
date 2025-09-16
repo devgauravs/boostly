@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -32,24 +32,11 @@ import {
 } from '../../../assets/images';
 import { Fonts } from '../../../utils/Fonts';
 import LinearGradient from 'react-native-linear-gradient';
-
-const LEVELS = [
-  { title: 'Bronze', min: 70, max: 200 },
-  { title: 'Silver', min: 201, max: 500 },
-  { title: 'Gold', min: 501, max: 1000 },
-  { title: 'Platinum', min: 1001, max: Infinity },
-];
-
-const leaderboardData = [
-  { rank: 1, name: 'Alice', points: 1200 },
-  { rank: 2, name: 'Bob', points: 950 },
-  { rank: 3, name: 'Charlie', points: 800 },
-  { rank: 4, name: 'David', points: 600 },
-  { rank: 5, name: 'Eve', points: 500 },
-  { rank: 6, name: 'Eve', points: 500 },
-  { rank: 7, name: 'Eve', points: 500 },
-  { rank: 8, name: 'Eve', points: 500 },
-];
+import { useFocusEffect } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { fetchLeaderBoard } from '../../../redux/RewardsSlice/RewardsSlice';
+import CustomLoader from '../../../components/CustomLoader';
 
 const TAB_BAR_HEIGHT = verticalScale(35);
 
@@ -57,6 +44,11 @@ const Leaderboard = () => {
   const [userPoints, setUserPoints] = useState(0);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const insets = useSafeAreaInsets();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, leaderboard } = useSelector(
+    (state: RootState) => state.rewards,
+  );
+  console.log('leaderBoard', leaderboard);
   const [activeTab, setActiveTab] = useState<'7days' | '30days' | 'alltime'>(
     '7days',
   );
@@ -65,12 +57,26 @@ const Leaderboard = () => {
     setUserPoints(300);
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (activeTab) {
+        dispatch(fetchLeaderBoard(activeTab));
+      }
+    }, [dispatch, activeTab]),
+  );
   const getProgress = (level: { min: number; max: number }) => {
     if (userPoints < level.min) return 0;
     if (userPoints >= level.max) return 1;
     return (userPoints - level.min) / (level.max - level.min);
   };
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <CustomLoader visible={isLoading} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <BackButton title="Leader Board" />
@@ -104,55 +110,77 @@ const Leaderboard = () => {
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: verticalScale(220) }}
+        contentContainerStyle={{ paddingBottom: verticalScale(20) }}
       >
         <View style={styles.rank}>
-          <View style={styles.rankbox}>
-            <View style={{ alignItems: 'center' }}>
-              <Image source={user} style={styles.rankicon} />
-              <Image source={medal2} style={styles.medalIcon} />
+          {/* Left box → 2nd rank */}
+          {leaderboard[1] && (
+            <View
+              style={[
+                styles.rankbox,
+                { height: verticalScale(100), width: '30%' },
+              ]}
+            >
+              <View style={{ alignItems: 'center' }}>
+                <Image source={user} style={styles.rankicon} />
+                <Image source={medal2} style={styles.medalIcon} />
+              </View>
+              <Text style={styles.rankName}>{leaderboard[1]?.first_name}</Text>
             </View>
-            <Text style={styles.rankName}>Echo Vibes</Text>
-          </View>
-          <View
-            style={[
-              styles.rankbox,
-              { height: verticalScale(125), width: '35%' },
-            ]}
-          >
-            <View style={{ alignItems: 'center' }}>
-              <Image
-                source={user}
-                style={[
-                  styles.rankicon,
-                  { height: verticalScale(40), width: horizontalScale(40) },
-                ]}
-              />
-              <Image
-                source={medal}
-                style={[
-                  styles.medalIcon,
-                  {
-                    top: verticalScale(20),
-                    height: verticalScale(28),
-                    width: horizontalScale(28),
-                  },
-                ]}
-              />
+          )}
+
+        
+          {leaderboard[0] && (
+            <View
+              style={[
+                styles.rankbox,
+                { height: verticalScale(125), width: '35%' },
+              ]}
+            >
+              <View style={{ alignItems: 'center' }}>
+                <Image
+                  source={user}
+                  style={[
+                    styles.rankicon,
+                    { height: verticalScale(40), width: horizontalScale(40) },
+                  ]}
+                />
+                <Image
+                  source={medal}
+                  style={[
+                    styles.medalIcon,
+                    {
+                      top: verticalScale(20),
+                      height: verticalScale(28),
+                      width: horizontalScale(28),
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={[styles.rankName, { fontSize: fontScale(13) }]}>
+                {leaderboard[0]?.first_name}
+              </Text>
             </View>
-            <Text style={[styles.rankName, { fontSize: fontScale(13) }]}>
-              Pixal Nomad
-            </Text>
-          </View>
-          <View style={styles.rankbox}>
-            <View style={{ alignItems: 'center' }}>
-              <Image source={user} style={styles.rankicon} />
-              <Image source={medal3} style={styles.medalIcon} />
+          )}
+
+  
+          {leaderboard[2] && (
+            <View
+              style={[
+                styles.rankbox,
+                { height: verticalScale(100), width: '30%' },
+              ]}
+            >
+              <View style={{ alignItems: 'center' }}>
+                <Image source={user} style={styles.rankicon} />
+                <Image source={medal3} style={styles.medalIcon} />
+              </View>
+              <Text style={styles.rankName}>{leaderboard[2]?.first_name}</Text>
             </View>
-            <Text style={styles.rankName}>Echo Vibes</Text>
-          </View>
+          )}
         </View>
-        <View
+
+        {/* <View
           style={{
             marginTop: verticalScale(10),
             marginBottom: verticalScale(80),
@@ -168,10 +196,10 @@ const Leaderboard = () => {
               progress={getProgress(level) * 100}
             />
           ))}
-        </View>
+        </View> */}
       </ScrollView>
 
-      {/* Fixed bottom tracking points */}
+
       <LinearGradient
         colors={['#163A97', '#4364F7']}
         start={{ x: 0, y: 0 }}
@@ -191,22 +219,31 @@ const Leaderboard = () => {
         </View>
 
         <FlatList
-          data={leaderboardData}
-          keyExtractor={item => item.rank.toString()}
-          renderItem={({ item }) => (
+          data={leaderboard}
+          keyExtractor={item => item._id}
+          renderItem={({ item, index }) => (
             <View style={styles.leaderboardRow}>
               <View style={styles.parentsrow}>
-                <Text style={styles.rowText}>{item.rank}</Text>
+                <Text style={styles.rowText}>
+                  {index + 1} 
+                </Text>
               </View>
               <View style={styles.parentsrow}>
                 <Image source={user} style={{ height: 20, width: 20 }} />
               </View>
-              <View style={[styles.parentsrow, { width: horizontalScale(70) }]}>
-                <Text style={styles.rowText}>{item.name}</Text>
+              <View style={[styles.parentsrow, { width: horizontalScale(80) }]}>
+                <Text style={styles.rowText}>{item?.first_name}</Text>
               </View>
               <View style={styles.parentsrow}>
-                <Text style={styles.rowText}>{item.points}</Text>
+                <Text style={styles.rowText}>{item?.verifiedPoints}</Text>
               </View>
+            </View>
+          )}
+          ListEmptyComponent={() => (
+            <View style={{ padding: 20, alignItems: 'center',justifyContent:"center",flex:1}}>
+              <Text style={{ color: Colors.gray, fontSize: fontScale(14),fontFamily:Fonts.SemiBold }}>
+                No data found
+              </Text>
             </View>
           )}
           showsVerticalScrollIndicator={false}
@@ -237,7 +274,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
     borderTopLeftRadius: 32,
     paddingBottom: verticalScale(15),
-    height: verticalScale(220),
+    height: verticalScale(350),
   },
 
   leaderboardHeader: {
@@ -266,7 +303,7 @@ const styles = StyleSheet.create({
   },
   parentsrow: {
     height: horizontalScale(30),
-    width: verticalScale(30),
+    width: verticalScale(45),
     justifyContent: 'center',
     alignItems: 'center',
   },
