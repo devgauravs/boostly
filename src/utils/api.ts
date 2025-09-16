@@ -1,5 +1,6 @@
 import { verifyOtp } from '../redux/AuthSlice';
 import { purchaseRewards } from '../redux/RewardsSlice/RewardsSlice';
+import Leaderboard from '../screens/MainScreens/Leaderboard/Leaderboard';
 
 // src/utils/api.ts
 export const BASE_URL = 'https://595fc431e703.ngrok-free.app/api/v1';
@@ -20,5 +21,7 @@ export const ENDPOINTS = {
   verifyOtp:"/verify-otp",
   allApprove:"/upload-all-post",
   purchaseRewards:"/purchase-reward",
-  getHistory:"/reward-history/"
+  getHistory:"/reward-history/",
+  pointTracking:"/point-tracking/",
+  Leaderboard:"/top-user?type="
 };

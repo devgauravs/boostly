@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -23,7 +23,11 @@ import BackButton from '../../../components/BackButton';
 import { Dropdown } from 'react-native-element-dropdown';
 import { arrowdown, arrowup } from '../../../assets/images';
 import { Fonts } from '../../../utils/Fonts';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { fetchPointTracking } from '../../../redux/RewardsSlice/RewardsSlice';
+import CustomLoader from '../../../components/CustomLoader';
 
 const LEVELS = [
   { title: 'Bronze', min: 70, max: 200 },
@@ -36,11 +40,17 @@ const TAB_BAR_HEIGHT = verticalScale(20);
 
 const EearningPoints = () => {
   const [userPoints, setUserPoints] = useState(0);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { pointTracking, isLoading, error,totalPoints } = useSelector(
+    (state: RootState) => state.rewards,
+  );
+
   const [selectedWallet, setSelectedWallet] = useState(null);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   useEffect(() => {
-    setUserPoints(300);
+    setUserPoints(totalPoints?.totalPoints);
   }, []);
 
   const getProgress = (level: { min: number; max: number }) => {
@@ -49,12 +59,27 @@ const EearningPoints = () => {
     return (userPoints - level.min) / (level.max - level.min);
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      if (user?._id) {
+        dispatch(fetchPointTracking(user._id));
+      }
+    }, [dispatch, user?._id]),
+  );
   const dropdownData = [
-    { label: 'Today points', value: 100 },
-    { label: 'Weekly points', value: 800 },
-    { label: 'Pending', value: 800 },
-    { label: 'Verified points', value: 290 },
+    { label: 'Today points', value: pointTracking?.todayVerified },
+    { label: 'Weekly points', value: pointTracking?.weekVerified},
+    { label: 'Pending', value: pointTracking?.totalPending },
+    { label: 'Verified points', value:pointTracking?.allTimeVerified},
   ];
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <CustomLoader visible={isLoading} />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -132,7 +157,7 @@ const EearningPoints = () => {
         ))}
         <TouchableOpacity
           style={styles.leaderboardButton}
-          onPress={() => navigation.navigate('LeaderBoard')}
+          onPress={() => navigation.navigate('LeaderBoard' as never)}
         >
           <Text style={styles.leaderboardButtonText}>Go to Leaderboard</Text>
         </TouchableOpacity>
@@ -201,10 +226,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.SemiBold,
   },
   leaderboardButton: {
-    backgroundColor: '#4364F7', // blue color
-    paddingVertical: verticalScale(12),
+    backgroundColor: '#4364F7', 
+    paddingVertical: verticalScale(10),
     paddingHorizontal: horizontalScale(20),
-    borderRadius: 10,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: verticalScale(20),
@@ -215,8 +240,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   leaderboardButtonText: {
-    color: '#fff',
-    fontSize: fontScale(16),
+    color: Colors.background,
+    fontSize: fontScale(15),
     fontFamily: Fonts.SemiBold,
   },
 });
+ 

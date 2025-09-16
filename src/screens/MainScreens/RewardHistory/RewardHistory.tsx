@@ -28,22 +28,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { fetchHistory } from '../../../redux/RewardsSlice/RewardsSlice';
+import CustomLoader from '../../../components/CustomLoader';
 
 const RewardHistory = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { history, isLoading, error } = useSelector(
+  const { history, isLoading, error ,totalPoints} = useSelector(
     (state: RootState) => state.rewards,
   );
 
-  const [rewards] = useState([
-    { id: '1', title: '$10 Amazon Gift Card', date: '2025-09-01', points: 500 },
-    { id: '2', title: '$20 Flipkart Coupon', date: '2025-08-20', points: 300 },
-    { id: '3', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-    { id: '4', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-    { id: '5', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-    { id: '6', title: '$30 Zomato Voucher', date: '2025-08-15', points: 200 },
-  ]);
+
 
   const challenges = [
     { id: '1', title: 'Post on Facebook', multiplier: '2x', icon: facebook },
@@ -58,6 +52,7 @@ const RewardHistory = () => {
       }
     }, [dispatch, user?._id]),
   );
+  
   const renderReward = ({ item }) => (
     <View style={styles.rewardCard}>
       <View
@@ -104,6 +99,13 @@ const RewardHistory = () => {
     </View>
   );
 
+   if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <CustomLoader visible={isLoading} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       {/* Reward History */}

@@ -82,3 +82,27 @@ export class historyService {
 
   
 }
+
+export class pointTrackingService {
+  static async pointTracking(userId: string): Promise<any> {
+    const endpoint = `${ENDPOINTS.pointTracking}${userId}`;
+    try {
+      const response = await apiClient.get<any>(endpoint);
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+}
+
+export class pointLeaderBoardService {
+  static async pointLeaderBoard(userId: string): Promise<any> {
+    const endpoint = `${ENDPOINTS.Leaderboard}${userId}`;
+    try {
+      const response = await apiClient.get<any>(endpoint);
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+}

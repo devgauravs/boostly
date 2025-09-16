@@ -14,4 +14,6 @@ export interface RewardsState {
   points: PointsResponseData[];
   totalPoints: any;
   history:any;
+  pointTracking:any;
+  leaderboard:any;
 }
