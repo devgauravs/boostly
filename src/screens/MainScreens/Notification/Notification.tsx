@@ -88,6 +88,7 @@ const Notification = () => {
     setModalSocialLogin(false);
   };
   const handleApprove = async (item: Post) => {
+    setApproveAllPost(false);
     setSelectedPost(item);
     if (user?.withSoical === true) {
       setModalVisible(true);
@@ -154,11 +155,13 @@ const Notification = () => {
             </View>
           )}
         />
-        <Button
-          title="Approve all"
-          style={styles.footButton}
-          onPress={ApproveAll}
-        />
+        {/* {posts && posts.length > 0 && (
+          <Button
+            title="Approve all"
+            style={styles.footButton}
+            onPress={ApproveAll}
+          />
+        )} */}
       </View>
 
       {/* Modal */}
@@ -239,10 +242,10 @@ const Notification = () => {
         </TouchableWithoutFeedback>
       </Modal>
 
-      <ConfirmationModal
+      {/* <ConfirmationModal
         visible={confirmModalVisible}
         title="Confirm Approval"
-        message="Are you sure you want to approve this post on Facebook?"
+        message={'Are you sure you want to approve this post on Facebook?' }
         confirmText="Yes, Approve"
         cancelText="Cancel"
         onConfirm={async () => {
@@ -256,8 +259,8 @@ const Notification = () => {
           }
         }}
         onCancel={() => setConfirmModalVisible(false)}
-      />
-      {/* <ConfirmationModal
+      /> */}
+      <ConfirmationModal
         visible={confirmModalVisible}
         title="Confirm Approval"
         message={
@@ -273,8 +276,10 @@ const Notification = () => {
 
           try {
             if (approveAllPost) {
-              // Call your ApproveAll API
-              await postToPage(userId);
+              // Call your ApproveAll API here with userId
+              await axios.post(`${BASE_URL}${ENDPOINTS.allApprove}`, {
+                userId,
+              });
             } else if (selectedPost) {
               // Single post approval
               await postToPage(selectedPost, userId, 'accept');
@@ -289,7 +294,7 @@ const Notification = () => {
           }
         }}
         onCancel={() => setConfirmModalVisible(false)}
-      /> */}
+      />
 
       <CongratulationModal
         visible={congratsVisible}

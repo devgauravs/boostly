@@ -13,4 +13,5 @@ export interface RewardsState {
   hasMore: boolean;
   points: PointsResponseData[];
   totalPoints: any;
+  history:any;
 }
