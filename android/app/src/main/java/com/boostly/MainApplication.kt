@@ -1,4 +1,4 @@
-package com.influencerrewardsapp
+package com.boostly
 
 import android.app.Application
 import com.facebook.react.PackageList

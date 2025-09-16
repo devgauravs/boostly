@@ -9,7 +9,7 @@ import rewardsReducer from './RewardsSlice/RewardsSlice';
 const persistConfig = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: ['token', 'user', 'userId'], // persist both token and user data
+  whitelist: ['token', 'user', 'userId', 'fcmToken'], // persist token, user data, and FCM token
 };
 
 // 2️⃣ Create persisted reducer

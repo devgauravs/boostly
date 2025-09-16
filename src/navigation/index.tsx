@@ -5,20 +5,26 @@ import { RootState } from '../redux/Store';
 import { BottomTabNavigator } from './BottomTabNavigator';
 import { AuthNavigator } from './AuthNavigation/index';
 import { requestNotificationPermission } from '../utils/permissions';
-import messaging from '@react-native-firebase/messaging';
+import { FCMService } from '../services/FCMService';
 const RootNavigator: React.FC = () => {
-  const { token, _persist } = useSelector((state: RootState) => state.auth);
- useEffect(() => {
+  const { token, _persist, fcmToken } = useSelector(
+    (state: RootState) => state.auth,
+  );
+
+  useEffect(() => {
     const setupNotifications = async () => {
+      // Log Firebase status for debugging
+      const firebaseStatus = FCMService.getFirebaseStatus();
+      console.log('🔍 Firebase Status:', firebaseStatus);
+
       const granted = await requestNotificationPermission();
-      if (granted) {
-        const token = await messaging().getToken();
-        console.log('FCM Token:', token);
+      if (granted && !fcmToken) {
+        await FCMService.initialize();
       }
     };
 
     setupNotifications();
-  }, []);
+  }, [fcmToken]);
 
   if (!_persist?.rehydrated) {
     return null;

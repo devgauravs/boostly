@@ -3,6 +3,7 @@ export interface LoginCredentials {
   password: string;
   phoneNumber?: string;
   countryCode?: string;
+  fcmToken?: string;
 }
 
 export interface RegisterData {
@@ -13,6 +14,7 @@ export interface RegisterData {
   phoneNumber?: string;
   countryCode?: string;
   role: string;
+  fcmToken?: string;
 }
 
 export interface UpdateProfileParams {

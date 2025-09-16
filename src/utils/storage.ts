@@ -7,6 +7,7 @@ const MMKV = new MMKVLoader().initialize();
 export enum StorageKeys {
   USER_TOKEN = 'user_token',
   USER = 'user',
+  FCM_TOKEN = 'fcm_token',
 }
 
 const Storage = {

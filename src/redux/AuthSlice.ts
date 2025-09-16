@@ -11,6 +11,7 @@ import {
   User,
 } from '../services/AuthService/types';
 import Toast from 'react-native-toast-message';
+import messaging from '@react-native-firebase/messaging';
 
 interface AuthState {
   token: string | null;
@@ -18,6 +19,7 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   userId: string | null;
+  fcmToken: string | null;
 }
 
 const initialState: AuthState = {
@@ -26,14 +28,37 @@ const initialState: AuthState = {
   isLoading: false,
   error: null,
   userId: null,
+  fcmToken: null,
 };
+
+// Get FCM Token
+export const getFCMToken = createAsyncThunk(
+  'auth/getFCMToken',
+  async (_, { rejectWithValue }) => {
+    try {
+      const fcmToken = await messaging().getToken();
+      return fcmToken;
+    } catch (error: any) {
+      console.log('Error getting FCM token:', error);
+      return rejectWithValue(error.message || 'Failed to get FCM token');
+    }
+  },
+);
 
 // Async thunks for authentication
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
-  async (credentials: LoginCredentials, { rejectWithValue }) => {
+  async (credentials: LoginCredentials, { rejectWithValue, getState }) => {
     try {
-      const response = await AuthService.login(credentials);
+      const state = getState() as { auth: AuthState };
+      const fcmToken = state.auth.fcmToken;
+
+      const loginData = {
+        ...credentials,
+        ...(fcmToken && { fcmToken }),
+      };
+
+      const response = await AuthService.login(loginData);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
       Toast.show({
@@ -56,9 +81,17 @@ export const loginUser = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
-  async (userData: RegisterData, { rejectWithValue }) => {
+  async (userData: RegisterData, { rejectWithValue, getState }) => {
     try {
-      const response = await AuthService.register(userData);
+      const state = getState() as { auth: AuthState };
+      const fcmToken = state.auth.fcmToken;
+
+      const registerData = {
+        ...userData,
+        ...(fcmToken && { fcmToken }),
+      };
+
+      const response = await AuthService.register(registerData);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
 
@@ -195,9 +228,12 @@ export const sendOtp = createAsyncThunk(
 );
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
-  async ({email,otp}:{ email: string; otp: string} ,{ rejectWithValue }) => {
+  async (
+    { email, otp }: { email: string; otp: string },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await AuthService.verifyOtp(email,otp);
+      const response = await AuthService.verifyOtp(email, otp);
       // await Storage.setItem(StorageKeys.USER, JSON.stringify(response));
       Toast.show({
         text1: 'Success',
@@ -279,12 +315,16 @@ const authSlice = createSlice({
     clearToken(state) {
       state.token = null;
       state.user = null;
+      state.fcmToken = null;
     },
     clearError(state) {
       state.error = null;
     },
     setUserId(state, action: PayloadAction<string>) {
       state.userId = action.payload; // 👈 save userId
+    },
+    setFCMToken(state, action: PayloadAction<string>) {
+      state.fcmToken = action.payload;
     },
   },
   extraReducers: builder => {
@@ -366,6 +406,7 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.userId = null;
+      state.fcmToken = null;
     });
 
     // Get Profile
@@ -424,10 +465,23 @@ const authSlice = createSlice({
       .addCase(resetPassword.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      // Get FCM Token
+      .addCase(getFCMToken.fulfilled, (state, action) => {
+        state.fcmToken = action.payload;
+      })
+      .addCase(getFCMToken.rejected, (state, action) => {
+        console.log('Failed to get FCM token:', action.payload);
       });
   },
 });
 
-export const { setToken, setUser, clearToken, clearError, setUserId } =
-  authSlice.actions;
+export const {
+  setToken,
+  setUser,
+  clearToken,
+  clearError,
+  setUserId,
+  setFCMToken,
+} = authSlice.actions;
 export default authSlice.reducer;
