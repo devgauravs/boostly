@@ -153,4 +153,15 @@ export class AuthService {
       throw error;
     }
   }
+
+  static async deleteAccount(userId: string): Promise<any> {
+    try {
+      const response = await apiClient.delete<any>(ENDPOINTS.deleteAccount, {
+        data: { userId },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
 }

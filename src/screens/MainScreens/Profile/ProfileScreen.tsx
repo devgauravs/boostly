@@ -86,7 +86,7 @@ const ProfileScreen: React.FC = () => {
         /* ignore */
       }
       await Storage.removeItem(StorageKeys.USER_TOKEN);
-        await Storage.removeItem(StorageKeys.USER);
+      await Storage.removeItem(StorageKeys.USER);
       dispatch(clearToken());
     } catch (err: any) {
       Alert.alert('Logout failed', err?.message || String(err));
@@ -216,13 +216,13 @@ const ProfileScreen: React.FC = () => {
             loading={isLoading}
             disabled={isLoading}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.saveButton}
             onPress={confirmLogout}
             disabled={loading}
           >
             <Text style={styles.saveText}>Logout</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

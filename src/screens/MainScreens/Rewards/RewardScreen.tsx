@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 1,
     backgroundColor: '#F8FAFF',
-    width: horizontalScale(60),
+    minWidth: horizontalScale(60),
   },
   pointsIcon: {
     width: 14,

@@ -28,6 +28,7 @@ import contact_us from '../icons/contact_us.png';
 import terms from '../icons/terms.png';
 import person from '../icons/person.png';
 import logout from '../icons/logout.png';
+import RewardIcon from '../icons/trophy.png';
 
 export {
   postImage,
@@ -60,4 +61,5 @@ export {
   terms,
   person,
   logout,
+  RewardIcon,
 };

@@ -9,6 +9,7 @@ export type MainStackProps = {
   ResetPassword: undefined;
   BottomTab: undefined;
   ProfileScreen: undefined;
+  RewardHistory: undefined;
 };
 
 export type RouteStack = NativeStackNavigationProp<MainStackProps>;

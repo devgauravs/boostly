@@ -28,6 +28,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { fetchHistory } from '../../../redux/RewardsSlice/RewardsSlice';
+import Toast from 'react-native-toast-message';
 
 const RewardHistory = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -58,7 +59,7 @@ const RewardHistory = () => {
       }
     }, [dispatch, user?._id]),
   );
-  const renderReward = ({ item }) => (
+  const renderReward = ({ item }: { item: any }) => (
     <View style={styles.rewardCard}>
       <View
         style={{
@@ -114,8 +115,27 @@ const RewardHistory = () => {
           data={history}
           renderItem={renderReward}
           keyExtractor={item => item.id}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{
+            paddingBottom: 20,
+            flex: 1,
+            justifyContent: 'center',
+          }}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => {
+            return (
+              <View style={{ alignItems: 'center', marginTop: 20 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: Colors.gray,
+                    fontFamily: Fonts.SemiBold,
+                  }}
+                >
+                  No History found
+                </Text>
+              </View>
+            );
+          }}
         />
       </View>
 

@@ -1,24 +1,25 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { Image, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import HomeScreen from '../../screens/MainScreens/Home/HomeScreen';
 import ProfileScreen from '../../screens/MainScreens/Profile/ProfileScreen';
 
 // 👇 Local icons
-import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeIcon from '../../assets/icons/home.png';
 import NotificationIcon from '../../assets/icons/notification.png';
 import RewardIcon from '../../assets/icons/trophy.png';
-import { leftArrow, SettingsIcon } from '../../assets/images';
+import { SettingsIcon } from '../../assets/images';
+import EearningPoints from '../../screens/MainScreens/EearningPoints/EearningPoints';
+import Leaderboard from '../../screens/MainScreens/Leaderboard/Leaderboard';
 import Notification from '../../screens/MainScreens/Notification/Notification';
+import RewardHistory from '../../screens/MainScreens/RewardHistory/RewardHistory';
+import RewardScreen from '../../screens/MainScreens/Rewards/RewardScreen';
 import Settings from '../../screens/MainScreens/Settings/Settings';
 import Colors from '../../utils/color';
-import { Fonts } from '../../utils/Fonts';
 import { horizontalScale, verticalScale } from '../../utils/scale';
-import { RewardsStack } from '../RewardsStack';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -58,7 +59,7 @@ function BottomTab() {
 
           if (route.name === 'Home') {
             iconSource = HomeIcon;
-          } else if (route.name === 'Rewards') {
+          } else if (route.name === 'RewardScreen') {
             iconSource = RewardIcon;
           } else if (route.name === 'Settings') {
             iconSource = SettingsIcon;
@@ -89,8 +90,8 @@ function BottomTab() {
         options={{ title: 'Home' }}
       />
       <Tab.Screen
-        name="Rewards"
-        component={RewardsStack}
+        name="RewardScreen"
+        component={RewardScreen}
         options={{ title: 'Reward' }}
       />
 
@@ -142,6 +143,10 @@ export function BottomTabNavigator() {
           name="ProfileScreen"
           component={ProfileScreen}
         />
+
+        <Stack.Screen name="LeaderBoard" component={Leaderboard} />
+        <Stack.Screen name="EarningPoints" component={EearningPoints} />
+        <Stack.Screen name="RewardHistory" component={RewardHistory} />
       </Stack.Group>
     </Stack.Navigator>
   );

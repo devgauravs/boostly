@@ -145,7 +145,8 @@ const Notification = () => {
 
       <View style={{ flex: 1, marginBottom: verticalScale(70) }}>
         <FlatList
-          data={[...posts].reverse()}
+          // data={[...posts].reverse()}
+          data={posts || []}
           renderItem={renderPost}
           keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}

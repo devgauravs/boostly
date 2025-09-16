@@ -282,6 +282,48 @@ export const resetPassword = createAsyncThunk(
   },
 );
 
+export const deleteAccount = createAsyncThunk(
+  'auth/deleteAccount',
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const state = getState() as { auth: AuthState };
+      const userId = state.auth.userId || state.auth.user?._id;
+
+      if (!userId) {
+        const message = 'User ID not found';
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: message,
+        });
+        return rejectWithValue(message);
+      }
+
+      const response = await AuthService.deleteAccount(userId);
+
+      await Storage.clearAll();
+
+      Toast.show({
+        text1: 'Success',
+        text2: response.message || 'Account deleted successfully',
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to delete account';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+
 // Initialize auth state from storage
 export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
@@ -472,6 +514,24 @@ const authSlice = createSlice({
       })
       .addCase(getFCMToken.rejected, (state, action) => {
         console.log('Failed to get FCM token:', action.payload);
+      })
+      // Delete Account
+      .addCase(deleteAccount.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteAccount.fulfilled, state => {
+        // Clear all state on successful account deletion
+        state.isLoading = false;
+        state.token = null;
+        state.user = null;
+        state.error = null;
+        state.userId = null;
+        state.fcmToken = null;
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });

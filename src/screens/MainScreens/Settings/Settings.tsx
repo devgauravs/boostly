@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   ImageSourcePropType,
+  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,12 +20,13 @@ import {
   logout,
   person,
   privacy,
+  RewardIcon,
   terms,
 } from '../../../assets/images';
 import Container from '../../../components/Container';
 import GradientText from '../../../components/GradientText/GradientText';
 import { RouteStack } from '../../../navigation/types';
-import { clearToken } from '../../../redux/AuthSlice';
+import { clearToken, deleteAccount } from '../../../redux/AuthSlice';
 import { AppDispatch } from '../../../redux/store';
 import Colors from '../../../utils/color';
 import { Fonts } from '../../../utils/Fonts';
@@ -38,7 +40,8 @@ interface RenderSettingsParams {
 
 const SettingsData = [
   { id: 1, title: 'Profile', image: person },
-  { id: 2, title: 'Contact Us', image: contact_us },
+  // { id: 2, title: 'Contact Us', image: contact_us },
+  { id: 2, title: 'Rewards History', image: RewardIcon },
   { id: 3, title: 'Terms & Conditions', image: terms },
   { id: 4, title: 'Privacy Policy', image: privacy },
   { id: 5, title: 'Delete Account', image: deleteIcon },
@@ -52,7 +55,7 @@ const Settings = () => {
   const Header = () => {
     return (
       <View style={styles.headerContainer}>
-        <GradientText text={'Settings'} style={styles.headerText} />
+        <Text style={styles.headerText}>{'Settings'}</Text>
       </View>
     );
   };
@@ -62,12 +65,54 @@ const Settings = () => {
       case 1:
         navigation.navigate('ProfileScreen');
         break;
+      case 2:
+        navigation.navigate('RewardHistory');
+        break;
+      case 3:
+        Linking.canOpenURL('https://boostlyclub.com/terms').then(() => {
+          Linking.openURL('https://boostlyclub.com/terms');
+        });
+        break;
+      case 4:
+        Linking.canOpenURL('https://boostlyclub.com/privacy').then(() => {
+          Linking.openURL('https://boostlyclub.com/privacy');
+        });
+        break;
+      case 5:
+        confirmDeleteAccount();
+        break;
       case 6:
         confirmLogout();
         break;
 
       default:
         break;
+    }
+  };
+
+  const confirmDeleteAccount = () => {
+    Alert.alert(
+      'Confirm Logout',
+      'Are you sure you want to delete account?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete Account',
+          style: 'destructive',
+          onPress: handleDeleteAccount,
+        },
+      ],
+      { cancelable: true },
+    );
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await dispatch(deleteAccount());
+      LoginManager.logOut();
+      Storage.clearAll();
+    } catch (err: any) {
+      Alert.alert('Logout failed', err?.message || String(err));
     }
   };
 
