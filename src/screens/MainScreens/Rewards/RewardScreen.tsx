@@ -104,7 +104,7 @@ const RewardScreen: React.FC = () => {
           </View>
           <Image source={rightArrow} style={styles.rightArrowImage} />
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.pointsContainer}
           onPress={() => navigation.navigate('RewardHistory' as never)}
         >
@@ -112,7 +112,7 @@ const RewardScreen: React.FC = () => {
             <Text style={styles.pointsText}>Reward History</Text>
           </View>
           <Image source={rightArrow} style={styles.rightArrowImage} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* Task Section */}
         <LinearGradient
           colors={[Colors.darkblue, Colors.primaryBlue]}
@@ -248,6 +248,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
+    borderColor: Colors.darkblue,
+    borderWidth: 1,
   },
   pointsRow: {
     flexDirection: 'row',
@@ -271,7 +273,7 @@ const styles = StyleSheet.create({
 
   // --- Gradient Container ---
   gradientContainer: {
-    marginTop: 30,
+    marginTop: 25,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     paddingBottom: 20,
@@ -400,6 +402,8 @@ const styles = StyleSheet.create({
   rewardCardContent: {
     marginTop: 35,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
   },
   taskCardLeft: {
     flex: 1,
