@@ -115,7 +115,7 @@ const RewardScreen: React.FC = () => {
         <LinearGradient
           colors={[Colors.darkblue, Colors.primaryBlue]}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          end={{ x: 3, y: 0 }}
           style={styles.gradientContainer}
         >
           <Text style={styles.completeTaskText}>Complete Task to Win</Text>
@@ -191,7 +191,7 @@ const RewardScreen: React.FC = () => {
       <LinearGradient
         colors={[Colors.darkblue, Colors.primaryBlue]}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+        end={{ x: 3, y: 0 }}
         style={styles.mainGradient}
       >
         <FlatList
@@ -203,6 +203,11 @@ const RewardScreen: React.FC = () => {
           columnWrapperStyle={styles.columnWrapper}
           contentContainerStyle={styles.flatListContent}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={()=>(
+            <View style={{flex:1,alignItems:"center"}}>
+              <Text style={{textAlign:"center",fontSize:fontScale(16),color:Colors.gray,fontFamily:Fonts.SemiBold}}>No Data Found</Text>
+            </View>
+          )}
         />
       </LinearGradient>
     </Container>
@@ -316,7 +321,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primaryWhite,
     borderRadius: 5,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     margin: 6,
     alignItems: 'center',
@@ -325,8 +330,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
-    minWidth: 100, // ✅ ensures 3 fit nicely
-    maxWidth: 115,
+    minWidth: 100, 
+    maxWidth: 120,
     marginBottom: 30,
   },
   giftImage: {
@@ -351,15 +356,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.blueBorder,
-    borderRadius: 2,
+    borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 1,
-    backgroundColor: '#F8FAFF',
+    backgroundColor: Colors.background,
     width: horizontalScale(60),
   },
   pointsIcon: {
-    width: 14,
-    height: 14,
+    width: 16,
+    height: 16,
     resizeMode: 'contain',
     marginRight: 4,
   },

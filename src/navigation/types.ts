@@ -7,6 +7,8 @@ export type MainStackProps = {
   OtpVerification: undefined;
   EmailVerification: undefined;
   ResetPassword: undefined;
+  BottomTab: undefined;
+  ProfileScreen: undefined;
 };
 
 export type RouteStack = NativeStackNavigationProp<MainStackProps>;

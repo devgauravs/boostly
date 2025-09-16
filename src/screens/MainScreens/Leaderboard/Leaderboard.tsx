@@ -38,10 +38,6 @@ import { AppDispatch, RootState } from '../../../redux/store';
 import { fetchLeaderBoard } from '../../../redux/RewardsSlice/RewardsSlice';
 import CustomLoader from '../../../components/CustomLoader';
 
-
-
-
-
 const TAB_BAR_HEIGHT = verticalScale(35);
 
 const Leaderboard = () => {
@@ -49,7 +45,6 @@ const Leaderboard = () => {
   const [selectedWallet, setSelectedWallet] = useState(null);
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth);
   const { isLoading, leaderboard } = useSelector(
     (state: RootState) => state.rewards,
   );
@@ -75,7 +70,7 @@ const Leaderboard = () => {
     return (userPoints - level.min) / (level.max - level.min);
   };
 
-    if (isLoading) {
+  if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <CustomLoader visible={isLoading} />
@@ -118,52 +113,73 @@ const Leaderboard = () => {
         contentContainerStyle={{ paddingBottom: verticalScale(20) }}
       >
         <View style={styles.rank}>
-  {/* Left box → 2nd rank */}
-  {leaderboard[1] && (
-    <View style={[styles.rankbox, { height: verticalScale(100), width: '30%' }]}>
-      <View style={{ alignItems: 'center' }}>
-        <Image source={user} style={styles.rankicon} />
-        <Image source={medal2} style={styles.medalIcon} />
-      </View>
-      <Text style={styles.rankName}>{leaderboard[1]?.first_name}</Text>
-    </View>
-  )}
-
-  {/* Middle box → 1st rank */}
-  {leaderboard[0] && (
-    <View style={[styles.rankbox, { height: verticalScale(125), width: '35%' }]}>
-      <View style={{ alignItems: 'center' }}>
-        <Image
-          source={user}
-          style={[styles.rankicon, { height: verticalScale(40), width: horizontalScale(40) }]}
-        />
-        <Image
-          source={medal}
-          style={[styles.medalIcon, { top: verticalScale(20), height: verticalScale(28), width: horizontalScale(28) }]}
-        />
-      </View>
-      <Text style={[styles.rankName, { fontSize: fontScale(13) }]}>
-        {leaderboard[0]?.first_name}
-      </Text>
-    </View>
-  )}
-
-  {/* Right box → 3rd rank */}
-  {leaderboard[2] && (
-    <View style={[styles.rankbox, { height: verticalScale(100), width: '30%' }]}>
-      <View style={{ alignItems: 'center' }}>
-        <Image source={user} style={styles.rankicon} />
-        <Image source={medal3} style={styles.medalIcon} />
-      </View>
-      <Text style={styles.rankName}>{leaderboard[2]?.first_name}</Text>
-    </View>
-  )}
-</View>
-
-
-
+          {/* Left box → 2nd rank */}
+          {leaderboard[1] && (
+            <View
+              style={[
+                styles.rankbox,
+                { height: verticalScale(100), width: '30%' },
+              ]}
+            >
+              <View style={{ alignItems: 'center' }}>
+                <Image source={user} style={styles.rankicon} />
+                <Image source={medal2} style={styles.medalIcon} />
+              </View>
+              <Text style={styles.rankName}>{leaderboard[1]?.first_name}</Text>
+            </View>
+          )}
 
         
+          {leaderboard[0] && (
+            <View
+              style={[
+                styles.rankbox,
+                { height: verticalScale(125), width: '35%' },
+              ]}
+            >
+              <View style={{ alignItems: 'center' }}>
+                <Image
+                  source={user}
+                  style={[
+                    styles.rankicon,
+                    { height: verticalScale(40), width: horizontalScale(40) },
+                  ]}
+                />
+                <Image
+                  source={medal}
+                  style={[
+                    styles.medalIcon,
+                    {
+                      top: verticalScale(20),
+                      height: verticalScale(28),
+                      width: horizontalScale(28),
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={[styles.rankName, { fontSize: fontScale(13) }]}>
+                {leaderboard[0]?.first_name}
+              </Text>
+            </View>
+          )}
+
+  
+          {leaderboard[2] && (
+            <View
+              style={[
+                styles.rankbox,
+                { height: verticalScale(100), width: '30%' },
+              ]}
+            >
+              <View style={{ alignItems: 'center' }}>
+                <Image source={user} style={styles.rankicon} />
+                <Image source={medal3} style={styles.medalIcon} />
+              </View>
+              <Text style={styles.rankName}>{leaderboard[2]?.first_name}</Text>
+            </View>
+          )}
+        </View>
+
         {/* <View
           style={{
             marginTop: verticalScale(10),
@@ -183,7 +199,7 @@ const Leaderboard = () => {
         </View> */}
       </ScrollView>
 
-      {/* Fixed bottom tracking points */}
+
       <LinearGradient
         colors={['#163A97', '#4364F7']}
         start={{ x: 0, y: 0 }}
@@ -209,20 +225,25 @@ const Leaderboard = () => {
             <View style={styles.leaderboardRow}>
               <View style={styles.parentsrow}>
                 <Text style={styles.rowText}>
-                  {index + 1} {/* Display index + name */}
+                  {index + 1} 
                 </Text>
               </View>
               <View style={styles.parentsrow}>
-                {/* Optional: User image */}
-                {/* <Image source={user} style={{ height: 20, width: 20 }} /> */}
+                <Image source={user} style={{ height: 20, width: 20 }} />
               </View>
               <View style={[styles.parentsrow, { width: horizontalScale(80) }]}>
-                <Text style={styles.rowText}>{item?.first_name}</Text>{' '}
-                {/* if you have last_name */}
+                <Text style={styles.rowText}>{item?.first_name}</Text>
               </View>
               <View style={styles.parentsrow}>
                 <Text style={styles.rowText}>{item?.verifiedPoints}</Text>
               </View>
+            </View>
+          )}
+          ListEmptyComponent={() => (
+            <View style={{ padding: 20, alignItems: 'center',justifyContent:"center",flex:1}}>
+              <Text style={{ color: Colors.gray, fontSize: fontScale(14),fontFamily:Fonts.SemiBold }}>
+                No data found
+              </Text>
             </View>
           )}
           showsVerticalScrollIndicator={false}

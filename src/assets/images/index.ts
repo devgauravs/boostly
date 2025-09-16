@@ -22,6 +22,12 @@ import giftCard from '../images/giftCard.png';
 import giftMultiColor from '../images/giftMultiColor.png';
 import congrats from '../icons/congrats.png';
 import SettingsIcon from '../icons/settings.png';
+import privacy from '../icons/privacy.png';
+import deleteIcon from '../icons/delete.png';
+import contact_us from '../icons/contact_us.png';
+import terms from '../icons/terms.png';
+import person from '../icons/person.png';
+import logout from '../icons/logout.png';
 
 export {
   postImage,
@@ -48,4 +54,10 @@ export {
   giftMultiColor,
   congrats,
   SettingsIcon,
+  privacy,
+  deleteIcon,
+  contact_us,
+  terms,
+  person,
+  logout,
 };

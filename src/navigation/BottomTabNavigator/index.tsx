@@ -1,28 +1,29 @@
-import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, View } from 'react-native';
+import React from 'react';
+import { Image, Pressable, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import HomeScreen from '../../screens/MainScreens/Home/HomeScreen';
-import RewardScreen from '../../screens/MainScreens/Rewards/RewardScreen';
 import ProfileScreen from '../../screens/MainScreens/Profile/ProfileScreen';
 
 // 👇 Local icons
-import HomeIcon from '../../assets/icons/home.png';
-import RewardIcon from '../../assets/icons/trophy.png';
-import ProfileIcon from '../../assets/icons/profile.png';
-import NotificationIcon from '../../assets/icons/notification.png';
-import Colors from '../../utils/color';
-import { horizontalScale, verticalScale } from '../../utils/scale';
-import Notification from '../../screens/MainScreens/Notification/Notification';
+import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RewardsStack } from '../RewardsStack';
+import HomeIcon from '../../assets/icons/home.png';
+import NotificationIcon from '../../assets/icons/notification.png';
+import RewardIcon from '../../assets/icons/trophy.png';
+import { leftArrow, SettingsIcon } from '../../assets/images';
+import Notification from '../../screens/MainScreens/Notification/Notification';
 import Settings from '../../screens/MainScreens/Settings/Settings';
-import { SettingsIcon } from '../../assets/images';
+import Colors from '../../utils/color';
+import { Fonts } from '../../utils/Fonts';
+import { horizontalScale, verticalScale } from '../../utils/scale';
+import { RewardsStack } from '../RewardsStack';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-export function BottomTabNavigator() {
+
+function BottomTab() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -99,15 +100,49 @@ export function BottomTabNavigator() {
         options={{ title: 'Notifications' }}
       />
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ title: 'Profile' }}
-      />
-      <Tab.Screen
         name="Settings"
         component={Settings}
-        options={{ title: 'Profile' }}
+        options={{ title: 'Settings' }}
       />
     </Tab.Navigator>
+  );
+}
+
+export function BottomTabNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Group screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="BottomTab" component={BottomTab} />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+            // headerTitle: 'Profile',
+            // headerTitleStyle: { fontFamily: Fonts.SemiBold },
+            // headerShadowVisible: false,
+            // headerLeft: ({ canGoBack }) => {
+            //   const navigation = useNavigation();
+            //   return (
+            //     <Pressable
+            //       onPress={() => navigation.goBack()}
+            //       style={{ padding: 10 }}
+            //     >
+            //       <Image
+            //         style={{ width: 20, height: 20 }}
+            //         source={leftArrow}
+            //         tintColor={Colors.primaryBlack}
+            //       />
+            //     </Pressable>
+            //   );
+            // },
+          }}
+          name="ProfileScreen"
+          component={ProfileScreen}
+        />
+      </Stack.Group>
+    </Stack.Navigator>
   );
 }
