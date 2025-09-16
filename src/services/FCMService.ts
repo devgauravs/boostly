@@ -3,6 +3,7 @@ import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
 import { store } from '../redux/store';
 import { setFCMToken } from '../redux/AuthSlice';
+import { NotificationService } from './NotificationService';
 
 export class FCMService {
   /**
@@ -100,6 +101,9 @@ export class FCMService {
         return;
       }
 
+      // Initialize NotificationService first (handles permissions, channels, etc.)
+      await NotificationService.initialize();
+
       // Get initial token
       const token = await this.getToken();
       if (token) {
@@ -111,6 +115,10 @@ export class FCMService {
         console.log('FCM Token refreshed:', newToken);
         store.dispatch(setFCMToken(newToken));
       });
+
+      console.log(
+        '✅ FCM Service initialized with NotificationService integration',
+      );
     } catch (error) {
       console.error('Error initializing FCM service:', error);
     }
@@ -144,5 +152,16 @@ export class FCMService {
       console.error('Error refreshing FCM token:', error);
       return null;
     }
+  }
+
+  /**
+   * Send a local notification
+   */
+  static async sendLocalNotification(
+    title: string,
+    body: string,
+    data?: any,
+  ): Promise<void> {
+    return NotificationService.sendLocalNotification(title, body, data);
   }
 }

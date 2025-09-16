@@ -20,7 +20,6 @@ export class AuthService {
       );
       return response.data;
     } catch (error: any) {
-      console.log('erorr==>', error);
       throw error.response;
     }
   }

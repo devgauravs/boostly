@@ -1,7 +1,7 @@
 import { verifyOtp } from '../redux/AuthSlice';
 
 // src/utils/api.ts
-export const BASE_URL = 'https://a6364843ce24.ngrok-free.app/api/v1';
+export const BASE_URL = 'https://595fc431e703.ngrok-free.app/api/v1';
 
 export const ENDPOINTS = {
   getMedia: '/get-posts/',
