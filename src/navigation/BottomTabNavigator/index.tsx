@@ -17,6 +17,8 @@ import { horizontalScale, verticalScale } from '../../utils/scale';
 import Notification from '../../screens/MainScreens/Notification/Notification';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RewardsStack } from '../RewardsStack';
+import Settings from '../../screens/MainScreens/Settings/Settings';
+import { SettingsIcon } from '../../assets/images';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -30,9 +32,9 @@ export function BottomTabNavigator() {
           height: verticalScale(60),
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          overflow: 'hidden', 
+          overflow: 'hidden',
           position: 'absolute',
-          paddingTop:verticalScale(5)
+          paddingTop: verticalScale(5),
         },
         tabBarBackground: () => (
           <LinearGradient
@@ -57,8 +59,8 @@ export function BottomTabNavigator() {
             iconSource = HomeIcon;
           } else if (route.name === 'Rewards') {
             iconSource = RewardIcon;
-          } else if (route.name === 'Profile') {
-            iconSource = ProfileIcon;
+          } else if (route.name === 'Settings') {
+            iconSource = SettingsIcon;
           } else if (route.name === 'Notifications') {
             iconSource = NotificationIcon;
           }
@@ -69,7 +71,7 @@ export function BottomTabNavigator() {
               style={{
                 width: horizontalScale(20),
                 height: verticalScale(22),
-                tintColor: focused ? Colors.primaryBlue: Colors.primaryBlack,
+                tintColor: focused ? Colors.primaryBlue : Colors.primaryBlack,
               }}
               resizeMode="contain"
             />
@@ -85,7 +87,11 @@ export function BottomTabNavigator() {
         component={HomeScreen}
         options={{ title: 'Home' }}
       />
-       <Tab.Screen name="Rewards" component={RewardsStack} options={{ title: 'Reward' }} />
+      <Tab.Screen
+        name="Rewards"
+        component={RewardsStack}
+        options={{ title: 'Reward' }}
+      />
 
       <Tab.Screen
         name="Notifications"
@@ -95,6 +101,11 @@ export function BottomTabNavigator() {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
+        options={{ title: 'Profile' }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>

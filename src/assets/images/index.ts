@@ -12,15 +12,16 @@ import leftArrow from '../icons/leftArrow.png';
 import rank from '../images/rank.png';
 import eye_visible from '../images/eye_visible.png';
 import eye_hidden from '../images/eye_hidden.png';
-import arrowup from '../icons/arrowup.png'
-import arrowdown from '../icons/arrowdown.png'
-import user from '../icons/user.png'
-import medal from '../icons/medal.png'
-import medal2 from '../icons/medal2.png'
-import medal3 from '../icons/medal3.png'
+import arrowup from '../icons/arrowup.png';
+import arrowdown from '../icons/arrowdown.png';
+import user from '../icons/user.png';
+import medal from '../icons/medal.png';
+import medal2 from '../icons/medal2.png';
+import medal3 from '../icons/medal3.png';
 import giftCard from '../images/giftCard.png';
 import giftMultiColor from '../images/giftMultiColor.png';
-import congrats from '../icons/congrats.png'
+import congrats from '../icons/congrats.png';
+import SettingsIcon from '../icons/settings.png';
 
 export {
   postImage,
@@ -45,5 +46,6 @@ export {
   medal3,
   giftCard,
   giftMultiColor,
-  congrats
+  congrats,
+  SettingsIcon,
 };
