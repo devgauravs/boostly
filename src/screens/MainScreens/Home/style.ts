@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     color: Colors.primaryBlack,
   },
   pointsBtn: {
-    borderColor: Colors.primaryBlue,
-    borderWidth: 1,
+    borderColor: Colors.darkblue,
+    borderWidth: 2,
     borderRadius: 4,
     paddingVertical: verticalScale(4),
     paddingHorizontal: horizontalScale(8),
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   pointsBtnText: {
     fontFamily: Fonts.SemiBold,
-    color: Colors.primaryBlue,
+    color: Colors.darkblue,
     fontSize: fontScale(12),
     marginTop: 2,
   },

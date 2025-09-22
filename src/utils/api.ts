@@ -1,5 +1,5 @@
 // src/utils/api.ts
-export const BASE_URL = 'https://758d10a33697.ngrok-free.app/api/v1';
+export const BASE_URL = 'https://80a9850aa827.ngrok-free.app/api/v1';
 
 export const ENDPOINTS = {
   getMedia: '/get-posts/',
@@ -10,6 +10,7 @@ export const ENDPOINTS = {
   login: '/login',
   getProfile: '/get-profile',
   updateProfile: '/edit-profile/',
+  updateProfilePicture: '/upload-profile/',
   getRewards: '/get-reward',
   getPoints: '/get-points-to-win',
   totalPoints: '/user-total-points',
@@ -22,4 +23,5 @@ export const ENDPOINTS = {
   Leaderboard: '/top-user?type=',
   deleteAccount: '/delete-account',
   resetPassword: '/reset-password',
+  autoApprovel: "/auto-approval/"
 };

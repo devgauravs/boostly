@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Image, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,16 +10,19 @@ import Button from '../../../components/Button';
 import CountryPicker from '../../../components/CountryPicker';
 import Input from '../../../components/Input';
 import { RouteStack } from '../../../navigation/types';
-import { loginUser } from '../../../redux/AuthSlice';
+import { loginUser, setToken } from '../../../redux/AuthSlice';
 import { AppDispatch, RootState } from '../../../redux/store';
-import { facebookLogin } from '../../../utils/AuthHelper';
+import { facebookLogin, youtubeLogin } from '../../../utils/AuthHelper';
 import AuthScreenWrapper from '../AuthScreenWrapper';
+import InstagramLogin from 'react-native-instagram-login';
+
 import {
   validateAtLeastOneContact,
   validateEmail,
   validatePhone,
 } from '../SignUp/validation';
 import styles from './style';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const SignIn = () => {
   const navigation = useNavigation<RouteStack>();
@@ -32,6 +35,30 @@ const SignIn = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const instagramRef = useRef<InstagramLogin>(null);
+  console.log('instagramRef=>', instagramRef);
+
+  const onInstagramSuccess = (token: string) => {
+    console.log('✅ Instagram AccessToken:', token);
+
+    // Save in Redux (frontend only)
+    dispatch(setToken(token));
+    // dispatch(setUser({ instagramUser: true })); // optional placeholder
+    Toast.show({
+      type: 'success',
+      text1: 'Instagram Login Successful',
+      text2: 'Token saved locally.',
+    });
+  };
+
+  const onInstagramFailure = (data: any) => {
+    console.log('❌ Instagram Login Failed:', data);
+    Toast.show({
+      type: 'error',
+      text1: 'Instagram Login Failed',
+      text2: data?.message || 'Something went wrong.',
+    });
+  };
 
   const clearFields = () => {
     setPassword('');
@@ -100,6 +127,10 @@ const SignIn = () => {
   const handleFacebookLogin = () => {
     facebookLogin(dispatch, user?._id);
   };
+   const handleYouTubeLogin = () => {
+    youtubeLogin(dispatch);
+  };
+
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
   };
@@ -201,11 +232,16 @@ const SignIn = () => {
       />
 
       <View style={styles.iconContainer}>
-        <Image source={InstagramIcon} style={styles.icon} />
+        <TouchableOpacity onPress={() => instagramRef.current?.show()}>
+          <Image source={InstagramIcon} style={styles.icon} />
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={handleFacebookLogin} disabled={isLoading}>
           <Image source={FacebookIcon} style={styles.icon} />
         </TouchableOpacity>
-        {/* <Image source={YoutubeIcon} style={styles.icon} /> */}
+      <TouchableOpacity onPress={handleYouTubeLogin}>
+        <Image source={YoutubeIcon} style={styles.icon} />
+      </TouchableOpacity>
       </View>
 
       <TouchableOpacity
@@ -215,6 +251,15 @@ const SignIn = () => {
       >
         <Text style={styles.signUpText}>Sign Up</Text>
       </TouchableOpacity>
+      <InstagramLogin
+        ref={instagramRef}
+        appId="1313530670259714"
+        appSecret="b5afe909fee33c821d4b967699cb8e74"
+        redirectUrl="boostlyapp://auth/"
+        scopes={['user_profile', 'user_media']}
+        onLoginSuccess={onInstagramSuccess}
+        onLoginFailure={onInstagramFailure}
+      />
     </AuthScreenWrapper>
   );
 };

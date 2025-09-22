@@ -31,12 +31,14 @@ import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../../../utils/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
-import { postToPage } from '../../../utils/SocialShare';
+import { postToPage, setAutoApproval } from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
 import { facebookLogin } from '../../../utils/AuthHelper';
 import ConfirmationModal from '../../../components/confirmationModal/ConfirmationModal';
 import CongratulationModal from '../../../components/CongratulationModal/CongratulationModal';
+import Toggle from '../../../components/Toggle/Toggle';
+import { getProfile } from '../../../redux/AuthSlice';
 
 interface Post {
   _id: string;
@@ -57,7 +59,18 @@ const Notification = () => {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [congratsVisible, setCongratsVisible] = useState(false);
   const [approveAllPost, setApproveAllPost] = useState(false);
+  const { pointTracking, isLoading, error, totalPoints } = useSelector(
+    (state: RootState) => state.rewards,
+  );
+  console.log('pointTracking', pointTracking?.allTimeVerified);
+  const [pointsEarned, setPointsEarned] = useState<number>(0);
 
+  const [autoApproval, setAutoApprovalState] = useState(user?.autoApproval);
+  useEffect(() => {
+    if (user) {
+      dispatch(getProfile(user._id));
+    }
+  }, [dispatch, user?._id]);
   const getPost = async () => {
     setLoading(true);
     try {
@@ -71,11 +84,41 @@ const Notification = () => {
     }
   };
 
+  const handleToggleConfirm = (nextValue: boolean) => {
+    Alert.alert(
+      'Confirm Action',
+      nextValue
+        ? 'Are you sure you want to enable Auto-Approval?'
+        : 'Are you sure you want to disable Auto-Approval?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => {
+            setAutoApprovalState(prev => prev);
+          },
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            setAutoApprovalState(nextValue);
+            try {
+              const res = await setAutoApproval(user?._id, nextValue);
+              dispatch(getProfile(user._id));
+              console.log('AutoApproval response:', res);
+            } catch (err) {
+              console.log('AutoApproval API error:', err);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   useFocusEffect(
     useCallback(() => {
       getPost();
-      // handleFetchPages();
-    }, []),
+    }, [userId]),
   );
   const ApproveAll = () => {
     if (posts.length === 0) return;
@@ -103,13 +146,12 @@ const Notification = () => {
         <Image
           source={{ uri: item?.url }}
           style={styles.image}
-          resizeMode="contain"
+          // resizeMode="contain"
         />
-        <Text style={styles.postText}>New collection now available!</Text>
+        {/* <Text style={styles.postText}>New collection now available!</Text> */}
 
         <Button
           title="Approve"
-          gradientColors={['#039503', '#039503']}
           style={styles.button}
           onPress={() => handleApprove(item)}
         />
@@ -143,26 +185,45 @@ const Notification = () => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerText}>New Posts</Text>
 
-      <View style={{ flex: 1, marginBottom: verticalScale(70) }}>
+      <View style={styles.content}>
         <FlatList
-          // data={[...posts].reverse()}
           data={posts || []}
           renderItem={renderPost}
           keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
           ListEmptyComponent={() => (
-            <View style={{ alignItems: 'center', marginTop: 20 }}>
-              <Text style={{ fontSize: 16, color: 'gray' }}>No data found</Text>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: fontScale(20), color: Colors.gray }}>
+                No data found
+              </Text>
             </View>
           )}
         />
-        {/* {posts && posts.length > 0 && (
-          <Button
-            title="Approve all"
-            style={styles.footButton}
-            onPress={ApproveAll}
-          />
-        )} */}
+
+        {/* Footer always at bottom */}
+        <View
+          style={[
+            styles.footer,
+            {
+              marginBottom:
+                posts && posts.length > 0
+                  ? verticalScale(80)
+                  : verticalScale(100),
+            },
+          ]}
+        >
+          {posts && posts.length > 0 && (
+            <Button
+              title="Approve all"
+              style={styles.footButton}
+              onPress={ApproveAll}
+              textColor={Colors.primaryBlack}
+            />
+          )}
+
+          <Toggle value={autoApproval} onToggle={handleToggleConfirm} />
+        </View>
       </View>
 
       {/* Modal */}
@@ -299,6 +360,7 @@ const Notification = () => {
 
       <CongratulationModal
         visible={congratsVisible}
+        pendingPoints={pointTracking?.totalPending || 0}
         onClose={() => setCongratsVisible(false)}
       />
     </SafeAreaView>
@@ -311,17 +373,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    alignItems: 'center',
-    paddingHorizontal: horizontalScale(10),
+    // marginHorizontal: horizontalScale(15),
   },
   headerText: {
     fontSize: fontScale(40),
     fontFamily: Fonts.Medium,
     marginBottom: verticalScale(10),
+    textAlign: 'center',
   },
   box: {
-    width: '95%',
-    backgroundColor: '#fff',
+    width: '90%',
+    backgroundColor: Colors.background,
     borderRadius: 10,
     paddingHorizontal: horizontalScale(15),
     paddingVertical: verticalScale(20),
@@ -331,34 +393,35 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     marginBottom: verticalScale(15),
+    alignSelf: 'center',
+    marginTop: verticalScale(2),
   },
   innerBox: {
     alignItems: 'center',
   },
   image: {
-    width: '90%',
-    height: verticalScale(200),
+    width: '100%',
+    height: verticalScale(150),
+    resizeMode: 'contain',
   },
   postText: {
     fontSize: fontScale(18),
     fontFamily: Fonts.SemiBold,
     color: Colors.primaryBlack,
-    marginTop: verticalScale(2),
+    marginTop: verticalScale(20),
     textAlign: 'center',
+    width: '90%',
   },
   button: {
-    height: verticalScale(35),
-    backgroundColor: Colors.primaryGreen,
     width: horizontalScale(250),
-    borderRadius: 2,
-    marginTop: verticalScale(10),
+    marginTop: verticalScale(20),
   },
   rejectButton: {
-    height: verticalScale(35),
+    height: verticalScale(40),
     borderColor: Colors.red,
     borderWidth: 1,
     width: horizontalScale(250),
-    borderRadius: 2,
+    borderRadius: 20,
     marginTop: verticalScale(20),
     justifyContent: 'center',
   },
@@ -415,7 +478,7 @@ const styles = StyleSheet.create({
   },
   SocialLoginmodalBox: {
     width: '85%',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     borderRadius: 10,
   },
   socialLoginIcon: {
@@ -435,9 +498,28 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.SemiBold,
   },
   footButton: {
-    position: 'absolute',
-    width: '82%',
+    width: horizontalScale(250),
     alignSelf: 'center',
-    bottom: 0,
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.gray,
+  },
+  footer: {
+    width: '90%',
+    backgroundColor: Colors.background,
+    borderRadius: 10,
+    paddingHorizontal: horizontalScale(15),
+    paddingVertical: verticalScale(20),
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    marginBottom: verticalScale(100),
+    alignSelf: 'center',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
   },
 });

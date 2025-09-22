@@ -11,7 +11,7 @@ const Colors = {
   primaryGreen: '#039503',
   red: '#FF0000',
   purple: '#6C63FF',
-  darkblue: '#163A97',
+  darkblue: '#2A4C8E',
   lightGrey: '#B7B0B0',
   primary: '#388be4ff',
   skylight:"#E6EEF9",

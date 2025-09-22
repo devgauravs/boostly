@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -12,11 +12,13 @@ import {
   View,
 } from 'react-native';
 import { LoginManager } from 'react-native-fbsdk-next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   arrowdown,
-  contact_us,
+  award,
+  cards,
   deleteIcon,
+  History,
   logout,
   person,
   privacy,
@@ -26,11 +28,15 @@ import {
 import Container from '../../../components/Container';
 import GradientText from '../../../components/GradientText/GradientText';
 import { RouteStack } from '../../../navigation/types';
-import { clearToken, deleteAccount } from '../../../redux/AuthSlice';
-import { AppDispatch } from '../../../redux/store';
+import { clearToken, deleteAccount, getProfile } from '../../../redux/AuthSlice';
+import { AppDispatch, RootState } from '../../../redux/store';
 import Colors from '../../../utils/color';
 import { Fonts } from '../../../utils/Fonts';
 import Storage, { StorageKeys } from '../../../utils/storage';
+import { fontScale, verticalScale } from '../../../utils/scale';
+import Toggle from '../../../components/Toggle/Toggle';
+import { setAutoApproval } from '../../../utils/SocialShare';
+import { resetRewards } from '../../../redux/RewardsSlice/RewardsSlice';
 
 interface RenderSettingsParams {
   id: number;
@@ -40,23 +46,63 @@ interface RenderSettingsParams {
 
 const SettingsData = [
   { id: 1, title: 'Profile', image: person },
-  // { id: 2, title: 'Contact Us', image: contact_us },
   { id: 2, title: 'Rewards History', image: RewardIcon },
   { id: 3, title: 'Terms & Conditions', image: terms },
   { id: 4, title: 'Privacy Policy', image: privacy },
   { id: 5, title: 'Delete Account', image: deleteIcon },
-  { id: 6, title: 'Log Out', image: logout },
+  { id: 6, title: 'Leader Board', image: award },
+  { id: 7, title: 'Earning Points', image: cards }, // <-- Earning Points
+  { id: 8, title: 'Log Out', image: logout },
 ];
 
 const Settings = () => {
   const navigation = useNavigation<RouteStack>();
   const dispatch = useDispatch<AppDispatch>();
-
+  const { user } = useSelector((state: RootState) => state.auth);
+  const [autoApproval, setAutoApprovalState] = useState(user?.autoApproval);
   const Header = () => {
     return (
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{'Settings'}</Text>
       </View>
+    );
+  };
+
+    useEffect(() => {
+      if (user) {
+        dispatch(getProfile(user._id));
+      }
+    }, [dispatch, user?._id]);
+  // Function to confirm and process toggle
+  const handleToggleConfirm = (nextValue: boolean) => {
+
+    Alert.alert(
+      'Confirm Action',
+      nextValue
+        ? 'Are you sure you want to enable Auto-Approval?'
+        : 'Are you sure you want to disable Auto-Approval?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => {
+            setAutoApprovalState(prev => prev);
+          },
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            setAutoApprovalState(nextValue);
+            try {
+              const res = await setAutoApproval(user?._id, nextValue);
+                dispatch(getProfile(user._id));
+              console.log('AutoApproval response:', res);
+            } catch (err) {
+              console.log('AutoApproval API error:', err);
+            }
+          },
+        },
+      ],
     );
   };
 
@@ -82,9 +128,14 @@ const Settings = () => {
         confirmDeleteAccount();
         break;
       case 6:
+        navigation.navigate('LeaderBoard' as never);
+        break;
+      case 7:
+        navigation.navigate('EarningPoints' as never); // Earning Points
+        break;
+      case 8:
         confirmLogout();
         break;
-
       default:
         break;
     }
@@ -137,6 +188,7 @@ const Settings = () => {
       }
       await Storage.removeItem(StorageKeys.USER_TOKEN);
       await Storage.removeItem(StorageKeys.USER);
+      dispatch(resetRewards());
       dispatch(clearToken());
     } catch (err: any) {
       Alert.alert('Logout failed', err?.message || String(err));
@@ -176,6 +228,7 @@ const Settings = () => {
     <Container style={styles.container}>
       <>
         <Header />
+        <Toggle value={autoApproval} onToggle={handleToggleConfirm} />
 
         <FlatList
           data={SettingsData}
@@ -193,13 +246,14 @@ const styles = StyleSheet.create({
   container: { paddingHorizontal: 20 },
   contentContainer: { paddingVertical: 20 },
   headerText: {
-    fontSize: 24,
+    fontSize: fontScale(24),
     fontFamily: Fonts.SemiBold,
   },
   itemText: {
-    fontSize: 14,
+    fontSize: fontScale(16),
     fontFamily: Fonts.Medium,
-    marginTop: 2,
+    marginTop: verticalScale(2),
+    color: Colors.primaryBlack,
   },
   itemContainer: {
     borderBottomWidth: 1,
@@ -215,11 +269,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-  itemImage: { height: 20, width: 20, tintColor: 'black' },
+  itemImage: { height: 22, width: 22, tintColor: Colors.primaryBlack },
   rightArrow: {
     height: 15,
     width: 15,
-    tintColor: 'black',
+    tintColor: Colors.primaryBlack,
     transform: [{ rotate: '90deg' }],
   },
   arrowContainer: { paddingHorizontal: 10 },

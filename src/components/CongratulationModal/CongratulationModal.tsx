@@ -1,37 +1,49 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Fonts } from '../../utils/Fonts';
-import { fontScale } from '../../utils/scale';
-import { congrats } from '../../assets/images';
+import { fontScale, verticalScale } from '../../utils/scale';
+import { congrats, right } from '../../assets/images';
 import Colors from '../../utils/color';
+import Button from '../Button';
 
 interface CongratulationModalProps {
   visible: boolean;
-  points?: number; // new prop for points earned
+  points?: number; // Points earned
   onClose: () => void;
+  pendingPoints?:number;
+  totalPoints?:number
 }
 
 const CongratulationModal: React.FC<CongratulationModalProps> = ({
   visible,
   points = 0,
   onClose,
+  pendingPoints=0,
+  totalPoints=0
 }) => {
+
+  
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Image
-            source={congrats}
-            style={styles.image}
-          />
-          <Text style={styles.title}>🎉 Congratulations!</Text>
-          <Text style={styles.message}>
-            You just earned {points} points for approving this post. Your updated balance has been added.
-          </Text>
+          <Text style={styles.congrats}>Congratulations!</Text>
 
-          <TouchableOpacity style={styles.button} onPress={onClose}>
-            <Text style={styles.buttonText}>OK</Text>
-          </TouchableOpacity>
+          <Text style={styles.subtitle}>You just earned</Text>
+          <Text style={styles.points}>{points} points</Text>
+          <Text style={styles.subtitle}>for approving this post</Text>
+
+          <Image source={right} style={styles.image} />
+
+          {/* <Text style={styles.totalPoints}>{totalPoints} points</Text> */}
+          <Text style={styles.subtitle}>{pendingPoints} points pending</Text>
+
+          <Button title="Done" onPress={onClose} style={styles.button} />
         </View>
       </View>
     </Modal>
@@ -49,35 +61,43 @@ const styles = StyleSheet.create({
     width: '80%',
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 20,
+    padding: verticalScale(20),
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  congrats: {
+    fontSize: fontScale(25),
+    fontFamily: Fonts.Bold,
+    color: Colors.primaryBlack,
+    marginBottom: verticalScale(10),
+  },
+  subtitle: {
+    fontSize: fontScale(18),
+    fontFamily: Fonts.Medium,
+    color: Colors.primaryBlack,
+    marginBottom: verticalScale(5),
+  },
+  points: {
+    fontSize: fontScale(25),
+    fontFamily: Fonts.Bold,
+    color: Colors.primaryBlack,
+    marginBottom: verticalScale(10),
+  },
+  totalPoints: {
+    fontSize: fontScale(20),
+    fontFamily: Fonts.SemiBold,
+    color: Colors.primaryBlack,
+    marginBottom: verticalScale(5),
   },
   image: {
-    width: 80,
-    height: 80,
-    marginBottom: 15,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: fontScale(15),
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#555',
+    height: 90,
+    width: 90,
+    resizeMode: 'contain',
+    marginVertical: verticalScale(10),
   },
   button: {
-    backgroundColor: '#039503',
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: Colors.background,
-    fontFamily: Fonts.SemiBold,
-    fontSize: fontScale(15),
+    width: '80%',
+    marginTop: verticalScale(20),
   },
 });
 

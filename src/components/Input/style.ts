@@ -21,15 +21,18 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.darkblue
 
   },
   input: {
     flex: 1,
-    height: 49,
+    height: verticalScale(40),
     fontSize: 14,
     color: '#03070eff',
-    
+
+
   },
   toggle: {
     color: '#007AFF',

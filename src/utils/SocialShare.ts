@@ -47,6 +47,7 @@ export const postToPage = async (
         text1: 'Post rejected successfully',
       });
     }
+    
     return response.data;
   } catch (err: any) {
     console.error("API ERROR:", err);
@@ -83,4 +84,18 @@ export const approveAllPosts = async (
   }
 };
 
+export const setAutoApproval = async (userId: string, status: boolean) => {
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}${ENDPOINTS.autoApprovel}${userId}`, // include user id if needed
+      { autoApproval: status },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("AutoApproval API error:", error);
+    throw error;
+  }
+};
 

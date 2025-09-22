@@ -24,6 +24,7 @@ export interface UpdateProfileParams {
   email?: string;
   phoneNumber?: string;
   countryCode?: string;
+  picture?: any;
 }
 
 export interface ResetPasswordData {
@@ -51,6 +52,8 @@ export interface User {
   updatedAt: string;
   __v: number;
   withSoical?: boolean;
+  picture?: string;
+  autoApproval?: boolean;
 }
 
 export interface ResetPasswordResponse {

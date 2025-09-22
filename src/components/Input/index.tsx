@@ -40,12 +40,7 @@ const Input: React.FC<InputProps> = ({
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <LinearGradient
-        colors={['#163A97', '#2A4BC7', '#4364F7']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.gradientBorder}
-      >
+
         <View style={[styles.inputWrapper,{borderRadius}]}>
           {suffix}
 
@@ -67,7 +62,7 @@ const Input: React.FC<InputProps> = ({
             </TouchableOpacity>
           )}
         </View>
-      </LinearGradient>
+
       {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );

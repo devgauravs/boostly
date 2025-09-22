@@ -75,14 +75,16 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: fontScale(20),
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Bold,
     marginBottom: verticalScale(10),
+
   },
   modalMessage: {
     fontSize: fontScale(16),
     color: Colors.gray,
     textAlign: 'center',
     marginVertical: 15,
+    fontFamily:Fonts.Medium
   },
   actions: {
     flexDirection: 'row',
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: Colors.red,
-    borderRadius: 8,
+    borderRadius: 20,
     paddingVertical: verticalScale(10),
     marginRight: horizontalScale(5),
     alignItems: 'center',
@@ -106,8 +108,8 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     flex: 1,
-    backgroundColor: '#039503',
-    borderRadius: 8,
+    backgroundColor:Colors.darkblue,
+    borderRadius: 20,
     paddingVertical: verticalScale(10),
     marginLeft: horizontalScale(5),
     alignItems: 'center',

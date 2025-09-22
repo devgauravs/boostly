@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -11,19 +10,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { LoginManager } from 'react-native-fbsdk-next';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileIcon } from '../../../assets/images';
 import BackButton from '../../../components/BackButton';
 import Input from '../../../components/Input';
 import {
-  clearToken,
   getProfile,
   updateProfile,
+  updateProfileImage,
 } from '../../../redux/AuthSlice';
 import Colors from '../../../utils/color';
-import Storage, { StorageKeys } from '../../../utils/storage';
 import { AppDispatch, RootState } from '../../../redux/store';
 import styles from './style';
 import CountryPicker from '../../../components/CountryPicker';
@@ -41,6 +38,9 @@ const ProfileScreen: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
+    null,
+  );
 
   // Get user data from Redux
   const { user } = useSelector((state: RootState) => state.auth);
@@ -72,58 +72,37 @@ const ProfileScreen: React.FC = () => {
           email,
           phoneNumber: phone,
           countryCode,
+          picture: profilePictureUrl,
         },
       }),
     );
   };
 
-  const performLogout = async () => {
-    setLoading(true);
-    try {
-      try {
-        LoginManager.logOut();
-      } catch (e) {
-        /* ignore */
-      }
-      await Storage.removeItem(StorageKeys.USER_TOKEN);
-      await Storage.removeItem(StorageKeys.USER);
-      dispatch(clearToken());
-    } catch (err: any) {
-      Alert.alert('Logout failed', err?.message || String(err));
-    } finally {
-      setLoading(false);
-    }
-  };
-  const confirmLogout = () => {
-    Alert.alert(
-      'Confirm Logout',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Log out', style: 'destructive', onPress: performLogout },
-      ],
-      { cancelable: true },
-    );
-  };
   const pickImage = () => {
     launchImageLibrary(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        quality: 1,
-      },
+      { mediaType: 'photo', includeBase64: false, quality: 1 },
       response => {
         if (!response.didCancel && !response.errorCode) {
           const uri = response.assets?.[0]?.uri;
           if (uri) {
-            setImage(uri);
+            setImage(uri); // show local preview
+
+            dispatch(updateProfileImage({ image: uri }))
+              .unwrap()
+              .then((data: { url?: string }) => {
+                if (data?.url) {
+                  console.log('data?.url', data?.url);
+                  setProfilePictureUrl(data.url);
+                }
+              })
+              .catch(err => console.log('Upload error:', err));
           }
         }
       },
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#2E44FF" />
@@ -132,14 +111,14 @@ const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor="#fff"
+        backgroundColor={Colors.background}
         translucent={false}
       />
       <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: '#fff' }}
+        style={{ flex: 1, backgroundColor: Colors.background }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
@@ -155,9 +134,16 @@ const ProfileScreen: React.FC = () => {
           <View style={styles.profileImageContainer}>
             <TouchableOpacity onPress={pickImage}>
               <Image
-                source={image ? { uri: image } : ProfileIcon}
+                source={
+                  image
+                    ? { uri: image } 
+                    : user?.picture && user.picture.length > 0
+                    ? { uri: user.picture } 
+                    : ProfileIcon 
+                }
                 style={styles.profileImage}
               />
+
               <View style={styles.editIcon}>
                 <Image
                   source={require('../../../assets/icons/edit.png')}
@@ -216,13 +202,6 @@ const ProfileScreen: React.FC = () => {
             loading={isLoading}
             disabled={isLoading}
           />
-          {/* <TouchableOpacity
-            style={styles.saveButton}
-            onPress={confirmLogout}
-            disabled={loading}
-          >
-            <Text style={styles.saveText}>Logout</Text>
-          </TouchableOpacity> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

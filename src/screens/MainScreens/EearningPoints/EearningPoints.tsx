@@ -5,8 +5,6 @@ import {
   View,
   Dimensions,
   Text,
-  Image,
-  TouchableOpacity,
 } from 'react-native';
 import TrackingPoints from '../../../components/trackingPoints/trackingPoints';
 import {
@@ -20,14 +18,13 @@ import {
   verticalScale,
 } from '../../../utils/scale';
 import BackButton from '../../../components/BackButton';
-import { Dropdown } from 'react-native-element-dropdown';
-import { arrowdown, arrowup } from '../../../assets/images';
 import { Fonts } from '../../../utils/Fonts';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { fetchPointTracking } from '../../../redux/RewardsSlice/RewardsSlice';
 import CustomLoader from '../../../components/CustomLoader';
+import Button from '../../../components/Button';
 
 const LEVELS = [
   { title: 'Bronze', min: 70, max: 200 },
@@ -42,7 +39,7 @@ const EearningPoints = () => {
   const [userPoints, setUserPoints] = useState(0);
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { pointTracking, isLoading, error,totalPoints } = useSelector(
+  const { pointTracking, isLoading, error, totalPoints } = useSelector(
     (state: RootState) => state.rewards,
   );
 
@@ -68,9 +65,9 @@ const EearningPoints = () => {
   );
   const dropdownData = [
     { label: 'Today points', value: pointTracking?.todayVerified },
-    { label: 'Weekly points', value: pointTracking?.weekVerified},
+    { label: 'Weekly points', value: pointTracking?.weekVerified },
     { label: 'Pending', value: pointTracking?.totalPending },
-    { label: 'Verified points', value:pointTracking?.allTimeVerified},
+    { label: 'Verified points', value: pointTracking?.allTimeVerified },
   ];
 
   if (isLoading) {
@@ -90,7 +87,7 @@ const EearningPoints = () => {
           style={{ paddingVertical: 20, backgroundColor: Colors.background }}
         >
           {/* 🔹 Dropdown */}
-          <Dropdown
+          {/* <Dropdown
             style={styles.dropdown}
             data={dropdownData}
             labelField="label"
@@ -119,7 +116,13 @@ const EearningPoints = () => {
                 <Text style={styles.itemValue}>{item.value}</Text>
               </View>
             )}
-          />
+          /> */}
+          {dropdownData.map((item, index) => (
+            <View key={index} style={styles.item}>
+              <Text style={styles.itemLabel}>{item.label}</Text>
+              <Text style={styles.itemValue}>{item.value}</Text>
+            </View>
+          ))}
         </View>
 
         <View style={{}} />
@@ -149,18 +152,13 @@ const EearningPoints = () => {
           <TrackingPoints
             key={idx}
             title={level.title}
-            pointsRange={`${level.min}${
-              level.max === Infinity ? '+' : ` - ${level.max}`
-            } points`}
+            pointsRange={`${level.min}${level.max === Infinity ? '+' : ` - ${level.max}`
+              } points`}
             progress={getProgress(level) * 100}
           />
         ))}
-        <TouchableOpacity
-          style={styles.leaderboardButton}
-          onPress={() => navigation.navigate('LeaderBoard' as never)}
-        >
-          <Text style={styles.leaderboardButtonText}>Go to Leaderboard</Text>
-        </TouchableOpacity>
+
+        <Button title='Go to leaderboard'   onPress={() => navigation.navigate('LeaderBoard' as never)} style={{marginTop:verticalScale(10)}}/>
       </View>
     </SafeAreaView>
   );
@@ -225,24 +223,5 @@ const styles = StyleSheet.create({
     color: Colors.primaryBlack,
     fontFamily: Fonts.SemiBold,
   },
-  leaderboardButton: {
-    backgroundColor: '#4364F7', 
-    paddingVertical: verticalScale(10),
-    paddingHorizontal: horizontalScale(20),
-    borderRadius: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: verticalScale(20),
-    elevation: 3, // shadow Android
-    shadowColor: '#000', // shadow iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  leaderboardButtonText: {
-    color: Colors.background,
-    fontSize: fontScale(15),
-    fontFamily: Fonts.SemiBold,
-  },
+
 });
- 

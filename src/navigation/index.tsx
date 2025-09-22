@@ -2,11 +2,11 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { BottomTabNavigator } from './BottomTabNavigator';
 import { AuthNavigator } from './AuthNavigation/index';
 import { requestNotificationPermission } from '../utils/permissions';
 import { FCMService } from '../services/FCMService';
 import NotificationService from '../services/NotificationService';
+import { BottomTabNavigator } from './BottomTabNavigator';
 const RootNavigator: React.FC = () => {
   const { token, _persist, fcmToken } = useSelector(
     (state: RootState) => state.auth,

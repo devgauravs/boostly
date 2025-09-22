@@ -36,6 +36,29 @@ export class AuthService {
       throw error;
     }
   }
+
+  
+    static async updateProfilePicture(imageUri: string): Promise<any> {
+    try {
+      const formData = new FormData();
+
+      formData.append('image', {
+        uri: imageUri,
+        type: 'image/jpeg', // or 'image/png' if PNG
+        name: imageUri.split('/').pop() || 'profile.jpg',
+      } as any);
+
+      const response = await apiClient.post(`${ENDPOINTS.updateProfilePicture}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      return response.data;
+    } catch (error: any) {
+      throw error.response || error;
+    }
+  }
   // Register API call
   static async updateProfile(
     userId: string,

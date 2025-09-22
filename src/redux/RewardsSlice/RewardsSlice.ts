@@ -201,6 +201,10 @@ const rewardsSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    resetRewards: () => ({
+      ...initialState,
+      totalPoints: {},      // ✅ explicitly reset totalPoints
+    }),
   },
   extraReducers: builder => {
     // Fetch Rewards
@@ -302,5 +306,5 @@ const rewardsSlice = createSlice({
   },
 });
 
-export const { clearError } = rewardsSlice.actions;
+export const { clearError,resetRewards } = rewardsSlice.actions;
 export default rewardsSlice.reducer;

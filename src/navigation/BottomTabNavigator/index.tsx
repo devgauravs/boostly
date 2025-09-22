@@ -73,14 +73,14 @@ function BottomTab() {
               style={{
                 width: horizontalScale(20),
                 height: verticalScale(22),
-                tintColor: focused ? Colors.primaryBlue : Colors.primaryBlack,
+                tintColor: focused ? Colors.darkblue : Colors.primaryBlack,
               }}
               resizeMode="contain"
             />
           );
         },
         tabBarShowLabel: true,
-        tabBarActiveTintColor: '#1c20ddff',
+        tabBarActiveTintColor: Colors.darkblue,
         tabBarInactiveTintColor: 'black',
       })}
     >

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
+  Image,
   ListRenderItem,
   Modal,
   Platform,
@@ -15,6 +16,8 @@ import Colors from '../../utils/color';
 import { Fonts } from '../../utils/Fonts';
 import country from './country.json';
 import { CountryListItem, CountryProps, SelectCountryType } from './type';
+import { phDropdown } from '../../assets/images';
+import { horizontalScale } from '../../utils/scale';
 
 const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
   // const { Colors } = useTheme();
@@ -54,13 +57,7 @@ const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
       >
         <Text style={styles.countryName}>{`${item.flag}  ${item.name}`}</Text>
 
-        <Text
-        // fontSize={15}
-        // fontFamily="OpenSans-Medium"
-        // color={Colors.primary}
-        >
-          {item.dial_code}
-        </Text>
+        <Text>{item.dial_code}</Text>
       </Pressable>
     );
   };
@@ -79,12 +76,10 @@ const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
   return (
     <>
       <Pressable onPress={toggleCountry} style={styles.countryView}>
-        <Text
-        // style={styles.bottom}
-        // fontSize={15}
-        >
+        <Text style={styles.bottom}>
           {`${selectCountry.flag}  ${selectCountry.dial_code}`}
         </Text>
+        <Image source={phDropdown} style={styles.dropDwnicon} />
       </Pressable>
       <Modal visible={visible} transparent animationType="slide">
         <View style={styles.modalView}>
@@ -100,7 +95,7 @@ const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
                 source={SEARCH}
               /> */}
               <TextInput
-                style={[styles.search, { color: Colors.lightGrey }]}
+                style={[styles.search, { color: Colors.primaryBlack }]}
                 placeholder="Search..."
                 onChangeText={handleSeachCountry}
               />
@@ -120,13 +115,18 @@ const CountryPicker: React.FC<CountryProps> = ({ onSelectCountry, value }) => {
 export default CountryPicker;
 
 const styles = StyleSheet.create({
-  countryView: { paddingVertical: 10, marginRight: 5 },
+  countryView: {
+    paddingVertical: 10,
+    marginRight: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   modalView: {
     flex: 1,
     backgroundColor: '#00000033',
     justifyContent: 'flex-end',
   },
-  bottom: { marginBottom: 3 },
+  bottom: { fontFamily: Fonts.Medium, color: Colors.primaryBlack },
   label: { textAlign: 'center', fontSize: 20, fontFamily: Fonts.SemiBold },
   bottomView: {
     backgroundColor: Colors.background,
@@ -163,5 +163,16 @@ const styles = StyleSheet.create({
   },
   countryName: { fontSize: 18, flex: 1 },
   searchIcon: { height: 20, width: 20 },
-  search: { flex: 1, marginLeft: 20 },
+  search: {
+    flex: 1,
+    marginLeft: 20,
+    fontFamily: Fonts.Medium,
+    color: Colors.primaryBlack,
+  },
+  dropDwnicon: {
+    height: 15,
+    width: 15,
+    marginLeft: horizontalScale(5),
+    tintColor: Colors.primaryBlack,
+  },
 });

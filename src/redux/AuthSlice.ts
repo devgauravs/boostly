@@ -20,6 +20,7 @@ interface AuthState {
   error: string | null;
   userId: string | null;
   fcmToken: string | null;
+  profileImageData?: any;
 }
 
 const initialState: AuthState = {
@@ -57,7 +58,7 @@ export const loginUser = createAsyncThunk(
         ...credentials,
         ...(fcmToken && { fcmToken }),
       };
-
+      console.log("loginUser:", loginData);
       const response = await AuthService.login(loginData);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
@@ -115,6 +116,37 @@ export const registerUser = createAsyncThunk(
     }
   },
 );
+
+
+export const updateProfileImage = createAsyncThunk(
+  'auth/updateProfileImage',
+  async (
+    { image }: { image: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await AuthService.updateProfilePicture(image);
+      await Storage.setItem(StorageKeys.USER, JSON.stringify(response?.data));
+
+      Toast.show({
+        text1: 'Success',
+        text2: response.message,
+        type: 'success',
+      });
+      return response;
+    } catch (error: any) {
+      const message = error?.response?.data?.message || error?.message || 'Update failed';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: message,
+      });
+      return rejectWithValue(message);
+    }
+  },
+);
+
+
 export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
   async (
@@ -179,11 +211,11 @@ export const getProfile = createAsyncThunk(
     try {
       const response = await AuthService.getProfile(userId);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
-      Toast.show({
-        text1: 'Success',
-        text2: response.message,
-        type: 'success',
-      });
+      // Toast.show({
+      //   text1: 'Success',
+      //   text2: response.message,
+      //   type: 'success',
+      // });
       return response;
     } catch (error: any) {
       const message =
@@ -532,8 +564,24 @@ const authSlice = createSlice({
       .addCase(deleteAccount.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-      });
-  },
+      })
+
+    // Update Profile Image
+    .addCase(updateProfileImage.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+    .addCase(updateProfileImage.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.profileImageData = action.payload.data;
+    })
+    .addCase(updateProfileImage.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    })
+
+},
 });
 
 export const {

@@ -207,7 +207,7 @@ const Leaderboard = () => {
         style={[
           styles.bottomSection,
           {
-            bottom: insets.bottom + TAB_BAR_HEIGHT,
+            bottom: 0,
           },
         ]}
       >
@@ -231,8 +231,8 @@ const Leaderboard = () => {
               <View style={styles.parentsrow}>
                 <Image source={user} style={{ height: 20, width: 20 }} />
               </View>
-              <View style={[styles.parentsrow, { width: horizontalScale(80) }]}>
-                <Text style={styles.rowText}>{item?.first_name}</Text>
+              <View style={[styles.parentsrow, { width: horizontalScale(80),alignItems:"center",justifyContent:"center"}]}>
+                <Text style={styles.rowText}>{item?.first_name}{item?.last_name}</Text>
               </View>
               <View style={styles.parentsrow}>
                 <Text style={styles.rowText}>{item?.verifiedPoints}</Text>
@@ -241,7 +241,7 @@ const Leaderboard = () => {
           )}
           ListEmptyComponent={() => (
             <View style={{ padding: 20, alignItems: 'center',justifyContent:"center",flex:1}}>
-              <Text style={{ color: Colors.gray, fontSize: fontScale(14),fontFamily:Fonts.SemiBold }}>
+              <Text style={{ color: Colors.gray, fontSize: fontScale(20),fontFamily:Fonts.SemiBold }}>
                 No data found
               </Text>
             </View>
@@ -300,9 +300,10 @@ const styles = StyleSheet.create({
     color: Colors.background,
     fontSize: fontScale(13),
     fontFamily: Fonts.SemiBold,
+    textAlign:"center"
   },
   parentsrow: {
-    height: horizontalScale(30),
+    paddingVertical:verticalScale(5),
     width: verticalScale(45),
     justifyContent: 'center',
     alignItems: 'center',

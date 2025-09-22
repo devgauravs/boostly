@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, Image, ScrollView, RefreshControl } from 'react-native';
 import styles from './style';
 
 import StarImage from '../../../assets/images/star.png';
@@ -35,13 +28,14 @@ const HomeScreen = () => {
   const { points, isLoading, totalPoints } = useSelector(
     (state: RootState) => state.rewards,
   );
+  console.log(' user?._id', user?._id);
 
+  console.log('totalPoints', totalPoints);
   // Using these to hide youtube, use points instead when you have youtube
   const tempPoint = points.filter(
     item => !item.title.toLowerCase().includes('youtube'),
   );
 
-  console.log('points', points);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (user?._id) {
@@ -55,7 +49,7 @@ const HomeScreen = () => {
     useCallback(() => {
       dispatch(fetchPoints());
 
-      if (user?._id) {
+      if (user) {
         dispatch(fetchTotalPoints(user._id));
       }
     }, [dispatch, user?._id]),
@@ -78,34 +72,41 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* ⭐ Header Star Icon */}
-      <View style={styles.starContainer}>
-        <Image source={StarImage} style={styles.starImage} />
-      </View>
+      <ScrollView
+      showsVerticalScrollIndicator={false}
+       refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }
+      >
+        <View style={styles.starContainer}>
+          <Image source={StarImage} style={styles.starImage} />
+        </View>
 
-      {/* Title */}
-      <Text style={styles.title}>You have Earned Points</Text>
-      <Text style={styles.points}>
-        {totalPoints
-          ? `${totalPoints?.totalPoints ?? 'You have no'} Points`
-          : 'You have no points'}
-      </Text>
+        {/* Title */}
+        <Text style={styles.title}>You have Earned Points</Text>
+        <Text style={styles.points}>
+          {totalPoints
+            ? `${totalPoints?.totalPoints ?? 'You have no'} Points`
+            : 'You have no points'}
+        </Text>
 
-      {/* Reward Section */}
-      <View style={styles.rewardSection}>
-        <Text style={styles.rewardTitle}>Reward Value</Text>
+        {/* Reward Section */}
+        <View style={styles.rewardSection}>
+          <Text style={styles.rewardTitle}>Reward Value</Text>
 
-        {tempPoint.map(item => (
-          <View key={item._id} style={styles.rewardRow}>
-            <Image source={getIcon(item.title)} style={styles.icon} />
-            <Text style={styles.rewardText}>
-              {item?.title?.replace(' Post', '')}
-            </Text>
-            <TouchableOpacity style={styles.pointsBtn}>
-              <Text style={styles.pointsBtnText}>+{item?.price} Pts</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
+          {tempPoint.map(item => (
+            <View key={item._id} style={styles.rewardRow}>
+              <Image source={getIcon(item.title)} style={styles.icon} />
+              <Text style={styles.rewardText}>
+                {item?.title?.replace(' Post', '')}
+              </Text>
+              <View style={styles.pointsBtn}>
+                <Text style={styles.pointsBtnText}>+{item?.price} Pts</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

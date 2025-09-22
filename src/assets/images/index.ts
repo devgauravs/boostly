@@ -29,7 +29,11 @@ import terms from '../icons/terms.png';
 import person from '../icons/person.png';
 import logout from '../icons/logout.png';
 import RewardIcon from '../icons/trophy.png';
-
+import right from '../images/right.png';
+import History from '../icons/history.png';
+import award from '../icons/award.png';
+import cards from '../icons/cards.png';
+import phDropdown from '../icons/phDropdown.png';
 export {
   postImage,
   Logo,
@@ -62,4 +66,9 @@ export {
   person,
   logout,
   RewardIcon,
+  right,
+  History,
+  award,
+  cards,
+  phDropdown
 };
