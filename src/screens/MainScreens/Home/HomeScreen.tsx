@@ -73,10 +73,10 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       {/* ⭐ Header Star Icon */}
       <ScrollView
-      showsVerticalScrollIndicator={false}
-       refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View style={styles.starContainer}>
           <Image source={StarImage} style={styles.starImage} />
@@ -94,7 +94,7 @@ const HomeScreen = () => {
         <View style={styles.rewardSection}>
           <Text style={styles.rewardTitle}>Reward Value</Text>
 
-          {tempPoint.map(item => (
+          {points.map(item => (
             <View key={item._id} style={styles.rewardRow}>
               <Image source={getIcon(item.title)} style={styles.icon} />
               <Text style={styles.rewardText}>

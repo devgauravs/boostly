@@ -38,10 +38,10 @@
     <action android:name="android.intent.action.VIEW" />
     <category android:name="android.intent.category.DEFAULT" />
     <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="boostlyapp" android:host="auth" />
+    <data android:scheme="boostly" android:host="instagram-auth" />
 </intent-filter>
       </activity>
-          <provider android:authorities="com.facebook.app.FacebookContentProvider1313530670259714"
+          <provider android:authorities="com.facebook.app.FacebookContentProvider1320964972843725"
       android:name="com.facebook.FacebookContentProvider"
       android:exported="true" />
     </application>

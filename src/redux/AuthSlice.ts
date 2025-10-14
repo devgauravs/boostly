@@ -15,21 +15,36 @@ import messaging from '@react-native-firebase/messaging';
 
 interface AuthState {
   token: string | null;
+   instagramtoken: string | null;
+    facebooktoken: string | null;
+     youtubetoken: string | null;
   user: User | null;
+    instagramuser: User | null;
+      facebookuser: User | null;
+        youtubeuser: User | null;
   isLoading: boolean;
   error: string | null;
   userId: string | null;
   fcmToken: string | null;
   profileImageData?: any;
+ socialName: string | null; 
 }
 
 const initialState: AuthState = {
   token: null,
+  instagramtoken: null,
+  facebooktoken: null,
+  youtubetoken: null,
+  instagramuser: null,
+  facebookuser: null,
+  youtubeuser: null,
   user: null,
   isLoading: false,
   error: null,
   userId: null,
   fcmToken: null,
+ socialName: null,
+
 };
 
 // Get FCM Token
@@ -383,13 +398,39 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
     },
+      setinstagramtoken(state, action: PayloadAction<string>) {
+      state.instagramtoken = action.payload;
+    },
+      setfacebooktoken(state, action: PayloadAction<string>) {
+      state.facebooktoken = action.payload;
+    },
+      setyoutubetoken(state, action: PayloadAction<string>) {
+      state.youtubetoken = action.payload;
+    },
     setUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
+    },
+    
+      setInstagramUser(state, action: PayloadAction<User>) {
+      state.instagramuser = action.payload;
+    },
+      setFacebookUser(state, action: PayloadAction<User>) {
+      state.facebookuser = action.payload;
+    },
+      setyoutubeuser(state, action: PayloadAction<User>) {
+      state.youtubeuser = action.payload;
     },
     clearToken(state) {
       state.token = null;
       state.user = null;
       state.fcmToken = null;
+      state.instagramtoken = null;
+  state.instagramuser = null;
+  state.facebooktoken = null;
+  state.facebookuser = null;
+  state.youtubetoken = null;
+  state.youtubeuser = null;
+  state.socialName = null;
     },
     clearError(state) {
       state.error = null;
@@ -400,6 +441,9 @@ const authSlice = createSlice({
     setFCMToken(state, action: PayloadAction<string>) {
       state.fcmToken = action.payload;
     },
+     setSocialName(state, action: PayloadAction<string>) {  // ✅ new reducer
+    state.socialName = action.payload;
+  },
   },
   extraReducers: builder => {
     // Login
@@ -586,10 +630,17 @@ const authSlice = createSlice({
 
 export const {
   setToken,
+  setinstagramtoken,
+  setfacebooktoken,
+  setyoutubetoken,
+  setInstagramUser,
+  setFacebookUser,
+  setyoutubeuser,
   setUser,
   clearToken,
   clearError,
   setUserId,
   setFCMToken,
+  setSocialName
 } = authSlice.actions;
 export default authSlice.reducer;

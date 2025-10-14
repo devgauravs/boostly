@@ -34,11 +34,16 @@ import { AppDispatch, RootState } from '../../../redux/store';
 import { postToPage, setAutoApproval } from '../../../utils/SocialShare';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomLoader from '../../../components/CustomLoader';
-import { facebookLogin } from '../../../utils/AuthHelper';
+import {
+  facebookLogin,
+  instagramLogin,
+  youtubeLogin,
+} from '../../../utils/AuthHelper';
 import ConfirmationModal from '../../../components/confirmationModal/ConfirmationModal';
 import CongratulationModal from '../../../components/CongratulationModal/CongratulationModal';
 import Toggle from '../../../components/Toggle/Toggle';
 import { getProfile } from '../../../redux/AuthSlice';
+import Video from 'react-native-video';
 
 interface Post {
   _id: string;
@@ -46,43 +51,58 @@ interface Post {
   image: any;
   url: string;
 }
+
 const Notification = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [posts, setPost] = useState('');
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [posts, setPost] = useState<Post[]>([]);
+  console.log('posts======>', posts);
+  console.log();
   const [loading, setLoading] = useState(false);
   const [ModalSocialLogin, setModalSocialLogin] = useState(false);
-  const fbToken = useSelector((state: RootState) => state.auth.token);
-  const userId = useSelector((state: RootState) => state.auth.userId);
-  const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const [currentPlatform, setCurrentPlatform] = useState<
+    'facebook' | 'instagram' | 'youtube' | null
+  >(null);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [congratsVisible, setCongratsVisible] = useState(false);
   const [approveAllPost, setApproveAllPost] = useState(false);
-  const { pointTracking, isLoading, error, totalPoints } = useSelector(
-    (state: RootState) => state.rewards,
-  );
-  console.log('pointTracking', pointTracking?.allTimeVerified);
   const [pointsEarned, setPointsEarned] = useState<number>(0);
+  const [autoApproval, setAutoApprovalState] = useState(false);
 
-  const [autoApproval, setAutoApprovalState] = useState(user?.autoApproval);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { user, instagramuser, facebookuser, youtubeuser, socialName } =
+    useSelector((state: RootState) => state.auth);
+  console.log('instagramuser===>', instagramuser);
+  console.log('facebookuser==>', facebookuser);
+  console.log('yuotubeuser==>', youtubeuser);
+  const { userId } = useSelector((state: RootState) => state.auth);
+  const { pointTracking } = useSelector((state: RootState) => state.rewards);
+
   useEffect(() => {
     if (user) {
       dispatch(getProfile(user._id));
+      setAutoApprovalState(user?.autoApproval || false);
     }
   }, [dispatch, user?._id]);
+
   const getPost = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}${ENDPOINTS?.getMedia}${userId}`);
-      setPost(res?.data?.data);
-      return res?.data;
+      const res = await axios.get(`${BASE_URL}${ENDPOINTS?.getMedia}`);
+      setPost(res?.data?.data || []);
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      getPost();
+    }, [userId]),
+  );
 
   const handleToggleConfirm = (nextValue: boolean) => {
     Alert.alert(
@@ -103,9 +123,8 @@ const Notification = () => {
           onPress: async () => {
             setAutoApprovalState(nextValue);
             try {
-              const res = await setAutoApproval(user?._id, nextValue);
+              await setAutoApproval(user?._id, nextValue);
               dispatch(getProfile(user._id));
-              console.log('AutoApproval response:', res);
             } catch (err) {
               console.log('AutoApproval API error:', err);
             }
@@ -115,63 +134,74 @@ const Notification = () => {
     );
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      getPost();
-    }, [userId]),
-  );
   const ApproveAll = () => {
-    if (posts.length === 0) return;
+    if (!posts || posts.length === 0) return;
     setApproveAllPost(true);
-    setConfirmModalVisible(true); // show confirmation modal
+    setConfirmModalVisible(true);
   };
 
-  const handleFacebookLogin = () => {
-    facebookLogin(dispatch, user?._id);
+  const handleFacebookLogin = async () => {
+    await facebookLogin(dispatch, user?._id);
     setModalSocialLogin(false);
   };
-  const handleApprove = async (item: Post) => {
-    setApproveAllPost(false);
-    setSelectedPost(item);
-    if (user?.withSoical === true) {
-      setModalVisible(true);
-    } else {
-      setModalSocialLogin(true);
-    }
+
+  const handleInstagramLogin = async () => {
+    // You can add Instagram login logic here
+    await instagramLogin(dispatch, user?._id);
+    setModalSocialLogin(false);
+    Alert.alert('Instagram login successful, tap again to approve post.');
+  };
+  const handleYouTubeLogin = async () => {
+    await youtubeLogin(dispatch, user?._id);
+    setModalSocialLogin(false);
   };
 
-  const renderPost = ({ item }: { item: Post }) => (
-    <View style={styles.box}>
-      <View style={styles.innerBox}>
-        <Image
-          source={{ uri: item?.url }}
-          style={styles.image}
-          // resizeMode="contain"
-        />
-        {/* <Text style={styles.postText}>New collection now available!</Text> */}
+  const handleApprove = (item: Post) => {
+    setSelectedPost(item);
+    setModalVisible(true); // Always show the share modal
+  };
 
-        <Button
-          title="Approve"
-          style={styles.button}
-          onPress={() => handleApprove(item)}
-        />
-        <TouchableOpacity
-          style={styles.rejectButton}
-          onPress={async () => {
-            setLoading(true); // show loader
+  const renderPost = ({ item }: { item: Post }) => {
+    const isVideo = item?.url?.endsWith('.mp4');
 
-            await postToPage(item, userId, 'reject');
-            setLoading(false); // hide loader
-            getPost();
-          }}
-        >
-          <Text style={styles.rejectText}>Reject</Text>
-        </TouchableOpacity>
+    return (
+      <View style={styles.box}>
+        <View style={styles.innerBox}>
+          {isVideo ? (
+            <Video
+              source={{ uri: item.url }}
+              style={styles.video}
+              resizeMode="contain"
+              controls={false}
+            />
+          ) : (
+            <Image
+              source={{ uri: item.url }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          )}
+
+          <Button
+            title="Approve"
+            style={styles.button}
+            onPress={() => handleApprove(item)}
+          />
+          <TouchableOpacity
+            style={styles.rejectButton}
+            onPress={async () => {
+              setLoading(true);
+              await postToPage(item, userId, 'reject');
+              setLoading(false);
+              getPost();
+            }}
+          >
+            <Text style={styles.rejectText}>Reject</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
-
-  <CustomLoader visible={loading} />;
+    );
+  };
 
   if (loading) {
     return (
@@ -201,7 +231,7 @@ const Notification = () => {
           )}
         />
 
-        {/* Footer always at bottom */}
+        {/* Footer */}
         <View
           style={[
             styles.footer,
@@ -221,12 +251,11 @@ const Notification = () => {
               textColor={Colors.primaryBlack}
             />
           )}
-
           <Toggle value={autoApproval} onToggle={handleToggleConfirm} />
         </View>
       </View>
 
-      {/* Modal */}
+      {/* Share Modal */}
       <Modal
         animationType="slide"
         transparent
@@ -251,34 +280,77 @@ const Notification = () => {
 
             <Text style={styles.modalTitle}>Share on</Text>
             <View style={styles.socialContainer}>
+              {/* FACEBOOK */}
               <TouchableOpacity
                 style={styles.socialButton}
                 onPress={async () => {
-                  setLoading(false);
-                  setModalVisible(false);
-                  setConfirmModalVisible(true);
+                  if (facebookuser) {
+                    setModalVisible(false);
+                    setConfirmModalVisible(true);
+                  } else {
+                    setCurrentPlatform('facebook');
+                    setModalVisible(false);
+                    setModalSocialLogin(true);
+                  }
                 }}
               >
                 <Image source={facebook} style={styles.socialIcon} />
+                {!facebookuser && (
+                  <Text style={{ fontSize: fontScale(12), color: Colors.gray }}>
+                    Login required
+                  </Text>
+                )}
               </TouchableOpacity>
 
-              {/* <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => console.log('Instagram')}
-              >
-                <Image source={instagram} style={styles.socialIcon} />
-              </TouchableOpacity>
-
+              {/* INSTAGRAM */}
               <TouchableOpacity
                 style={styles.socialButton}
-                onPress={() => console.log('YouTube')}
+                onPress={async () => {
+                  if (instagramuser) {
+                    setModalVisible(false);
+                    setConfirmModalVisible(true);
+                  } else {
+                    setCurrentPlatform('instagram');
+                    setModalVisible(false);
+                    setModalSocialLogin(true);
+                  }
+                }}
+              >
+                <Image source={instagram} style={styles.socialIcon} />
+                {!instagramuser && (
+                  <Text style={{ fontSize: fontScale(12), color: Colors.gray }}>
+                    Login required
+                  </Text>
+                )}
+              </TouchableOpacity>
+
+              {/* YOUTUBE */}
+              <TouchableOpacity
+                style={styles.socialButton}
+                onPress={async () => {
+                  if (youtubeuser) {
+                    setModalVisible(false);
+                    setConfirmModalVisible(true);
+                  } else {
+                    setCurrentPlatform('youtube');
+                    setModalVisible(false);
+                    setModalSocialLogin(true);
+                  }
+                }}
               >
                 <Image source={youtube} style={styles.socialIcon} />
-              </TouchableOpacity> */}
+                {!youtubeuser && (
+                  <Text style={{ fontSize: fontScale(12), color: Colors.gray }}>
+                    Login required
+                  </Text>
+                )}
+              </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
+
+      {/* Social Login Modal */}
       <Modal
         animationType="slide"
         transparent
@@ -287,16 +359,39 @@ const Notification = () => {
       >
         <TouchableWithoutFeedback onPress={() => setModalSocialLogin(false)}>
           <View style={styles.modalOverlay}>
-            <TouchableWithoutFeedback onPress={() => {}}>
+            <TouchableWithoutFeedback>
               <View style={styles.SocialLoginmodalBox}>
                 <View style={styles.socialLoginContainer}>
-                  <TouchableOpacity
-                    style={styles.socialflex}
-                    onPress={handleFacebookLogin}
-                  >
-                    <Image source={facebook} style={styles.socialLoginIcon} />
-                    <Text style={styles.loginText}>Login With Facebook</Text>
-                  </TouchableOpacity>
+                  {currentPlatform === 'facebook' && (
+                    <TouchableOpacity
+                      style={styles.socialflex}
+                      onPress={handleFacebookLogin}
+                    >
+                      <Image source={facebook} style={styles.socialLoginIcon} />
+                      <Text style={styles.loginText}>Login With Facebook</Text>
+                    </TouchableOpacity>
+                  )}
+                  {currentPlatform === 'instagram' && (
+                    <TouchableOpacity
+                      style={styles.socialflex}
+                      onPress={handleInstagramLogin}
+                    >
+                      <Image
+                        source={instagram}
+                        style={styles.socialLoginIcon}
+                      />
+                      <Text style={styles.loginText}>Login With Instagram</Text>
+                    </TouchableOpacity>
+                  )}
+                  {currentPlatform === 'youtube' && (
+                    <TouchableOpacity
+                      style={styles.socialflex}
+                      onPress={handleYouTubeLogin}
+                    >
+                      <Image source={youtube} style={styles.socialLoginIcon} />
+                      <Text style={styles.loginText}>Login With YouTube</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -304,53 +399,51 @@ const Notification = () => {
         </TouchableWithoutFeedback>
       </Modal>
 
-      {/* <ConfirmationModal
-        visible={confirmModalVisible}
-        title="Confirm Approval"
-        message={'Are you sure you want to approve this post on Facebook?' }
-        confirmText="Yes, Approve"
-        cancelText="Cancel"
-        onConfirm={async () => {
-          setConfirmModalVisible(false);
-          if (selectedPost) {
-            setLoading(true);
-            await postToPage(selectedPost, userId, 'accept');
-            setLoading(false);
-            setCongratsVisible(true);
-            getPost();
-          }
-        }}
-        onCancel={() => setConfirmModalVisible(false)}
-      /> */}
+      {/* Confirm Modal */}
       <ConfirmationModal
         visible={confirmModalVisible}
         title="Confirm Approval"
         message={
           approveAllPost
-            ? 'Are you sure you want to approve all posts on Facebook?'
-            : 'Are you sure you want to approve this post on Facebook?'
+            ? `Are you sure you want to approve all posts?`
+            : `Are you sure you want to approve this post?`
         }
         confirmText={approveAllPost ? 'Yes, Approve All' : 'Yes, Approve'}
         cancelText="Cancel"
         onConfirm={async () => {
           setConfirmModalVisible(false);
           setLoading(true);
-
           try {
+            let response;
+
+            // Determine the actual social user ID
+            const activeUserId =
+              currentPlatform === 'instagram'
+                ? instagramuser?._id
+                : currentPlatform === 'facebook'
+                ? facebookuser?._id
+                : currentPlatform === 'youtube'
+                ? youtubeuser?._id
+                : userId; // fallback to main userId
+
             if (approveAllPost) {
-              // Call your ApproveAll API here with userId
-              await axios.post(`${BASE_URL}${ENDPOINTS.allApprove}`, {
-                userId,
-              });
+              response = await axios.post(
+                `${BASE_URL}${ENDPOINTS.allApprove}`,
+                {
+                  userId: activeUserId,
+                },
+              );
+              setPointsEarned(response?.point ?? 0);
             } else if (selectedPost) {
-              // Single post approval
-              await postToPage(selectedPost, userId, 'accept');
+              response = await postToPage(selectedPost, activeUserId, 'accept');
+              console.log("resposneof aprve===>",response)
+              setPointsEarned(response?.point ?? 0);
             }
 
             setCongratsVisible(true);
-            getPost(); // refresh posts
+            getPost();
           } catch (error) {
-            console.error(error);
+            console.error('API Error:', error);
           } finally {
             setLoading(false);
           }
@@ -358,7 +451,9 @@ const Notification = () => {
         onCancel={() => setConfirmModalVisible(false)}
       />
 
+      {/* Congratulation Modal */}
       <CongratulationModal
+        points={pointsEarned}
         visible={congratsVisible}
         pendingPoints={pointTracking?.totalPending || 0}
         onClose={() => setCongratsVisible(false)}
@@ -369,12 +464,9 @@ const Notification = () => {
 
 export default Notification;
 
+// Styles remain unchanged
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    // marginHorizontal: horizontalScale(15),
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   headerText: {
     fontSize: fontScale(40),
     fontFamily: Fonts.Medium,
@@ -396,26 +488,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: verticalScale(2),
   },
-  innerBox: {
-    alignItems: 'center',
-  },
-  image: {
+  innerBox: { alignItems: 'center' },
+  image: { width: '100%', height: verticalScale(150), resizeMode: 'contain' },
+  video: {
     width: '100%',
     height: verticalScale(150),
-    resizeMode: 'contain',
+    backgroundColor: 'black',
   },
-  postText: {
-    fontSize: fontScale(18),
-    fontFamily: Fonts.SemiBold,
-    color: Colors.primaryBlack,
-    marginTop: verticalScale(20),
-    textAlign: 'center',
-    width: '90%',
-  },
-  button: {
-    width: horizontalScale(250),
-    marginTop: verticalScale(20),
-  },
+  button: { width: horizontalScale(250), marginTop: verticalScale(20) },
   rejectButton: {
     height: verticalScale(40),
     borderColor: Colors.red,
@@ -471,15 +551,14 @@ const styles = StyleSheet.create({
     width: horizontalScale(50),
     resizeMode: 'contain',
   },
-  socialLoginContainer: {
-    // marginBottom: verticalScale(15),
-    paddingHorizontal: horizontalScale(40),
-    paddingVertical: verticalScale(10),
-  },
   SocialLoginmodalBox: {
     width: '85%',
     backgroundColor: Colors.background,
     borderRadius: 10,
+  },
+  socialLoginContainer: {
+    paddingHorizontal: horizontalScale(40),
+    paddingVertical: verticalScale(10),
   },
   socialLoginIcon: {
     height: verticalScale(25),
@@ -518,8 +597,5 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(100),
     alignSelf: 'center',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
+  content: { flex: 1, justifyContent: 'space-between' },
 });

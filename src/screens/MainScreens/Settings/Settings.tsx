@@ -28,7 +28,7 @@ import {
 import Container from '../../../components/Container';
 import GradientText from '../../../components/GradientText/GradientText';
 import { RouteStack } from '../../../navigation/types';
-import { clearToken, deleteAccount, getProfile } from '../../../redux/AuthSlice';
+import { clearToken, deleteAccount, getProfile, setfacebooktoken, setFacebookUser, setinstagramtoken, setInstagramUser, setyoutubetoken, setyoutubeuser } from '../../../redux/AuthSlice';
 import { AppDispatch, RootState } from '../../../redux/store';
 import Colors from '../../../utils/color';
 import { Fonts } from '../../../utils/Fonts';
@@ -190,6 +190,13 @@ const Settings = () => {
       await Storage.removeItem(StorageKeys.USER);
       dispatch(resetRewards());
       dispatch(clearToken());
+    dispatch(setinstagramtoken(''));
+    dispatch(setfacebooktoken(''));
+    dispatch(setyoutubetoken(''));
+    dispatch(setInstagramUser(null));
+    dispatch(setFacebookUser(null));
+    dispatch(setyoutubeuser(null));
+
     } catch (err: any) {
       Alert.alert('Logout failed', err?.message || String(err));
     }

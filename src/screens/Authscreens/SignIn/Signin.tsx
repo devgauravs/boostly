@@ -12,7 +12,7 @@ import Input from '../../../components/Input';
 import { RouteStack } from '../../../navigation/types';
 import { loginUser, setToken } from '../../../redux/AuthSlice';
 import { AppDispatch, RootState } from '../../../redux/store';
-import { facebookLogin, youtubeLogin } from '../../../utils/AuthHelper';
+import { facebookLogin, instagramLogin, youtubeLogin } from '../../../utils/AuthHelper';
 import AuthScreenWrapper from '../AuthScreenWrapper';
 import InstagramLogin from 'react-native-instagram-login';
 
@@ -33,10 +33,9 @@ const SignIn = () => {
   const [countryCode, setCountryCode] = useState('+1');
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
-
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const instagramRef = useRef<InstagramLogin>(null);
-  console.log('instagramRef=>', instagramRef);
+
 
   const onInstagramSuccess = (token: string) => {
     console.log('✅ Instagram AccessToken:', token);
@@ -127,10 +126,13 @@ const SignIn = () => {
   const handleFacebookLogin = () => {
     facebookLogin(dispatch, user?._id);
   };
-   const handleYouTubeLogin = () => {
-    youtubeLogin(dispatch);
+  const handleYouTubeLogin = () => {
+    youtubeLogin(dispatch, user?._id);
   };
 
+    const handleInsgramLogin = () => {
+    instagramLogin(dispatch, user?._id);
+  };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
   };
@@ -232,16 +234,16 @@ const SignIn = () => {
       />
 
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => instagramRef.current?.show()}>
+        <TouchableOpacity onPress={handleInsgramLogin}>
           <Image source={InstagramIcon} style={styles.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handleFacebookLogin} disabled={isLoading}>
           <Image source={FacebookIcon} style={styles.icon} />
         </TouchableOpacity>
-      <TouchableOpacity onPress={handleYouTubeLogin}>
-        <Image source={YoutubeIcon} style={styles.icon} />
-      </TouchableOpacity>
+        <TouchableOpacity onPress={handleYouTubeLogin}>
+          <Image source={YoutubeIcon} style={styles.icon} />
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity
@@ -253,9 +255,9 @@ const SignIn = () => {
       </TouchableOpacity>
       <InstagramLogin
         ref={instagramRef}
-        appId="1313530670259714"
-        appSecret="b5afe909fee33c821d4b967699cb8e74"
-        redirectUrl="boostlyapp://auth/"
+        appId="1125515399687169"
+        appSecret="916cea7a54546efb1d7de507615019d9"
+        redirectUrl="https://boostlyclub.com/"
         scopes={['user_profile', 'user_media']}
         onLoginSuccess={onInstagramSuccess}
         onLoginFailure={onInstagramFailure}

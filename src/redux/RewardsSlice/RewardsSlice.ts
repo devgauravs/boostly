@@ -30,9 +30,9 @@ const initialState: RewardsState = {
 // Async thunk for fetching rewards
 export const fetchRewards = createAsyncThunk(
   'rewards/fetchRewards',
-  async (params: GetRewardsParams = {}, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await RewardsService.getRewards(params);
+      const response = await RewardsService.getRewards();
       return response;
     } catch (error: any) {
       const message =
@@ -46,7 +46,7 @@ export const fetchRewards = createAsyncThunk(
       });
       return rejectWithValue(message);
     }
-  },
+  }
 );
 
 export const fetchPoints = createAsyncThunk('rewards/fetchPoints', async () => {
@@ -54,8 +54,6 @@ export const fetchPoints = createAsyncThunk('rewards/fetchPoints', async () => {
     const response = await pointService.getPoints();
     return response;
   } catch (error: any) {
-    console.log('error=====>>>>', error.data.response);
-
     const message =
       error?.response?.data?.message ||
       error?.message ||
@@ -189,6 +187,30 @@ export const fetchLeaderBoard = createAsyncThunk(
         text1: 'Error',
         text2: message,
       });
+      return rejectWithValue(message);
+    }
+  },
+);
+export const fetchTotalRewards = createAsyncThunk(
+  'rewards/fetchTotalPoints',
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await totalPointsService.getTotalPoints(userId);
+      return response;
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to fetch Points';
+
+      if (error.response.status != 404) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: message,
+        });
+      }
+
       return rejectWithValue(message);
     }
   },
