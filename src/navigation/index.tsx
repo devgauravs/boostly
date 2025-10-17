@@ -25,7 +25,7 @@ const RootNavigator: React.FC = () => {
           await FCMService.initialize();
         }
       }
-    };
+    }; 
 
     setupNotifications();
   }, [fcmToken]);

@@ -1,10 +1,10 @@
 import { youtube } from "../assets/images";
 
 // src/utils/api.ts
-export const BASE_URL = 'https://84f1ff8d5845.ngrok-free.app/api/v1';
+export const BASE_URL = 'https://b8b5212837a7.ngrok-free.app/api/v1';
 
 export const ENDPOINTS = {
-  getMedia: '/get-media',
+  getMedia: '/get-posts',
   facebookLogin: '/facebook-login',
   facebookinsideLogin: '/facebook',
    media_Action: '/media-action',

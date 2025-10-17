@@ -1,13 +1,13 @@
 // src/utils/authHelpers.ts
-import { Alert } from 'react-native';
-import Storage, { StorageKeys } from './storage';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
-import { AppDispatch } from '../redux/store'; // adjust path if different
-import { setfacebooktoken, setFacebookUser, setinstagramtoken, setInstagramUser, setSocialName, setToken, setUser, setUserId, setyoutubetoken, setyoutubeuser, } from '../redux/AuthSlice';
-import { BASE_URL, ENDPOINTS } from './api';
-import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import axios from 'axios';
+import { Alert } from 'react-native';
+import { AccessToken, LoginManager, } from 'react-native-fbsdk-next';
+import Toast from 'react-native-toast-message';
+import { setfacebooktoken, setFacebookUser, setinstagramtoken, setInstagramUser, setSocialName, setToken, setUser, setUserId, setyoutubetoken, setyoutubeuser, } from '../redux/AuthSlice';
+import { AppDispatch } from '../redux/store'; // adjust path if different
+import { BASE_URL, ENDPOINTS } from './api';
+import Storage, { StorageKeys } from './storage';
 // Simple local sign-in
 export const signIn = async (dispatch: AppDispatch, token: string) => {
   try {
@@ -22,45 +22,30 @@ export const signIn = async (dispatch: AppDispatch, token: string) => {
 // Facebook Login
 export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
   try {
-    // Step 1: Ask for Facebook permissions
+    // Step 1: Ask for Facebook permissions  
     const result = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
       'pages_show_list',
       'pages_read_engagement',
       'pages_manage_posts',
-      'pages_read_user_content',
-      'business_management',
+      // 'pages_read_user_content',
+      // 'business_management',
     ]);
 
     if (result.isCancelled) {
       Alert.alert('Login cancelled by user');
       return;
     }
-
     // Step 2: Get access token
     const data = await AccessToken.getCurrentAccessToken();
     if (!data) {
       Alert.alert('Error', 'Unable to get Facebook access token');
       return;
     }
-
     const fbAccessToken = data.accessToken.toString();
     console.log('fbAccessToken:', fbAccessToken);
 
-    // Step 3: Fetch user's Facebook Pages
-    const pagesResponse = await fetch(
-      `https://graph.facebook.com/me/accounts?access_token=${fbAccessToken}`
-    );
-    const pagesData = await pagesResponse.json();
-    console.log('Facebook Pages Response:', pagesData);
-
-    if (pagesData?.data?.length > 0) {
-      const pageId = pagesData.data[0].id;
-      console.log('✅ First Page ID:', pageId);
-    } else {
-      console.log('⚠️ No Facebook pages found for this user.');
-    }
 
     // Step 4: Backend login API call
     const endpoint =
@@ -86,10 +71,13 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
     dispatch(setFacebookUser(response?.data?.user));
     dispatch(setSocialName('facebook'));
 
+
+
     // normal login: save generic + Facebook-specific info
     dispatch(setToken(fbAccessToken));
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
+
 
   } catch (error: any) {
     console.error('Facebook Login Error:', error);
@@ -100,6 +88,100 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
     });
   }
 };
+
+// export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
+//   try {
+//     const result = await LoginManager.logInWithPermissions([
+//       'public_profile',
+//       'email',
+// 'pages_manage_posts',
+//       'pages_read_engagement',
+//       'pages_manage_posts',
+//       // 'pages_read_user_content',
+//     ]);
+
+//     if (result.isCancelled) {
+//       Alert.alert('Login cancelled by user');
+//       return;
+//     }
+
+//     const data = await AccessToken.getCurrentAccessToken();
+//     if (!data) {
+//       Alert.alert('Error', 'Unable to get Facebook access token');
+//       return;
+//     }
+
+//     const fbAccessToken = data.accessToken.toString();
+//     console.log('fbAccessToken:', fbAccessToken);
+
+//     // 🔹 Step 2: Check if Professional Mode is ON
+//     const accountRes = await axios.get(
+//       `https://graph.facebook.com/v21.0/me/accounts?access_token=${fbAccessToken}`
+//     );
+
+//     const accounts = accountRes?.data?.data || [];
+
+//     if (!accounts.length) {
+//       // 🚫 No professional mode or page access
+//       Alert.alert(
+//         'Professional Mode Required',
+//         'Please enable Professional Mode on your Facebook profile to continue posting.'
+//       );
+//       return;
+//     }
+
+//     // ✅ Professional Mode is ON (or Page access exists)
+//     const proModeAccount = accounts.find(
+//       (acc) =>
+//         acc.category?.toLowerCase().includes('professional') ||
+//         acc.name // fallback condition
+//     );
+
+//     if (!proModeAccount) {
+//       Alert.alert(
+//         'Professional Mode Required',
+//         'Please enable Professional Mode to post from your personal profile.'
+//       );
+//       return;
+//     }
+
+//     console.log('Professional Mode Account Found:', proModeAccount);
+
+//     // ✅ Proceed with your backend login
+//     const endpoint =
+//       userId === undefined
+//         ? ENDPOINTS.facebookLogin
+//         : ENDPOINTS?.facebookinsideLogin;
+
+//     const response = await axios.post(`${BASE_URL}${endpoint}`, {
+//       accessToken: fbAccessToken,
+//       ...(userId ? { userId } : {}),
+//       pageId: proModeAccount.id, // optional, to know which profile/page to post
+//     });
+
+//     Toast.show({
+//       type: 'success',
+//       text1: 'Login Successful',
+//       text2: 'You are now logged in with Facebook!',
+//     });
+
+//     // ✅ Save tokens and user info
+//     dispatch(setfacebooktoken(fbAccessToken));
+//     dispatch(setFacebookUser(response?.data?.user));
+//     dispatch(setSocialName('facebook'));
+//     dispatch(setToken(fbAccessToken));
+//     dispatch(setUser(response?.data?.user));
+//     dispatch(setUserId(response?.data?.user?._id));
+
+//   } catch (error: any) {
+//     console.error('Facebook Login Error:', error?.response?.data || error);
+//     Toast.show({
+//       type: 'error',
+//       text1: 'Login Failed',
+//       text2: error?.message || 'Something went wrong.',
+//     });
+//   }
+// };
 
 
 
@@ -186,6 +268,7 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
     });
 
 
+
     // insideLogin: only save Facebook-specific info
     dispatch(setinstagramtoken(fbAccessToken));
     dispatch(setInstagramUser(response?.data?.user));
@@ -267,10 +350,13 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
     dispatch(setyoutubetoken(accessToken));
     dispatch(setyoutubeuser(response?.data?.user));
     dispatch(setSocialName('youtube'));
+
     // normal login: save generic + Facebook-specific info
     dispatch(setToken(accessToken));
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
+
+
   } catch (error: any) {
     console.error('❌ Google Signin error (detailed):', JSON.stringify(error, null, 2));
   } finally {

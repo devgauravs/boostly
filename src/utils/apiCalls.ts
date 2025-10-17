@@ -4,7 +4,7 @@ import { BASE_URL, ENDPOINTS } from './api';
 export const getReward = async (token: string) => {
   try {
     const response = await axios.get(
-      `https://84f1ff8d5845.ngrok-free.app/api/v1/get-reward`,
+      `https://b8b5212837a7.ngrok-free.app/api/v1/get-reward`,
       {},
     );
     return response.data;
