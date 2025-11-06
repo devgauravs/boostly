@@ -1,13 +1,13 @@
-import { youtube } from "../assets/images";
+import { youtube } from '../assets/images';
 
 // src/utils/api.ts
-export const BASE_URL = 'https://b8b5212837a7.ngrok-free.app/api/v1';
+export const BASE_URL = 'https://48510d47d65c.ngrok-free.app/api/v1';
 
 export const ENDPOINTS = {
   getMedia: '/get-posts',
   facebookLogin: '/facebook-login',
   facebookinsideLogin: '/facebook',
-   media_Action: '/media-action',
+  media_Action: '/media-action',
   register: '/register',
   login: '/login',
   getProfile: '/get-profile',
@@ -25,11 +25,12 @@ export const ENDPOINTS = {
   Leaderboard: '/top-user?type=',
   deleteAccount: '/delete-account',
   resetPassword: '/reset-password',
-  autoApprovel: "/auto-approval/",
-  youtubeLogin: "/youtube-login",
-  appInsideYoutube: "/youtube-login-with-id",
-  instagramLogin:"/instagram-login",
-  instgraminsideLogin:"/instagram-login-user"
- 
-
+  autoApprovel: '/auto-approval/',
+  youtubeLogin: '/youtube-login',
+  appInsideYoutube: '/youtube-login-with-id',
+  instagramLogin: '/instagram-login',
+  instgraminsideLogin: '/instagram-login-user',
+  singlepostfacebook: '/media-action-facebook',
+  singlepostinstagram: '/media-action-instagram',
+  singlepostyoutube: '/media-action-youtube',
 };

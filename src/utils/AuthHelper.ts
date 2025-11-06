@@ -2,9 +2,20 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { AccessToken, LoginManager, } from 'react-native-fbsdk-next';
+import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
 import Toast from 'react-native-toast-message';
-import { setfacebooktoken, setFacebookUser, setinstagramtoken, setInstagramUser, setSocialName, setToken, setUser, setUserId, setyoutubetoken, setyoutubeuser, } from '../redux/AuthSlice';
+import {
+  setfacebooktoken,
+  setFacebookUser,
+  setinstagramtoken,
+  setInstagramUser,
+  setSocialName,
+  setToken,
+  setUser,
+  setUserId,
+  setyoutubetoken,
+  setyoutubeuser,
+} from '../redux/AuthSlice';
 import { AppDispatch } from '../redux/store'; // adjust path if different
 import { BASE_URL, ENDPOINTS } from './api';
 import Storage, { StorageKeys } from './storage';
@@ -22,15 +33,14 @@ export const signIn = async (dispatch: AppDispatch, token: string) => {
 // Facebook Login
 export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
   try {
-    // Step 1: Ask for Facebook permissions  
+    // Step 1: Ask for Facebook permissions
     const result = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
       'pages_show_list',
       'pages_read_engagement',
       'pages_manage_posts',
-      // 'pages_read_user_content',
-      // 'business_management',
+      'pages_manage_metadata',
     ]);
 
     if (result.isCancelled) {
@@ -45,7 +55,6 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
     }
     const fbAccessToken = data.accessToken.toString();
     console.log('fbAccessToken:', fbAccessToken);
-
 
     // Step 4: Backend login API call
     const endpoint =
@@ -65,20 +74,15 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
       text2: 'You are now logged in with Facebook!',
     });
 
-
     // insideLogin: only save Facebook-specific info
     dispatch(setfacebooktoken(fbAccessToken));
     dispatch(setFacebookUser(response?.data?.user));
     dispatch(setSocialName('facebook'));
 
-
-
     // normal login: save generic + Facebook-specific info
     dispatch(setToken(fbAccessToken));
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
-
-
   } catch (error: any) {
     console.error('Facebook Login Error:', error);
     Toast.show({
@@ -183,9 +187,10 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
 //   }
 // };
 
-
-
-export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => {
+export const instagramLogin = async (
+  dispatch: AppDispatch,
+  userId?: string,
+) => {
   try {
     // Step 1️⃣ — Ask for required permissions
     const result = await LoginManager.logInWithPermissions([
@@ -195,7 +200,7 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
       'instagram_manage_comments',
       'instagram_manage_messages',
       'business_management',
-      'pages_read_engagement'
+      'pages_read_engagement',
     ]);
 
     if (result.isCancelled) {
@@ -215,11 +220,14 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
 
     // Step 3️⃣ — Get Facebook Pages connected to user
     const pagesResponse = await axios.get(
-      `https://graph.facebook.com/v18.0/me/accounts?access_token=${fbAccessToken}`
+      `https://graph.facebook.com/v18.0/me/accounts?access_token=${fbAccessToken}`,
     );
 
     if (!pagesResponse.data?.data?.length) {
-      Alert.alert('No Facebook Pages found', 'This account has no linked Pages.');
+      Alert.alert(
+        'No Facebook Pages found',
+        'This account has no linked Pages.',
+      );
       return;
     }
 
@@ -232,16 +240,15 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
 
     // Step 4️⃣ — Get Instagram Business Account connected to that page
     const igResponse = await axios.get(
-      `https://graph.facebook.com/v18.0/${pageId}?fields=instagram_business_account&access_token=${pageAccessToken}`
+      `https://graph.facebook.com/v18.0/${pageId}?fields=instagram_business_account&access_token=${pageAccessToken}`,
     );
-
 
     const instagramBusinessId = igResponse.data.instagram_business_account?.id;
 
     if (!instagramBusinessId) {
       Alert.alert(
         'Instagram Not Connected',
-        'This Facebook Page is not linked to any Instagram Business Account.'
+        'This Facebook Page is not linked to any Instagram Business Account.',
       );
       return;
     }
@@ -259,15 +266,13 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
       ...(userId ? { userId } : {}),
     });
 
-    console.log("InstagramInsideResponse", response)
+    console.log('InstagramInsideResponse', response);
     // Step 6️⃣ — Handle success
     Toast.show({
       type: 'success',
       text1: 'Login Successful',
       text2: 'You are now logged in with Instagram!',
     });
-
-
 
     // insideLogin: only save Facebook-specific info
     dispatch(setinstagramtoken(fbAccessToken));
@@ -279,8 +284,6 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
     dispatch(setUserId(response?.data?.user?._id));
     dispatch(setSocialName('instagram'));
 
-
-
     // Optional: return data if needed by frontend
     return {
       fbAccessToken,
@@ -289,7 +292,10 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
       instagramBusinessId,
     };
   } catch (error: any) {
-    console.error('❌ Instagram Login Error:', error.response?.data || error.message);
+    console.error(
+      '❌ Instagram Login Error:',
+      error.response?.data || error.message,
+    );
     Toast.show({
       type: 'error',
       text1: 'Login Failed',
@@ -297,9 +303,6 @@ export const instagramLogin = async (dispatch: AppDispatch, userId?: string) => 
     });
   }
 };
-
-
-
 
 let signingIn = false; // Prevent multiple sign-in calls
 
@@ -328,7 +331,6 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
     const { user } = signInResult;
     const { accessToken } = tokens;
 
-
     // 4. Dispatch accessToken to Redux
     const enpoint =
       userId === undefined
@@ -338,7 +340,6 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
       accessToken: accessToken,
       ...(userId ? { userId } : {}),
     });
-
 
     Toast.show({
       type: 'success',
@@ -355,10 +356,11 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
     dispatch(setToken(accessToken));
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
-
-
   } catch (error: any) {
-    console.error('❌ Google Signin error (detailed):', JSON.stringify(error, null, 2));
+    console.error(
+      '❌ Google Signin error (detailed):',
+      JSON.stringify(error, null, 2),
+    );
   } finally {
     signingIn = false; // Reset flag
     console.log('🔄 Reset sign-in flag');

@@ -41,7 +41,7 @@
     <data android:scheme="boostly" android:host="instagram-auth" />
 </intent-filter>
       </activity>
-          <provider android:authorities="com.facebook.app.FacebookContentProvider1320964972843725"
+          <provider android:authorities="com.facebook.app.FacebookContentProvider771543905706998"
       android:name="com.facebook.FacebookContentProvider"
       android:exported="true" />
     </application>

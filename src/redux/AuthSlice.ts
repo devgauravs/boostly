@@ -73,8 +73,9 @@ export const loginUser = createAsyncThunk(
         ...credentials,
         ...(fcmToken && { fcmToken }),
       };
-      console.log("loginUser:", loginData);
+
       const response = await AuthService.login(loginData);
+            console.log("loginUser:", loginData);
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
       Toast.show({
@@ -108,6 +109,7 @@ export const registerUser = createAsyncThunk(
       };
 
       const response = await AuthService.register(registerData);
+     
       await Storage.setItem(StorageKeys.USER_TOKEN, response.token);
       await Storage.setItem(StorageKeys.USER, JSON.stringify(response.user));
 

@@ -78,6 +78,7 @@ const RewardScreen = () => {
           style={styles.rewardImage}
           resizeMode="contain"
         />
+       
         <Text style={styles.rewardText}>{item?.title}</Text>
       </TouchableOpacity>
     );
@@ -122,7 +123,7 @@ const RewardScreen = () => {
           data={rewards}
           keyExtractor={item => item._id}
           renderItem={renderVoucher}
-          style={{ marginTop: verticalScale(20) }}
+          style={{ marginTop: verticalScale(10),marginBottom:85 }}
         />
       )}
 
