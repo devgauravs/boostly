@@ -77,6 +77,9 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     marginTop: 2,
   },
+  socialRow:{
+    flex:1,flexDirection:"row",alignItems:"center"
+  }
 });
 
 export default styles;

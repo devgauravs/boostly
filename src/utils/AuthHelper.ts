@@ -306,6 +306,8 @@ export const instagramLogin = async (
 
 let signingIn = false; // Prevent multiple sign-in calls
 
+
+
 export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
   if (signingIn) {
     console.log('⚠️ Sign-in already in progress, skipping...');
@@ -357,6 +359,7 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
   } catch (error: any) {
+    console.log("youtubeError",error)
     console.error(
       '❌ Google Signin error (detailed):',
       JSON.stringify(error, null, 2),

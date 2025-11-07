@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, RefreshControl } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import styles from './style';
 
 import StarImage from '../../../assets/images/star.png';
@@ -13,6 +21,11 @@ import {
 import { facebook, instagram, youtube } from '../../../assets/images';
 import CustomLoader from '../../../components/CustomLoader';
 import { useFocusEffect } from '@react-navigation/native';
+import {
+  facebookLogin,
+  instagramLogin,
+  youtubeLogin,
+} from '../../../utils/AuthHelper';
 
 interface RewardItem {
   id: string;
@@ -23,14 +36,42 @@ interface RewardItem {
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth);
+
+  const { user, instagramuser, facebookuser, youtubeuser, userId } =
+    useSelector((state: RootState) => state.auth);
+
   const [refreshing, setRefreshing] = useState(false);
   const { points, isLoading, totalPoints } = useSelector(
     (state: RootState) => state.rewards,
   );
-  console.log(' user?._id', user?._id);
 
-  console.log('totalPoints', totalPoints);
+  const handleSubmit = async (item: string) => {
+    if (item === 'Facebook Post') {
+      if (facebookuser) {
+        Alert.alert('Already logged in with Facebook');
+      } else {
+        await facebookLogin(dispatch, user?._id);
+      }
+      return;
+    }
+    if (item === 'Instagram Post') {
+      if (instagramuser) {
+        Alert.alert('Already logged in with Instagram');
+      } else {
+        await facebookLogin(dispatch, user?._id);
+      }
+      return;
+    }
+    if (item === 'YouTube Post') {
+      if (youtubeuser) {
+        Alert.alert('Already logged in with Youtube');
+      } else {
+        await youtubeLogin(dispatch, user?._id);
+      }
+      return;
+    }
+  };
+
   // Using these to hide youtube, use points instead when you have youtube
   const tempPoint = points.filter(
     item => !item.title.toLowerCase().includes('youtube'),
@@ -96,10 +137,15 @@ const HomeScreen = () => {
 
           {points.map(item => (
             <View key={item._id} style={styles.rewardRow}>
-              <Image source={getIcon(item.title)} style={styles.icon} />
-              <Text style={styles.rewardText}>
-                {item?.title?.replace(' Post', '')}
-              </Text>
+              <TouchableOpacity
+                style={styles.socialRow}
+                onPress={() => handleSubmit(item?.title)}
+              >
+                <Image source={getIcon(item.title)} style={styles.icon} />
+                <Text style={styles.rewardText}>
+                  {item?.title?.replace(' Post', '')}
+                </Text>
+              </TouchableOpacity>
               <View style={styles.pointsBtn}>
                 <Text style={styles.pointsBtnText}>+{item?.price} Pts</Text>
               </View>

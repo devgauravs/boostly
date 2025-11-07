@@ -782,10 +782,7 @@ const Notification = () => {
   };
 
   const handleReject = async (item: Post) => {
-    if (!currentPlatform) {
-      Alert.alert('Select platform', 'Please choose a platform to reject on.');
-      return;
-    }
+   
     setLoading(true);
     await postToPage(item, userId, 'reject', currentPlatform);
     setLoading(false);
