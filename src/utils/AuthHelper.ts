@@ -16,10 +16,11 @@ import {
   setyoutubetoken,
   setyoutubeuser,
 } from '../redux/AuthSlice';
-import { AppDispatch } from '../redux/store'; // adjust path if different
+import { AppDispatch } from '../redux/store'; 
 import { BASE_URL, ENDPOINTS } from './api';
 import Storage, { StorageKeys } from './storage';
-// Simple local sign-in
+
+
 export const signIn = async (dispatch: AppDispatch, token: string) => {
   try {
     await Storage.setItem(StorageKeys.USER_TOKEN, token);
@@ -93,99 +94,6 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
   }
 };
 
-// export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
-//   try {
-//     const result = await LoginManager.logInWithPermissions([
-//       'public_profile',
-//       'email',
-// 'pages_manage_posts',
-//       'pages_read_engagement',
-//       'pages_manage_posts',
-//       // 'pages_read_user_content',
-//     ]);
-
-//     if (result.isCancelled) {
-//       Alert.alert('Login cancelled by user');
-//       return;
-//     }
-
-//     const data = await AccessToken.getCurrentAccessToken();
-//     if (!data) {
-//       Alert.alert('Error', 'Unable to get Facebook access token');
-//       return;
-//     }
-
-//     const fbAccessToken = data.accessToken.toString();
-//     console.log('fbAccessToken:', fbAccessToken);
-
-//     // 🔹 Step 2: Check if Professional Mode is ON
-//     const accountRes = await axios.get(
-//       `https://graph.facebook.com/v21.0/me/accounts?access_token=${fbAccessToken}`
-//     );
-
-//     const accounts = accountRes?.data?.data || [];
-
-//     if (!accounts.length) {
-//       // 🚫 No professional mode or page access
-//       Alert.alert(
-//         'Professional Mode Required',
-//         'Please enable Professional Mode on your Facebook profile to continue posting.'
-//       );
-//       return;
-//     }
-
-//     // ✅ Professional Mode is ON (or Page access exists)
-//     const proModeAccount = accounts.find(
-//       (acc) =>
-//         acc.category?.toLowerCase().includes('professional') ||
-//         acc.name // fallback condition
-//     );
-
-//     if (!proModeAccount) {
-//       Alert.alert(
-//         'Professional Mode Required',
-//         'Please enable Professional Mode to post from your personal profile.'
-//       );
-//       return;
-//     }
-
-//     console.log('Professional Mode Account Found:', proModeAccount);
-
-//     // ✅ Proceed with your backend login
-//     const endpoint =
-//       userId === undefined
-//         ? ENDPOINTS.facebookLogin
-//         : ENDPOINTS?.facebookinsideLogin;
-
-//     const response = await axios.post(`${BASE_URL}${endpoint}`, {
-//       accessToken: fbAccessToken,
-//       ...(userId ? { userId } : {}),
-//       pageId: proModeAccount.id, // optional, to know which profile/page to post
-//     });
-
-//     Toast.show({
-//       type: 'success',
-//       text1: 'Login Successful',
-//       text2: 'You are now logged in with Facebook!',
-//     });
-
-//     // ✅ Save tokens and user info
-//     dispatch(setfacebooktoken(fbAccessToken));
-//     dispatch(setFacebookUser(response?.data?.user));
-//     dispatch(setSocialName('facebook'));
-//     dispatch(setToken(fbAccessToken));
-//     dispatch(setUser(response?.data?.user));
-//     dispatch(setUserId(response?.data?.user?._id));
-
-//   } catch (error: any) {
-//     console.error('Facebook Login Error:', error?.response?.data || error);
-//     Toast.show({
-//       type: 'error',
-//       text1: 'Login Failed',
-//       text2: error?.message || 'Something went wrong.',
-//     });
-//   }
-// };
 
 export const instagramLogin = async (
   dispatch: AppDispatch,
@@ -216,7 +124,7 @@ export const instagramLogin = async (
     }
 
     const fbAccessToken = data.accessToken.toString();
-    console.log('🔑 Facebook Access Token:', fbAccessToken);
+    console.log('🔑 Instagram Access Token:', fbAccessToken);
 
     // Step 3️⃣ — Get Facebook Pages connected to user
     const pagesResponse = await axios.get(
@@ -304,8 +212,7 @@ export const instagramLogin = async (
   }
 };
 
-let signingIn = false; // Prevent multiple sign-in calls
-
+let signingIn = false; 
 
 
 export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
@@ -318,22 +225,20 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
   console.log('🚀 Starting YouTube login...');
 
   try {
-    // 1. Check Play Services (Android only)
+   
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     console.log('✅ Play services available');
 
-    // 2. Trigger Google Sign-In
     const signInResult = await GoogleSignin.signIn();
     console.log('👤 Sign-in Result:', signInResult);
 
-    // 3. Get tokens (accessToken needed for YouTube API)
     const tokens = await GoogleSignin.getTokens();
-    console.log('🔑 Tokens:', tokens);
+    console.log('🔑 Youtube Tokens:', tokens);
 
-    const { user } = signInResult;
+    const { user} = signInResult;
     const { accessToken } = tokens;
 
-    // 4. Dispatch accessToken to Redux
+
     const enpoint =
       userId === undefined
         ? ENDPOINTS.youtubeLogin
@@ -349,12 +254,12 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
       text2: 'You are now logged in with Youtube!',
     });
 
-    // insideLogin: only save Facebook-specific info
+
     dispatch(setyoutubetoken(accessToken));
     dispatch(setyoutubeuser(response?.data?.user));
     dispatch(setSocialName('youtube'));
 
-    // normal login: save generic + Facebook-specific info
+
     dispatch(setToken(accessToken));
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
@@ -365,7 +270,7 @@ export const youtubeLogin = async (dispatch: AppDispatch, userId?: string) => {
       JSON.stringify(error, null, 2),
     );
   } finally {
-    signingIn = false; // Reset flag
+    signingIn = false; 
     console.log('🔄 Reset sign-in flag');
   }
 };

@@ -148,12 +148,15 @@ export const approveAllPosts = async (
 
 export const setAutoApproval = async (userId: string, status: boolean) => {
 
+  console.log("userId",userId)
+  console.log("status",status)
   try {
     const response = await axios.post(
-      `${BASE_URL}${ENDPOINTS.autoApprovel}${userId}`, // include user id if needed
+      `${BASE_URL}${ENDPOINTS.autoApprovel}${userId}`, 
       { autoApproval: status },
       { headers: { "Content-Type": "application/json" } }
     );
+    console.log("responseData==>",response)
     return response.data;
   } catch (error: any) {
     console.error("AutoApproval API error:", error);

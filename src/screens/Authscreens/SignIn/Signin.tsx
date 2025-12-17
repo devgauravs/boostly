@@ -128,33 +128,6 @@ const SignIn = () => {
   };
 
   const handleFacebookLogin = async () => {
-  //   const requestOptions = {
-  //     method: 'POST',
-  //     redirect: 'follow',
-  //   };
-
-  //   //   const fileBlob = await fetch('https://fastly.picsum.photos/id/1042/200/300.jpg?hmac=rLBArBa4ahYhaKOp1GOxw6W77_v5daNsouqdh_bkoUs').then(res => res.blob());
-
-  //   //   const response = await fetch(`https://graph.facebook.com/v24.0/upload:MTphdHRhY2htZW50OjI5NTIyZTkzLTJmNGEtNDM2My1iNTZiLWM1MDlmMzJiMDQ0ND9maWxlX25hbWU9MTA0Mi0yMDB4MzAwLmpwZyZmaWxlX2xlbmd0aD0xNDMxOCZmaWxlX3R5cGU9aW1hZ2UlMkZqcGVn?sig=ARYaBUrdTPoDdm2yz-s`, {
-  //   //   method: 'POST',
-  //   //   headers: {
-  //   //     Authorization: `OAuth EAASxaRZC3ks0BPrSyGb2s6wWBsRbqM57P5YysERchZBuf05DMquBhXuF1YBn3fj2HpuPTWzsrpNnnlniriWcZAtprJeOZA0nZChfDrI6DHQxRL041fMzkU9uoptCUr0fDeZCpuRn75KOSd3AEkZAREyTy7RpaijdyZAZBUU6QQd7NYySsfj8xKAbXwxuThV16YjwrmQxC14ZAxTwNiCalfPwDZCxf2IHWqnO8f6bUoZD`,
-  //   //     'file_offset': '0'
-  //   //   },
-  //   //   body: fileBlob,
-  //   // });
-
-  //   // const result = await response.json();
-  //   // console.log('📦 Upload Response:', result);
-
-  //   const response = await fetch('https://graph.facebook.com/v24.0/upload:MTphdHRhY2htZW50OjI5NTIyZTkzLTJmNGEtNDM2My1iNTZiLWM1MDlmMzJiMDQ0ND9maWxlX25hbWU9MTA0Mi0yMDB4MzAwLmpwZyZmaWxlX2xlbmd0aD0xNDMxOCZmaWxlX3R5cGU9aW1hZ2UlMkZqcGVn?sig=ARYaBUrdTPoDdm2yz-s', {
-  //     headers: {
-  //       Authorization: `OAuth EAASxaRZC3ks0BPrSyGb2s6wWBsRbqM57P5YysERchZBuf05DMquBhXuF1YBn3fj2HpuPTWzsrpNnnlniriWcZAtprJeOZA0nZChfDrI6DHQxRL041fMzkU9uoptCUr0fDeZCpuRn75KOSd3AEkZAREyTy7RpaijdyZAZBUU6QQd7NYySsfj8xKAbXwxuThV16YjwrmQxC14ZAxTwNiCalfPwDZCxf2IHWqnO8f6bUoZD`,
-  //     },
-  //   });
-  // console.log('📦 Get Response:', response);
-
-
     facebookLogin(dispatch, user?._id);
   };
   const handleYouTubeLogin = () => {
