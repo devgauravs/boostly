@@ -1,7 +1,7 @@
 import { youtube } from '../assets/images';
 
 // src/utils/api.ts
-export const BASE_URL = 'https://9363795ab10d.ngrok-free.app/api/v1';
+export const BASE_URL = 'https://9f771ce66cea.ngrok-free.app/api/v1';
 
 export const ENDPOINTS = {
   getMedia: '/get-posts',

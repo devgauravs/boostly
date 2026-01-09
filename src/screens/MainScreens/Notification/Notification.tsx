@@ -53,8 +53,10 @@ interface Post {
 const Notification = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+ const { facebookPageId } = useSelector((state: RootState) => state.auth);
+ console.log("pageid=====>",facebookPageId)
   const [posts, setPost] = useState<Post[]>([]);
-  console.log("post=====>",posts)
+
   const [loading, setLoading] = useState(false);
   const [ModalSocialLogin, setModalSocialLogin] = useState(false);
   const [currentPlatform, setCurrentPlatform] = useState<
@@ -70,21 +72,20 @@ const Notification = () => {
   const { user, instagramuser, facebookuser, youtubeuser, userId } =
     useSelector((state: RootState) => state.auth);
 
-    // console.log("user=====>",user)
+  // console.log("user=====>",user)
   const { pointTracking } = useSelector((state: RootState) => state.rewards);
 
-// 1️⃣ Fetch profile when user ID changes
-useEffect(() => {
-  if (user?._id) {
-    dispatch(getProfile(user._id));
-  }
-}, [dispatch, user?._id]);
+  // 1️⃣ Fetch profile when user ID changes
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(getProfile(user._id));
+    }
+  }, [dispatch, user?._id]);
 
-// 2️⃣ Update toggle when profile updates
-useEffect(() => {
-  setAutoApprovalState(!!user?.autoApproval); // ensures boolean
-}, [user?.autoApproval]);
-
+  // 2️⃣ Update toggle when profile updates
+  useEffect(() => {
+    setAutoApprovalState(!!user?.autoApproval); // ensures boolean
+  }, [user?.autoApproval]);
 
   const getPost = async () => {
     setLoading(true);
@@ -105,29 +106,27 @@ useEffect(() => {
   );
 
   const handleToggleConfirm = (nextValue: boolean) => {
-  console.log("Toggle pressed with value:", nextValue);
-  Alert.alert(
-    'Confirm Action',
-    nextValue ? 'Enable Auto-Approval?' : 'Disable Auto-Approval?',
-    [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Yes',
-        onPress: async () => {
-          console.log("Inside Alert YES");
-          setAutoApprovalState(nextValue);
-          try {
-            await setAutoApproval(user?._id, nextValue);
-            dispatch(getProfile(user._id));
-          } catch (err) {
-            console.log('AutoApproval API error:', err);
-          }
+    Alert.alert(
+      'Confirm Action',
+      nextValue ? 'Enable Auto-Approval?' : 'Disable Auto-Approval?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            console.log('Inside Alert YES');
+            setAutoApprovalState(nextValue);
+            try {
+              await setAutoApproval(user?._id, nextValue);
+              dispatch(getProfile(user._id));
+            } catch (err) {
+              console.log('AutoApproval API error:', err);
+            }
+          },
         },
-      },
-    ],
-  );
-};
-
+      ],
+    );
+  };
 
   const ApproveAll = () => {
     if (!posts?.length) return;
@@ -161,9 +160,8 @@ useEffect(() => {
   };
 
   const handleReject = async (item: Post) => {
-   
     setLoading(true);
-    await postToPage(item, userId, 'reject', currentPlatform);
+    await postToPage(item, userId, 'reject', currentPlatform,facebookPageId);
     setLoading(false);
     getPost();
   };
@@ -324,7 +322,7 @@ useEffect(() => {
                             ? facebook
                             : currentPlatform === 'instagram'
                             ? instagram
-                            : youtube 
+                            : youtube
                         }
                         style={styles.socialLoginIcon}
                       />
@@ -384,9 +382,11 @@ useEffect(() => {
               );
             }
 
-            setPointsEarned(response?.point ?? 0);
-            setCongratsVisible(true);
-            getPost();
+            if (response) {
+              setPointsEarned(response?.point ?? 0);
+              setCongratsVisible(true);
+              getPost();
+            }
           } catch (error) {
             console.error('API Error:', error);
           } finally {

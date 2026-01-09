@@ -28,6 +28,7 @@ interface AuthState {
   fcmToken: string | null;
   profileImageData?: any;
  socialName: string | null; 
+ facebookPageId: string | null;
 }
 
 const initialState: AuthState = {
@@ -37,6 +38,7 @@ const initialState: AuthState = {
   youtubetoken: null,
   instagramuser: null,
   facebookuser: null,
+    facebookPageId: null,
   youtubeuser: null,
   user: null,
   isLoading: false,
@@ -397,6 +399,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+     setFacebookPageId(state, action: PayloadAction<string>) {
+    state.facebookPageId = action.payload;
+  },
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
     },
@@ -643,6 +648,7 @@ export const {
   clearError,
   setUserId,
   setFCMToken,
-  setSocialName
+  setSocialName,
+  setFacebookPageId
 } = authSlice.actions;
 export default authSlice.reducer;

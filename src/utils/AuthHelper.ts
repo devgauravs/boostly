@@ -2,9 +2,10 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
+import { AccessToken, GraphRequest, GraphRequestManager, LoginManager } from 'react-native-fbsdk-next';
 import Toast from 'react-native-toast-message';
 import {
+  setFacebookPageId,
   setfacebooktoken,
   setFacebookUser,
   setinstagramtoken,
@@ -32,6 +33,144 @@ export const signIn = async (dispatch: AppDispatch, token: string) => {
 };
 
 // Facebook Login
+// export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
+//   try {
+//     // Step 1: Ask for Facebook permissions
+//     const result = await LoginManager.logInWithPermissions([
+//       'public_profile',
+//       'email',
+//       'pages_show_list',
+//       'pages_read_engagement',
+//       'pages_manage_posts',
+//       'pages_manage_metadata',
+//     ]);
+
+//     if (result.isCancelled) {
+//       Alert.alert('Login cancelled by user');
+//       return;
+//     }
+//     // Step 2: Get access token
+//     const data = await AccessToken.getCurrentAccessToken();
+//     if (!data) {
+//       Alert.alert('Error', 'Unable to get Facebook access token');
+//       return;
+//     }
+//     const fbAccessToken = data.accessToken.toString();
+//     console.log('fbAccessToken:', fbAccessToken);
+
+//     // Step 4: Backend login API call
+//     const endpoint =
+//       userId === undefined
+//         ? ENDPOINTS.facebookLogin
+//         : ENDPOINTS?.facebookinsideLogin;
+
+//     const response = await axios.post(`${BASE_URL}${endpoint}`, {
+//       accessToken: fbAccessToken,
+//       ...(userId ? { userId } : {}),
+//     });
+
+
+//     console.log("facebookloginResponse===>",response)
+
+//     // Step 5: Success handling
+//     Toast.show({
+//       type: 'success',
+//       text1: 'Login Successful',
+//       text2: 'You are now logged in with Facebook!',
+//     });
+
+//     // insideLogin: only save Facebook-specific info
+//     dispatch(setfacebooktoken(fbAccessToken));
+//     dispatch(setFacebookUser(response?.data?.user));
+//     dispatch(setSocialName('facebook'));
+
+//     // normal login: save generic + Facebook-specific info
+//     dispatch(setToken(fbAccessToken));
+//     dispatch(setUser(response?.data?.user));
+//     dispatch(setUserId(response?.data?.user?._id));
+//   } catch (error: any) {
+//     console.error('Facebook Login Error:', error);
+//     Toast.show({
+//       type: 'error',
+//       text1: 'Login Failed',
+//       text2: error?.message || 'Something went wrong.',
+//     });
+//   }
+// };
+
+
+// export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
+//   try {
+//     // Step 1: Ask for Facebook permissions
+//     const result = await LoginManager.logInWithPermissions([
+//       'public_profile',
+//       'email',
+//       'pages_show_list',
+//       'pages_read_engagement',
+//       'pages_manage_posts',
+//       'pages_manage_metadata',
+//     ]);
+
+//     if (result.isCancelled) {
+//       Alert.alert('Login cancelled by user');
+//       return;
+//     }
+
+//     // Step 2: Get access token
+//     const data = await AccessToken.getCurrentAccessToken();
+//     if (!data) {
+//       Alert.alert('Error', 'Unable to get Facebook access token');
+//       return;
+//     }
+//     const fbAccessToken = data.accessToken.toString();
+//     console.log('fbAccessToken:', fbAccessToken);
+
+//     // Step 3: Backend login API call
+//     const endpoint =
+//       userId === undefined
+//         ? ENDPOINTS.facebookLogin
+//         : ENDPOINTS?.facebookinsideLogin;
+
+//     const response = await axios.post(`${BASE_URL}${endpoint}`, {
+//       accessToken: fbAccessToken,
+//       ...(userId ? { userId } : {}),
+//     });
+
+//     console.log("facebookloginResponse===>", response);
+
+//     // Step 4: Fetch Facebook Pages (Page ID) directly here
+//     const pagesResponse = await fetch(
+//   `https://graph.facebook.com/v17.0/me/accounts?access_token=${data.accessToken.toString()}`
+// );
+// const pages = await pagesResponse.json();
+// console.log("Pages:", pages);
+
+//     // Step 5: Success handling
+//     Toast.show({
+//       type: 'success',
+//       text1: 'Login Successful',
+//       text2: 'You are now logged in with Facebook!',
+//     });
+
+//     // Save tokens & user info
+//     dispatch(setfacebooktoken(fbAccessToken));
+//     dispatch(setFacebookUser(response?.data?.user));
+//     dispatch(setSocialName('facebook'));
+
+//     dispatch(setToken(fbAccessToken));
+//     dispatch(setUser(response?.data?.user));
+//     dispatch(setUserId(response?.data?.user?._id));
+
+//   } catch (error: any) {
+//     console.error('Facebook Login Error:', error);
+//     Toast.show({
+//       type: 'error',
+//       text1: 'Login Failed',
+//       text2: error?.message || 'Something went wrong.',
+//     });
+//   }
+// };
+
 export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
   try {
     // Step 1: Ask for Facebook permissions
@@ -48,6 +187,7 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
       Alert.alert('Login cancelled by user');
       return;
     }
+
     // Step 2: Get access token
     const data = await AccessToken.getCurrentAccessToken();
     if (!data) {
@@ -57,33 +197,52 @@ export const facebookLogin = async (dispatch: AppDispatch, userId?: string) => {
     const fbAccessToken = data.accessToken.toString();
     console.log('fbAccessToken:', fbAccessToken);
 
-    // Step 4: Backend login API call
+    // Step 2a: Fetch pages
+    const pagesResponse = await fetch(
+      `https://graph.facebook.com/v17.0/me/accounts?access_token=${fbAccessToken}`
+    );
+    const pagesData = await pagesResponse.json();
+    console.log('Fetched Pages:', pagesData); // ✅ This will show empty array if no pages
+
+    if (!pagesData?.data || pagesData.data.length === 0) {
+      console.warn('⚠️ No Facebook Pages found for this user');
+    }
+
+    // Step 3: Backend login API call
     const endpoint =
       userId === undefined
         ? ENDPOINTS.facebookLogin
-        : ENDPOINTS?.facebookinsideLogin;
+        : ENDPOINTS.facebookinsideLogin;
 
     const response = await axios.post(`${BASE_URL}${endpoint}`, {
       accessToken: fbAccessToken,
       ...(userId ? { userId } : {}),
     });
 
-    // Step 5: Success handling
+    console.log('facebookloginResponse===>', response);
+
+    // Step 4: Success handling
     Toast.show({
       type: 'success',
       text1: 'Login Successful',
       text2: 'You are now logged in with Facebook!',
     });
 
-    // insideLogin: only save Facebook-specific info
+    // Step 5: Dispatch to Redux
     dispatch(setfacebooktoken(fbAccessToken));
     dispatch(setFacebookUser(response?.data?.user));
     dispatch(setSocialName('facebook'));
-
-    // normal login: save generic + Facebook-specific info
     dispatch(setToken(fbAccessToken));
     dispatch(setUser(response?.data?.user));
     dispatch(setUserId(response?.data?.user?._id));
+
+
+    if (pagesData?.data && pagesData.data.length > 0) {
+      const pageId = pagesData.data[0].id; // first page
+      console.log('Storing Page ID after API success:', pageId);
+      dispatch(setFacebookPageId(pageId));
+    }
+
   } catch (error: any) {
     console.error('Facebook Login Error:', error);
     Toast.show({
